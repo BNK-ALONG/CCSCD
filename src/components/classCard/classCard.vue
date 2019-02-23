@@ -1,0 +1,114 @@
+<template>
+  <div class="card">
+    <header class="card__thumb">
+      <img src="img/1.jpg" />
+    </header>
+    <!-- <Button shape="circle">{{index}}</Button> -->
+    <div class="card__date">
+      <span class="card__date__day">{{cards[index].classYear}}</span>
+      <br />
+      <span class="card__date__month">{{cards[index].classMonth}}</span>
+    </div>
+    <div class="card__body">
+      <div class="card__category">{{cards[index].classId}}</div>
+      <h2 class="card__title">{{cards[index].className}}</h2>
+      <div class="card__description">
+        <p>{{cards[index].classIntro}}</p>
+        <div class="box_btn">
+          <Button type="success">上课</Button>
+          <span class="left-dt"></span>
+          <Button type="error"
+                  @click="modal2 = true">删除</Button>
+          <Modal v-model="modal2"
+                 width="400"
+                 style="top:20%">
+            <p slot="header"
+               style="color:#f60;text-align:center">
+              <Icon type="ios-information-circle"></Icon>
+              <span>删除确认</span>
+            </p>
+            <div style="text-align:center">
+              <p>删除课堂之后，所有课堂相关的数据以及文件将被永久删除</p>
+              <p>您是否考虑清楚？</p>
+            </div>
+            <div slot="footer">
+              <Button type="error"
+                      size="large"
+                      long
+                      :loading="modal_loading"
+                      @click="del">{{btn_text}}</Button>
+            </div>
+          </Modal>
+        </div>
+      </div>
+
+    </div>
+
+    <footer class="card__footer">
+
+    </footer>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "classCard",
+  props: {
+    index: {
+      type: Number,
+      required: true,
+    },
+    cards: {
+      classId: {
+        type: String,
+        required: true
+      },
+      className: {
+        type: String,
+        required: true
+      },
+      classIntro: {
+        type: String,
+        default: "课堂简介为空，介绍一下",
+        required: false
+      },
+      classYear: {
+        type: Number,
+        required: true
+      },
+      classMonth: {
+        type: String,
+        required: true
+      }
+    }
+  },
+  data () {
+    return {
+      modal2: false,
+      modal_loading: false,
+      btn_text: '忍心删除'
+    }
+  },
+
+  methods: {
+    del () {
+      this.modal_loading = true;
+      this.btn_text = '删除中...'
+      setTimeout(() => {
+        // this.modal_loading = true;
+        this.modal2 = false;
+        this.$Message.success('删除成功！');
+        this.$emit('deleteCard', this.index)
+      }, 2000);
+      setTimeout(() => {
+        this.btn_text = '忍心删除'
+      }, 2001)
+
+    }
+  },
+}
+</script>
+
+<style>
+@import "./../../../static/css/card.css";
+</style>
