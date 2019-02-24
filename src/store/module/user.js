@@ -2,7 +2,8 @@
 // import { setToken, getToken } from '@/libs/util'
 
 import {
-  getClassInfo
+  getClassInfo,
+  courseLogin
 } from '@/api/user'
 import {
   forClassTime
@@ -14,7 +15,9 @@ export default {
     userId: '',
     avatorImgPath: '',
     access: '',
-    hasGetInfo: false
+    hasGetInfo: false,
+    className: '这里是课堂名'
+
   },
   mutations: {
     setAvator(state, avatorPath) {
@@ -23,9 +26,12 @@ export default {
     setUserId(state, id) {
       state.userId = id
     },
+
+    //用户名
     setUserName(state, name) {
       state.userName = name
     },
+
     setAccess(state, access) {
       state.access = access
     },
@@ -35,9 +41,40 @@ export default {
     },
     setHasGetInfo(state, status) {
       state.hasGetInfo = status
-    }
+    },
+    //课堂名
+    setClassName(state, className) {
+      state.className = className
+    },
+
+
   },
   actions: {
+
+    //获取课堂登入接口的课堂名，赋给state的className，最后返回后台传过来的message信息
+    getClassName({
+      commit
+    }, {
+      course_id
+    }) {
+      return new Promise((resolve, reject) => {
+        courseLogin({
+          course_id
+        }).then(res => {
+          const message = res.message
+          const status = res.status
+          const className = res.course_name.substring(0, 1).toUpperCase() + res.course_name.substring(1)
+          if (status === 200) {
+            commit('setClassName', className)
+            resolve(message)
+          } else {
+            reject(message)
+          }
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
     // 登录
     handleLogin({
       commit

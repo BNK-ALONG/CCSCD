@@ -35,7 +35,7 @@
 <script>
 import MapLoader from '@/assets/js/AMap.js'
 import slider from '_c/slider'
-
+import { issueSign } from '@/api/sign'
 export default {
   name: 'test',
   components: { slider },
@@ -100,7 +100,7 @@ export default {
             title: '定位确定',
             width: 600,
             okText: '发布签到',
-            // content: '确定在：<br>' + poiName + '<br>进行签到吗？'
+            // render渲染签到作用域的设置
             render: (h) => {
               return h(slider, {
                 props: {
@@ -120,18 +120,32 @@ export default {
               })
             },
             onOk: () => {
-              // 如果用户没有备注则，自动备注为在地图上选址的地标
-              if (that.locationRemark === '') {
-                console.log('父备注:', poiName)
-              } else {
-                console.log('父备注:', that.locationRemark)
-              }
-              console.log('父组件---半径：', that.sign_radius)
-              console.log('父组件---时间间隔：', that.sign_interval)
-
               // 提交签到数据到后台
+              // 如果用户没有备注则，自动备注为在地图上选址的地标
+              issueSign({
+                lngX: lnglat.getLng(),
+                latY: lnglat.getLat(),
+                distance: that.sign_radius,
+                time_interval: that.sign_interval,
+                location: that.locationRemark === '' ? poiName : that.locationRemark
+              }).then(res => {
+                const message = res.message
+                const status = res.status
+                if (status === 200) {
+                  that.$router.push({
+                    name: 'record_sign'
+                  })
+                  that.$Message.success(message)
+                } else {
+                  that.$Message.error(message)
+                }
+              }).catch(error => {
+                that.$Modal.error({
+                  title: "签到失败！",
+                  content: error
+                })
+              })
             }
-
           })
         }).catch(error => {
           that.$Modal.error({
@@ -188,7 +202,7 @@ export default {
           // }
           that.locationName = poi.name
           // console.log(that.locationName)
-
+          console.log(poi.location.toString())
           marker.setPosition(poi.location)
           circle.setCenter(poi.location)
           circle.setRadius(20)
@@ -225,18 +239,6 @@ export default {
         that.map.setCenter(lnglat)
         that.map.setZoom(20)
         getSignData(lnglat)
-        // console.log(JSON.stringify(e.lnglat))
-        // promise(lnglat).then(poiName => {
-        //   that.$Modal.confirm({
-        //     title: '定位确定',
-        //     content: '确定在：<br>' + poiName + '<br>进行签到吗？'
-        //   })
-        // }).catch(error => {
-        //   that.$Modal.error({
-        //     title: '定位错误',
-        //     content: error
-        //   })
-        // })
       })
     }, e => {
       console.log('地图加载失败', e)
@@ -311,23 +313,6 @@ input {
   right: 30px;
   width: 300px;
 }
-
-/* #pickerInput {
- width: 100%;
-  padding: 5px 5px;
-  height: 30px;
-  line-height: 50px;
-  border: 1px solid rgba(34, 43, 95, 0.79);
-  background: rgba(21, 24, 68, 0.5);
-  display: inline-block;
-  width: 100%;
-  color: #fff;
-  box-sizing: border-box;
-  border-radius: 40px;
-  text-align: center;
-  font-size: 18px !important;
-  transition: all 0.4s;
-}*/
 
 #poiInfo {
   background: #fff;

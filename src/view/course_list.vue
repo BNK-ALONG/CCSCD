@@ -77,7 +77,7 @@
           <Input type="text"
                  clearable
                  v-model="formAddClass.className"
-                 placeholder="课堂名称"></Input>
+                 placeholder="课堂名称" />
         </FormItem>
 
         <FormItem prop="classIntro">
@@ -88,7 +88,7 @@
                  :autosize="true"
                  clearable
                  v-model="formAddClass.classIntro"
-                 placeholder='课堂简介'></Input>
+                 placeholder='课堂简介' />
         </FormItem>
         <FormItem prop="classTime">
           <Icon type="md-clock"
@@ -112,8 +112,7 @@
 </template>
 <script>
 import ClassCard from '@/components/classCard'
-import { getClassInfo } from '@/api/user'
-import { classAdd } from '@/api/user'
+import { getClassInfo, classAdd } from '@/api/user'
 import { mapActions } from 'vuex'
 import { forClassTime } from '@/libs/util'
 // import { mapActions } from 'vuex'
@@ -188,21 +187,6 @@ export default {
       var loginUserName = this.$route.query.userName
       this.getClassInfo().then(courseList => {
         this.cards = courseList
-        // for (var index in courseList) {
-        //   let classId = courseList[index].course_id
-        //   let className = courseList[index].course_name
-        //   let classTime = new Array()
-        //   if (courseList[index].start_time === '') {
-        //     classTime = ['00', '壹月']
-        //   } else {
-        //     classTime = forClassTime(courseList[index].start_time)
-        //   }
-        //   let classIntro = '请填写课堂简介~'
-        //   console.log("course_id:", courseList[index].course_id)
-        //   console.log("course_name:", courseList[index].course_name)
-        //   console.log("start_time:", courseList[index].start_time)
-        //   this.cards.push({ classId: classId, className: className, classIntro: classIntro, classYear: classTime[0], classMonth: classTime[1] })
-        // }
       }).catch(error => {
         this.$Modal.error({
           title: '获取课堂列表信息错误！',

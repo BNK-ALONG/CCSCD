@@ -15,7 +15,8 @@
       <div class="card__description">
         <p>{{cards[index].classIntro}}</p>
         <div class="box_btn">
-          <Button type="success">上课</Button>
+          <Button type="success"
+                  @click="sendClassId(cards[index].classId)">上课</Button>
           <span class="left-dt"></span>
           <Button type="error"
                   @click="modal2 = true">删除</Button>
@@ -51,6 +52,8 @@
 </template>
 
 <script>
+import { courseLogin } from '@/api/user'
+import { mapActions } from 'vuex'
 export default {
   name: "classCard",
   props: {
@@ -91,6 +94,9 @@ export default {
   },
 
   methods: {
+    ...mapActions([
+      'getClassName'
+    ]),
     del () {
       this.modal_loading = true;
       this.btn_text = '删除中...'
@@ -103,7 +109,20 @@ export default {
       setTimeout(() => {
         this.btn_text = '忍心删除'
       }, 2001)
-
+    },
+    sendClassId (classId) {
+      this.getClassName({ course_id: classId }).then(message => {
+        this.$router.push({
+          name: 'home'
+        })
+        //课堂登入成功时候，把message打印出来
+        this.$Message.success(message)
+      }).catch(error => {
+        this.$Modal.error({
+          title: '课堂进入失败！',
+          content: error
+        })
+      })
     }
   },
 }

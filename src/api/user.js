@@ -87,3 +87,16 @@ export const getClassInfo = () => {
     }
   })
 }
+// 课堂登陆
+export const courseLogin = ({
+  course_id
+}) => {
+  return axios.request({
+    url: '/sign/course_login',
+    method: 'post',
+    responseType: 'json',
+    data: {
+      course_id
+    }
+  })
+}

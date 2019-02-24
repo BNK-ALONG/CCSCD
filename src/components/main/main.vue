@@ -20,12 +20,12 @@
           <img v-show="collapsed" :src="minLogo" key="min-logo" /> -->
           <div class="className-wrap"
                v-show="!collapsed">
-            <div class="className-box className-box-max">系统分析与设计</div>
+            <div class="className-box className-box-max">{{className}}</div>
           </div>
 
           <div class="className-wrap"
                v-show="collapsed">
-            <div class="className-box className-box-min">系</div>
+            <div class="className-box className-box-min">{{className[0]}}</div>
 
           </div>
         </div>
@@ -121,7 +121,12 @@ export default {
     },
     hasReadErrorPage () {
       return this.$store.state.app.hasReadErrorPage
+    },
+    //获取课堂名
+    className () {
+      return this.$store.state.user.className
     }
+
   },
   methods: {
     ...mapMutations([

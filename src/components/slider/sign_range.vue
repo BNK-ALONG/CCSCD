@@ -80,22 +80,17 @@ export default {
   mounted () {
     this.$emit('getRadius', this.slider_radius)
     this.$emit('getInterval', this.slider_interval)
-    // if (this.isSubmit) {
-    //   this.$emit('locationRemark', this.locationRemark)
-    // } else {
-    //   console.log('没有成功')
-    //   this.$emit('locationRemark', '')
-    // }
+
   },
   methods: {
 
     radius () {
       this.$emit('getRadius', this.slider_radius)
-      console.log('子组件---半径：', this.slider_radius)
+      // console.log('子组件---半径：', this.slider_radius)
     },
     interval () {
       this.$emit('getInterval', this.slider_interval)
-      console.log('子组件---时间间隔：', this.slider_interval)
+      // console.log('子组件---时间间隔：', this.slider_interval)
     },
     // 点击加号图标，滑块增加10
     handleSRadiusUp () {
@@ -106,7 +101,7 @@ export default {
         this.slider_radius += step
       }
       this.$emit('getRadius', this.slider_radius)
-      console.log('子组件签到半径是：', this.slider_radius)
+      // console.log('子组件签到半径是：', this.slider_radius)
     },
     // 点击减号图标，滑块减少10
     handleSRadiusDown () {
@@ -117,7 +112,7 @@ export default {
         this.slider_radius -= step
       }
       this.$emit('getRadius', this.slider_radius)
-      console.log('子组件签到半径是：', this.slider_radius)
+      // console.log('子组件签到半径是：', this.slider_radius)
     },
     // 点击加号图标，滑块增加5
     handleSIntervalUp () {
@@ -128,7 +123,7 @@ export default {
         this.slider_interval += step
       }
       this.$emit('getInterval', this.slider_interval)
-      console.log('子组件的时间间隔是：', this.slider_interval)
+      // console.log('子组件的时间间隔是：', this.slider_interval)
     },
     // 点击减号图标，滑块减少5
     handleSIntervalDown () {
@@ -139,7 +134,7 @@ export default {
         this.slider_interval -= step
       }
       this.$emit('getInterval', this.slider_interval)
-      console.log('子组件的时间间隔是：', this.slider_interval)
+      // console.log('子组件的时间间隔是：', this.slider_interval)
     },
     // 输入框失去焦点时，获取input的值
     handleInputValue () {
