@@ -23,7 +23,7 @@ export default [{
       title: 'Login - 登录',
       hideInMenu: true
     },
-    component: () => import('@/view/login.vue')
+    component: () => import('@/view/login/login.vue')
   },
   {
     path: '/course_list',
@@ -32,7 +32,7 @@ export default [{
       title: '课堂列表',
       hideInMenu: true
     },
-    component: () => import('@/view/course_list.vue')
+    component: () => import('@/view/course_list/course_list.vue')
   },
   {
     path: '/',
@@ -159,12 +159,32 @@ export default [{
     ]
   },
   {
-    path: '/test_sign',
-    name: 'test_sign',
+    path: '/documents',
+    name: 'documents',
     meta: {
-      title: '地图测试'
+      icon: 'ios-book',
+      title: '数据中心'
     },
-    component: () => import('@/view/sign/test_sign.vue')
+    component: Main,
+    children: [{
+        path: 'file_list',
+        name: 'file_list',
+        meta: {
+          icon: 'ios-book',
+          title: '文件列表'
+        },
+        component: () => import('@/view/documents/file_list.vue')
+      },
+      {
+        path: 'student_info',
+        name: 'student_info',
+        meta: {
+          icon: 'ios-book',
+          title: '学生信息'
+        },
+        component: () => import('@/view/documents/student_info.vue')
+      }
+    ]
   },
   {
     path: '/401',

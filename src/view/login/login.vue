@@ -395,5 +395,9 @@ export default {
 }
 </script>
 <style>
-@import "./../../static/css/main.css";
+/* @import "./../../static/css/main.css"; */
+@import "./main.css";
+#particles {
+  background-image: url("./../../assets/bg.jpg");
+}
 </style>

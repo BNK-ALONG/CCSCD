@@ -116,7 +116,10 @@ export default {
           name: 'home'
         })
         //课堂登入成功时候，把message打印出来
-        this.$Message.success(message)
+        this.$Notice.success({
+          title: message,
+          desc: ''
+        })
       }).catch(error => {
         this.$Modal.error({
           title: '课堂进入失败！',
@@ -129,5 +132,6 @@ export default {
 </script>
 
 <style>
-@import "./../../../static/css/card.css";
+/* @import "./../../../static/css/card.css"; */
+@import "./card.css";
 </style>
