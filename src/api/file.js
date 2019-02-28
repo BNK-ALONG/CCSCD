@@ -37,8 +37,20 @@ export const ShareOrImport = ({
   }
 }
 
-// 批量下载和删除
+export const downloadBlob = (data, file) => {
+  if (!data) {
+    return
+  }
+  let url = window.URL.createObjectURL(new Blob([data]))
+  let link = document.createElement('a')
+  link.style.display = 'none'
+  link.href = url
+  link.setAttribute('download', file)
+  document.body.appendChild(link)
+  link.click()
+}
 
+// 批量下载和删除
 export const DownloadOrDelete = ({
   type,
   file_name_uuid
@@ -62,4 +74,33 @@ export const DownloadOrDelete = ({
       }
     })
   }
+}
+
+// 获取学生信息
+export const getTableData = () => {
+  return axios.request({
+    url: '/documents/student_info',
+    method: 'post'
+  })
+}
+
+// 解绑学生
+export const deleteStu = ({
+  stuid
+}) => {
+  return axios.request({
+    url: '/documents/delete_student',
+    method: 'post',
+    data: {
+      stuid
+    }
+  })
+}
+
+export const downloadStuModel = () => {
+  return axios.request({
+    url: '/documents/student_model',
+    method: 'post',
+    responseType: 'blob'
+  })
 }

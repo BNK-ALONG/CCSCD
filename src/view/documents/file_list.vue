@@ -1,5 +1,7 @@
  <template>
   <div style="height:100%;width:100%;">
+    <!-- name 和action是必需的，否则无法上传 -->
+
     <Upload multiple
             type="drag"
             action="/documents/upload_file"
@@ -20,7 +22,8 @@
     </Upload>
     <div style="margin-top:50px;">
       <!-- 四个按钮的容器(表格上边) -->
-      <div class="btn-container">
+      <div class="btn-container"
+           style="padding: 10px 0;">
         <!-- 四个按钮的总长度要与表格对齐 -->
         <div class="btn-wrap">
           <!-- 全选、取消全选按钮 -->
@@ -49,10 +52,9 @@
       <!-- table表格的容器（为了使表格居中） -->
       <div class="table-btn-container">
         <Table ref="fileList"
-               border
                stripe
                width='auto'
-               :columns="columns5"
+               :columns="columns"
                :data="fileData">
           <template slot-scope="{row,index}"
                     slot="import">
@@ -85,33 +87,6 @@
         </Table>
       </div>
       <!-- 四个按钮的容器（表格下边） -->
-      <div class="btn-container">
-        <!-- 四个按钮的总长度要与表格对齐 -->
-        <div class="btn-wrap">
-          <!-- 全选、取消全选按钮 -->
-          <div class="two-btn-wrap select-btn">
-            <Button type="primary"
-                    :size="btnSize"
-                    icon="ios-checkmark-circle"
-                    @click="handleSelectAll(true)"
-                    class-name="selectAll">全 选</Button>
-            <Button icon="md-close"
-                    :size="btnSize"
-                    @click="handleSelectAll(false)">取消全选</Button>
-          </div>
-          <!-- 下载删除按钮 -->
-          <div class="two-btn-wrap download-delete-btn">
-            <Button icon="md-trash"
-                    :size="btnSize"
-                    @click="handleDownloadDelete('删除')">删除</Button>
-            <Button icon="ios-download-outline"
-                    type="primary"
-                    :size="btnSize"
-                    @click="handleDownloadDelete('下载')">下载</Button>
-          </div>
-        </div>
-      </div>
-
     </div>
   </div>
   <!-- <Button type="error"
@@ -120,7 +95,7 @@
               @click="handlePrintFileData">打印fileData</Button>-->
 </template>
 <script>
-import { getFileList, ShareOrImport, DownloadOrDelete } from '@/api/file'
+import { getFileList, ShareOrImport, downloadBlob, DownloadOrDelete } from '@/api/file'
 
 export default {
   name: 'file_list',
@@ -129,7 +104,7 @@ export default {
       btnSize: 'large',
       trueVal: 1,
       falseVal: 0,
-      columns5: [
+      columns: [
         {
           //type 某一列的类型
           type: 'selection',
@@ -330,23 +305,8 @@ export default {
         })
       })
     },
-    // 下载文件流
-    download (data, file) {
-      if (!data) {
-        return
-      }
-      let url = window.URL.createObjectURL(new Blob([data]))
-      let link = document.createElement('a')
-      link.style.display = 'none'
-      link.href = url
-      link.setAttribute('download', file)
-      document.body.appendChild(link)
-      link.click()
-    },
-
     // 对下载和删除成功或失败的提示消息
     DownloadDeleteMessage ({ res, type, index, file_name_uuid, file_name, extension }) {
-
       if (type === '下载') {
         if ("status" in res) {
           this.$Notice.error({
@@ -355,7 +315,7 @@ export default {
           this.handleSelectAll(false)
         } else {
           let file = file_name + '.' + extension
-          this.download(res, file)
+          downloadBlob(res, file)
           this.handleSelectAll(false)
         }
       } else {
@@ -372,12 +332,6 @@ export default {
         }
 
       }
-      //  else {
-      //   this.$Notice.error({
-      //     title: type === '下载' ? (file_name + "——下载失败！") : (file_name + "——删除失败！")
-      //   })
-      //   this.handleSelectAll(false)
-      // }
     }
     ,
     // 批量下载和批量删除
