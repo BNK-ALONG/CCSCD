@@ -1,5 +1,5 @@
  <template>
-  <div style="width:100%;height:100%;">
+  <div style="height:100%;width:100%;">
     <Upload multiple
             type="drag"
             action="/documents/upload_file"
@@ -16,59 +16,108 @@
                 size="20" />
           <p style="font-size:16px;">支持多文件同时上传</p>
         </span>
-
       </div>
     </Upload>
-    <Button @click="handleSelectAll(true)">全 选</Button>
-    <Button @click="handleSelectAll(false)">取消全选</Button>
-    <Button type="success"
-            @click="handleDownloadDelete('下载')">下载</Button>
-    <Button type="success"
-            @click="handleDownloadDelete('删除')">删除</Button>
-    <Table ref="fileList"
-           border
-           stripe
-           width='686'
-           :columns="columns5"
-           :data="fileData">
-      <template slot-scope="{row,index}"
-                slot="import">
-        <!-- i-switch开关如果双向绑定的是原数据 开关的动画会卡顿 -->
-        <i-switch v-model="row.NowStatus"
-                  :true-value="trueVal"
-                  :false-value="falseVal"
-                  :disabled="row.extension!=='pdf'"
-                  @on-change="statusChange(index,row.NowStatus,'导入')">
-          <!-- 填坑：想让disabled的值等于表达式的值，则需要绑定disabled的形式:disabled，对vue的双向绑定又多了一份理解。 -->
-          <Icon type="md-checkmark"
-                slot="open"></Icon>
-          <Icon type="md-close"
-                slot="close"></Icon>
-        </i-switch>
-      </template>
-      <template slot-scope="{row,index}"
-                slot="share">
-        <!-- 这里的slot-scope="{row}"只有获取行的数据，不具有修改本行的数据源的能力 -->
-        <i-switch v-model="row.ShareStatus"
-                  :true-value="trueVal"
-                  :false-value="falseVal"
-                  @on-change="statusChange(index,row.ShareStatus,'分享')">
-          <Icon type="md-checkmark"
-                slot="open"></Icon>
-          <Icon type="md-close"
-                slot="close"></Icon>
-        </i-switch>
-      </template>
-    </Table>
-    <Button type="error"
-            @click="handlePrintFileData">打印fileData</Button>
-    <Button type="error"
-            @click="handleSelect">打印已选择的项</Button>
-    <Button type="success"
-            @click="handleDownloadDelete('下载')">下载</Button>
-    <Button type="success"
-            @click="handleDownloadDelete('删除')">删除</Button>
+    <div style="margin-top:50px;">
+      <!-- 四个按钮的容器(表格上边) -->
+      <div class="btn-container">
+        <!-- 四个按钮的总长度要与表格对齐 -->
+        <div class="btn-wrap">
+          <!-- 全选、取消全选按钮 -->
+          <div class="two-btn-wrap select-btn">
+            <Button type="primary"
+                    :size="btnSize"
+                    icon="ios-checkmark-circle"
+                    @click="handleSelectAll(true)"
+                    class-name="selectAll">全 选</Button>
+            <Button icon="md-close"
+                    :size="btnSize"
+                    @click="handleSelectAll(false)">取消全选</Button>
+          </div>
+          <!-- 下载删除按钮 -->
+          <div class="two-btn-wrap download-delete-btn">
+            <Button icon="md-trash"
+                    :size="btnSize"
+                    @click="handleDownloadDelete('删除')">删除</Button>
+            <Button icon="ios-download-outline"
+                    type="primary"
+                    :size="btnSize"
+                    @click="handleDownloadDelete('下载')">下载</Button>
+          </div>
+        </div>
+      </div>
+      <!-- table表格的容器（为了使表格居中） -->
+      <div class="table-btn-container">
+        <Table ref="fileList"
+               border
+               stripe
+               width='auto'
+               :columns="columns5"
+               :data="fileData">
+          <template slot-scope="{row,index}"
+                    slot="import">
+            <!-- i-switch开关如果双向绑定的是原数据 开关的动画会卡顿 -->
+            <i-switch v-model="row.NowStatus"
+                      :true-value="trueVal"
+                      :false-value="falseVal"
+                      :disabled="row.extension!=='pdf'"
+                      @on-change="statusChange(index,row.NowStatus,'导入')">
+              <!-- 填坑：想让disabled的值等于表达式的值，则需要绑定disabled的形式:disabled，对vue的双向绑定又多了一份理解。 -->
+              <Icon type="md-checkmark"
+                    slot="open"></Icon>
+              <Icon type="md-close"
+                    slot="close"></Icon>
+            </i-switch>
+          </template>
+          <template slot-scope="{row,index}"
+                    slot="share">
+            <!-- 这里的slot-scope="{row}"只有获取行的数据，不具有修改本行的数据源的能力 -->
+            <i-switch v-model="row.ShareStatus"
+                      :true-value="trueVal"
+                      :false-value="falseVal"
+                      @on-change="statusChange(index,row.ShareStatus,'分享')">
+              <Icon type="md-checkmark"
+                    slot="open"></Icon>
+              <Icon type="md-close"
+                    slot="close"></Icon>
+            </i-switch>
+          </template>
+        </Table>
+      </div>
+      <!-- 四个按钮的容器（表格下边） -->
+      <div class="btn-container">
+        <!-- 四个按钮的总长度要与表格对齐 -->
+        <div class="btn-wrap">
+          <!-- 全选、取消全选按钮 -->
+          <div class="two-btn-wrap select-btn">
+            <Button type="primary"
+                    :size="btnSize"
+                    icon="ios-checkmark-circle"
+                    @click="handleSelectAll(true)"
+                    class-name="selectAll">全 选</Button>
+            <Button icon="md-close"
+                    :size="btnSize"
+                    @click="handleSelectAll(false)">取消全选</Button>
+          </div>
+          <!-- 下载删除按钮 -->
+          <div class="two-btn-wrap download-delete-btn">
+            <Button icon="md-trash"
+                    :size="btnSize"
+                    @click="handleDownloadDelete('删除')">删除</Button>
+            <Button icon="ios-download-outline"
+                    type="primary"
+                    :size="btnSize"
+                    @click="handleDownloadDelete('下载')">下载</Button>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
+  <!-- <Button type="error"
+              @click="handleSelect">打印已选择的项</Button> -->
+  <!-- <Button type="error"
+              @click="handlePrintFileData">打印fileData</Button>-->
 </template>
 <script>
 import { getFileList, ShareOrImport, DownloadOrDelete } from '@/api/file'
@@ -77,6 +126,7 @@ export default {
   name: 'file_list',
   data () {
     return {
+      btnSize: 'large',
       trueVal: 1,
       falseVal: 0,
       columns5: [
@@ -100,7 +150,8 @@ export default {
           key: 'file_name',
           sortable: true,
           align: 'center',
-          // maxWidth: 400,
+          minWidth: 400,
+          maxWidth: 500,
           // ellipsis超出部分显示为省略号
           ellipsis: true,
           // tooltip超出一定字数的单元格用气泡提示出来
@@ -112,7 +163,8 @@ export default {
           title: '格式',
           key: 'extension',
           align: 'center',
-          maxWidth: 90,
+          minWidth: 90,
+          maxWidth: 100,
           className: 'tableFontSize',
           filters: [
             {
@@ -218,7 +270,7 @@ export default {
     // 打印已选择的项
     // 通过打印this.$refs.fileList可以知道该组件的所有属性
     handleSelect () {
-      console.log(this.$refs.fileList.getSelection())
+      console.log(this.$refs.fileList["tableWidth"])
     },
     // 分享和取消分享成功或失败、导入和取消导入成功或失败的提示信息
     share_import_change ({ ResponseStatus, ResponseMessage, statusType, status, file_name }) {
@@ -278,48 +330,108 @@ export default {
         })
       })
     },
+    // 下载文件流
+    download (data, file) {
+      if (!data) {
+        return
+      }
+      let url = window.URL.createObjectURL(new Blob([data]))
+      let link = document.createElement('a')
+      link.style.display = 'none'
+      link.href = url
+      link.setAttribute('download', file)
+      document.body.appendChild(link)
+      link.click()
+    },
+
     // 对下载和删除成功或失败的提示消息
-    DownloadDeleteMessage ({ status, type, index, file_name_uuid, file_name }) {
-      if (status === 200) {
-        if (type === '下载') {
+    DownloadDeleteMessage ({ res, type, index, file_name_uuid, file_name, extension }) {
+
+      if (type === '下载') {
+        if ("status" in res) {
+          this.$Notice.error({
+            title: file_name + "——下载失败！"
+          })
           this.handleSelectAll(false)
         } else {
+          let file = file_name + '.' + extension
+          this.download(res, file)
+          this.handleSelectAll(false)
+        }
+      } else {
+        if (res.status === 200) {
           this.fileData.splice(index, 1)
           this.$Notice.success({
             title: "成功删除文件“" + file_name + "”"
           })
+        } else {
+          this.$Notice.error({
+            title: file_name + "——删除失败！"
+          })
           this.handleSelectAll(false)
         }
-      } else {
-        this.$Notice.error({
-          title: type === '下载' ? (file_name + "——下载失败！") : (file_name + "——删除失败！")
-        })
-        this.handleSelectAll(false)
+
       }
+      //  else {
+      //   this.$Notice.error({
+      //     title: type === '下载' ? (file_name + "——下载失败！") : (file_name + "——删除失败！")
+      //   })
+      //   this.handleSelectAll(false)
+      // }
     }
     ,
     // 批量下载和批量删除
     handleDownloadDelete (type) {
       let selection = this.$refs.fileList.getSelection()
       if (selection.length) {
-        for (let file of selection) {
-          // 获取数组对象中值等于selection中的file_name_uuid的索引
-          let index = this.fileData.findIndex(document => document.file_name_uuid === file.file_name_uuid)
+        if (type === '删除') {
+          this.$Modal.confirm({
+            closable: true,
+            title: '删除确认',
+            content: '删除文件之后，不可修复，您确定要删除吗？',
+            onOk: () => {
+              for (let file of selection) {
+                // 获取数组对象中值等于selection中的file_name_uuid的索引
+                let index = this.fileData.findIndex(document => document.file_name_uuid === file.file_name_uuid)
+                DownloadOrDelete({
+                  type: type,
+                  file_name_uuid: file.file_name_uuid
+                }).then(res => {
+                  this.DownloadDeleteMessage({
+                    res: res,
+                    type: type,
+                    index: index,
+                    file_name_uuid: file.file_name_uuid,
+                    file_name: file.file_name,
+                    extension: file.extension
+                  })
+                }).catch(error => {
+                  this.$Modal.error({ title: error })
+                })
 
-          DownloadOrDelete({
-            type: type,
-            file_name_uuid: file.file_name_uuid
-          }).then(res => {
-            this.DownloadDeleteMessage({
-              status: res.status,
-              type: type,
-              index: index,
-              file_name_uuid: file.file_name_uuid,
-              file_name: file.file_name            })
-          }).catch(error => {
-            this.$Modal.error({ title: error })
+              }
+            }
           })
-
+        } else {
+          for (let file of selection) {
+            // 获取数组对象中值等于selection中的file_name_uuid的索引
+            let index = this.fileData.findIndex(document => document.file_name_uuid === file.file_name_uuid)
+            DownloadOrDelete({
+              type: type,
+              file_name_uuid: file.file_name_uuid
+            }).then(res => {
+              this.DownloadDeleteMessage({
+                res: res,
+                type: type,
+                index: index,
+                file_name_uuid: file.file_name_uuid,
+                file_name: file.file_name,
+                extension: file.extension
+              })
+            }).catch(error => {
+              this.$Modal.error({ title: error })
+            })
+          }
         }
       } else {
         this.$Modal.warning({
@@ -333,5 +445,37 @@ export default {
 <style>
 .tableFontSize {
   font-size: 16px;
+}
+.two-btn-wrap {
+  display: -webkit-flex;
+  display: flex;
+  width: 200px;
+  justify-content: space-between;
+  -moz-justify-content: space-between;
+  -ms-justify-content: space-between;
+  -o-justify-content: space-between;
+}
+.btn-wrap {
+  width: 849px;
+}
+.select-btn {
+  float: left;
+  width: 220px;
+}
+.download-delete-btn {
+  float: right;
+  width: 200px;
+}
+
+.btn-container,
+.table-btn-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  -webkit-justify-content: center;
+  -moz-justify-content: center;
+  -ms-justify-content: center;
+  -o-justify-content: center;
+  justify-content: center;
+  align-items: center;
 }
 </style>

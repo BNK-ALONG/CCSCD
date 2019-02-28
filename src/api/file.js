@@ -47,6 +47,8 @@ export const DownloadOrDelete = ({
     return axios.request({
       url: '/documents/download_file',
       method: 'post',
+      // 请求返回的类型要设置为arraybuffer或者blob
+      responseType: 'blob',
       data: {
         file_name_uuid
       }
