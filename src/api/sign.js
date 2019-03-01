@@ -19,9 +19,19 @@ export const issueSign = ({
   })
 }
 
+// 快速签到
 export const rapidSign = () => {
   return axios.request({
     url: '/sign/quick_locate',
     method: 'post'
+  })
+}
+
+// 获取二维码图片的路径
+export const getQRImg = () => {
+  return axios.request({
+    url: '/sign/show_qrcode',
+    method: 'post',
+    responseType: "arraybuffer"
   })
 }

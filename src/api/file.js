@@ -97,6 +97,7 @@ export const deleteStu = ({
   })
 }
 
+// 获取下载学生模板的文件流
 export const downloadStuModel = () => {
   return axios.request({
     url: '/documents/student_model',

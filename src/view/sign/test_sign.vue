@@ -1,12 +1,16 @@
 <template>
-  <div class="className-wrap1">
-    <div class="className-box1">{{className}}</div>
-  </div>
+
+  <!-- <div class="className-box1">{{className}}</div> -->
+  <q-RImg></q-RImg>
 
 </template>
 <script>
+import QRImg from '_c/main/components/QRImg'
 
 export default {
+  components: {
+    QRImg
+  },
   data () {
     return {
       className: 'p'

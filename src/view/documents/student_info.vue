@@ -6,11 +6,15 @@
       <Upload multiple
               name="myfiles"
               action="/documents/student_file"
-              :on-success="uploadStuSuccess">
+              :on-success="uploadStuSuccess"
+              accept=".xls, .xlsx">
         <Button type="success"
+                ref="btnUpload"
                 icon="md-cloud-upload"
                 custom-icon="btn-icon">上传学生信息</Button>
+        <!-- <span>仅支持上传后缀为.xlsx或者.xls的EXCEL文件。</span> -->
       </Upload>
+
       <tables ref="tables"
               border
               editable
@@ -111,6 +115,20 @@ export default {
       })
 
     },
+    // 上传之前，判断是否是xlsx或xls文件
+    // handleBeforeUpload (file) {
+    //   const fileExt = file.name.split('.').pop().toLocaleLowerCase()
+    //   if (fileExt === 'xlsx' || fileExt === 'xls') {
+    //     this.readFile(file)
+    //     this.file = file
+    //   } else {
+    //     this.$Notice.warning({
+    //       title: '文件类型错误',
+    //       desc: '文件：' + file.name + '不是EXCEL文件，请选择后缀为.xlsx或者.xls的EXCEL文件。'
+    //     })
+    //   }
+    //   return false
+    // },
     // 上传文件成功之后，返回的钩子函数，返回字段为：response后台的信息，file单个文件信息，fileList文件列表信息
     // 三者关系：response包含于file，file包含于fileList
     // 上传文件之后把后台返回新添加的学生信息，添加到表格tables

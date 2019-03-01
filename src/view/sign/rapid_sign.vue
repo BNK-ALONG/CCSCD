@@ -1,5 +1,5 @@
 <template>
-  <div class="btn-wrap">
+  <div class="sign-btn-wrap">
     <Tooltip theme="light"
              placement="right"
              max-width="250"
@@ -55,14 +55,14 @@ export default {
 }
 </script>
 <style>
-.btn-wrap {
+.sign-btn-wrap {
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.btn-wrap button:hover {
+.sign-btn-wrap button:hover {
   background-color: #f44336 !important;
   border-color: #f44336 !important;
 }

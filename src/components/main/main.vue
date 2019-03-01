@@ -40,11 +40,16 @@
                     @on-lang-change="setLocal"
                     style="margin-right: 10px;"
                     :lang="local" />
+
+          <!-- 错误日志收集 -->
           <error-store v-if="$config.plugin['error-store'] && $config.plugin['error-store'].showInHeader"
                        :has-read="hasReadErrorPage"
                        :count="errorCount"></error-store>
+
+          <!-- 全屏的按钮 -->
           <fullscreen v-model="isFullscreen"
                       style="margin-right: 10px;" />
+          <!-- <q-RImg></q-RImg> -->
         </header-bar>
       </Header>
       <Content class="main-content-con">
@@ -78,11 +83,14 @@ import ABackTop from './components/a-back-top'
 import Fullscreen from './components/fullscreen'
 import Language from './components/language'
 import ErrorStore from './components/error-store'
+// import QRImg from './components/QRImg'
 import { mapMutations, mapActions, mapGetters } from 'vuex'
 import { getNewTagList, getNextRoute, routeEqual } from '@/libs/util'
 import minLogo from '@/assets/images/logo-min.jpg'
 import maxLogo from '@/assets/images/logo.jpg'
+// import CommonIcon from '_c/common-icon'
 import './main.less'
+// import { getQRImg } from '@/api/sign'
 export default {
   name: 'Main',
   components: {
@@ -93,7 +101,9 @@ export default {
     Fullscreen,
     ErrorStore,
     User,
-    ABackTop
+    ABackTop,
+    // QRImg
+    // CommonIcon
   },
   data () {
     return {
@@ -178,7 +188,18 @@ export default {
     },
     handleClick (item) {
       this.turnToPage(item)
-    }
+    },
+    // openQRImg () {
+    //   getQRImg().then(res => {
+    //     console.log(res)
+    //   }).catch(error => {
+    //     this.$Modal.error({
+    //       title: '二维码获取失败，请联系管理员。',
+    //       content: error
+    //     })
+    //   })
+    // }
+
   },
   watch: {
     '$route' (newRoute) {
@@ -191,6 +212,7 @@ export default {
       this.setTagNavList(getNewTagList(this.tagNavList, newRoute))
       this.$refs.sideMenu.updateOpenName(newRoute.name)
     }
+
   },
   mounted () {
     /**
@@ -243,5 +265,11 @@ export default {
   font-size: 24px;
   width: 40px;
   text-align: center;
+}
+.btn-openQRImg {
+  margin-right: 12px;
+}
+.btn-openQRImg > .ivu-btn.ivu-btn-text {
+  padding: 5px 1px 6px;
 }
 </style>
