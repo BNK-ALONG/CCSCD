@@ -14,7 +14,7 @@ const btns = {
     }, [
       h('Button', {
         props: {
-          type: 'success'
+          type: 'error'
         }
       }, [
         h('Icon', {

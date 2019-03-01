@@ -289,7 +289,7 @@ export default {
     },
     downloadExcel () {
       downloadStuModel().then(res => {
-        downloadBlob(res, 'students.xlsx')
+        downloadBlob(res, '学生信息模板.xlsx')
       })
     }
   },

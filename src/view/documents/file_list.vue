@@ -20,75 +20,82 @@
         </span>
       </div>
     </Upload>
-    <div style="margin-top:50px;">
-      <!-- 四个按钮的容器(表格上边) -->
-      <div class="btn-container"
-           style="padding: 10px 0;">
-        <!-- 四个按钮的总长度要与表格对齐 -->
-        <div class="btn-wrap">
-          <!-- 全选、取消全选按钮 -->
-          <div class="two-btn-wrap select-btn">
-            <Button type="primary"
-                    :size="btnSize"
-                    icon="ios-checkmark-circle"
-                    @click="handleSelectAll(true)"
-                    class-name="selectAll">全 选</Button>
-            <Button icon="md-close"
-                    :size="btnSize"
-                    @click="handleSelectAll(false)">取消全选</Button>
-          </div>
-          <!-- 下载删除按钮 -->
-          <div class="two-btn-wrap download-delete-btn">
-            <Button icon="md-trash"
-                    :size="btnSize"
-                    @click="handleDownloadDelete('删除')">删除</Button>
-            <Button icon="ios-download-outline"
-                    type="primary"
-                    :size="btnSize"
-                    @click="handleDownloadDelete('下载')">下载</Button>
+    <!-- 把表格放在card卡片中，使界面更加精美 -->
+    <Card class="table-card"
+          title="云文件列表"
+          icon="ios-cloud">
+      <div>
+        <!-- 四个按钮的容器(表格上边) -->
+        <div class="btn-container"
+             style="padding: 10px 0;">
+          <!-- 四个按钮的总长度要与表格对齐 -->
+          <div class="btn-wrap">
+            <!-- 全选、取消全选按钮 -->
+            <div class="two-btn-wrap select-btn">
+              <Button type="primary"
+                      :size="btnSize"
+                      icon="ios-checkmark-circle"
+                      @click="handleSelectAll(true)"
+                      class-name="selectAll">全 选</Button>
+              <Button icon="md-close"
+                      :size="btnSize"
+                      @click="handleSelectAll(false)">取消全选</Button>
+            </div>
+            <!-- 下载删除按钮 -->
+            <div class="two-btn-wrap download-delete-btn">
+              <Button icon="md-trash"
+                      :size="btnSize"
+                      @click="handleDownloadDelete('删除')">删除</Button>
+              <Button icon="ios-download-outline"
+                      type="primary"
+                      :size="btnSize"
+                      @click="handleDownloadDelete('下载')">下载</Button>
+            </div>
           </div>
         </div>
+        <!-- table表格的容器（为了使表格居中） -->
+        <div class="table-btn-container">
+          <Table ref="fileList"
+                 stripe
+                 width='auto'
+                 :columns="columns"
+                 :data="fileData">
+            <template slot-scope="{row,index}"
+                      slot="import">
+              <!-- i-switch开关如果双向绑定的是原数据 开关的动画会卡顿 -->
+              <i-switch v-model="row.NowStatus"
+                        :true-value="trueVal"
+                        :false-value="falseVal"
+                        :disabled="row.extension!=='pdf'"
+                        @on-change="statusChange(index,row.NowStatus,'导入')">
+                <!-- 填坑：想让disabled的值等于表达式的值，则需要绑定disabled的形式:disabled，对vue的双向绑定又多了一份理解。 -->
+                <Icon type="md-checkmark"
+                      slot="open"></Icon>
+                <Icon type="md-close"
+                      slot="close"></Icon>
+              </i-switch>
+            </template>
+            <template slot-scope="{row,index}"
+                      slot="share">
+              <!-- 这里的slot-scope="{row}"只有获取行的数据，不具有修改本行的数据源的能力 -->
+              <i-switch v-model="row.ShareStatus"
+                        :true-value="trueVal"
+                        :false-value="falseVal"
+                        @on-change="statusChange(index,row.ShareStatus,'分享')">
+                <Icon type="md-checkmark"
+                      slot="open"></Icon>
+                <Icon type="md-close"
+                      slot="close"></Icon>
+              </i-switch>
+            </template>
+          </Table>
+        </div>
+        <!-- 四个按钮的容器（表格下边） -->
       </div>
-      <!-- table表格的容器（为了使表格居中） -->
-      <div class="table-btn-container">
-        <Table ref="fileList"
-               stripe
-               width='auto'
-               :columns="columns"
-               :data="fileData">
-          <template slot-scope="{row,index}"
-                    slot="import">
-            <!-- i-switch开关如果双向绑定的是原数据 开关的动画会卡顿 -->
-            <i-switch v-model="row.NowStatus"
-                      :true-value="trueVal"
-                      :false-value="falseVal"
-                      :disabled="row.extension!=='pdf'"
-                      @on-change="statusChange(index,row.NowStatus,'导入')">
-              <!-- 填坑：想让disabled的值等于表达式的值，则需要绑定disabled的形式:disabled，对vue的双向绑定又多了一份理解。 -->
-              <Icon type="md-checkmark"
-                    slot="open"></Icon>
-              <Icon type="md-close"
-                    slot="close"></Icon>
-            </i-switch>
-          </template>
-          <template slot-scope="{row,index}"
-                    slot="share">
-            <!-- 这里的slot-scope="{row}"只有获取行的数据，不具有修改本行的数据源的能力 -->
-            <i-switch v-model="row.ShareStatus"
-                      :true-value="trueVal"
-                      :false-value="falseVal"
-                      @on-change="statusChange(index,row.ShareStatus,'分享')">
-              <Icon type="md-checkmark"
-                    slot="open"></Icon>
-              <Icon type="md-close"
-                    slot="close"></Icon>
-            </i-switch>
-          </template>
-        </Table>
-      </div>
-      <!-- 四个按钮的容器（表格下边） -->
-    </div>
+
+    </Card>
   </div>
+  <!-- 开发测试按钮 -->
   <!-- <Button type="error"
               @click="handleSelect">打印已选择的项</Button> -->
   <!-- <Button type="error"
@@ -125,8 +132,8 @@ export default {
           key: 'file_name',
           sortable: true,
           align: 'center',
-          minWidth: 400,
-          maxWidth: 500,
+          width: 460,
+          // maxWidth: 500,
           // ellipsis超出部分显示为省略号
           ellipsis: true,
           // tooltip超出一定字数的单元格用气泡提示出来
@@ -138,8 +145,7 @@ export default {
           title: '格式',
           key: 'extension',
           align: 'center',
-          minWidth: 90,
-          maxWidth: 100,
+          width: 100,
           className: 'tableFontSize',
           filters: [
             {
@@ -176,7 +182,7 @@ export default {
           key: 'NowStatus',
           slot: 'import',
           align: 'center',
-          maxWidth: 80,
+          width: 80,
           className: 'tableFontSize',
         },
         {
@@ -397,6 +403,11 @@ export default {
 }
 </script>
 <style>
+.table-card {
+  margin: 30px 10% 100px 10%;
+  width: 80%;
+  padding-bottom: 30px;
+}
 .tableFontSize {
   font-size: 16px;
 }
