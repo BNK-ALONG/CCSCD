@@ -37,7 +37,11 @@ export default {
           this.$router.push({
             name: 'record_sign'
           })
-          this.$Message.success(res.message)
+          this.$Notice.success({
+            title: '签到成功！',
+            desc: res.message,
+            duration: 6
+          })
         } else {
           this.$Modal.error({
             title: '错误警告',

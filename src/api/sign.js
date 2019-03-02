@@ -27,11 +27,30 @@ export const rapidSign = () => {
   })
 }
 
+// 课堂登陆
+export const courseLogin = ({
+  course_id
+}) => {
+  return axios.request({
+    url: '/sign/course_login',
+    method: 'post',
+    responseType: 'json',
+    data: {
+      course_id
+    }
+  })
+}
+
 // 获取二维码图片的路径
 export const getQRImg = () => {
   return axios.request({
     url: '/sign/show_qrcode',
     method: 'post',
-    responseType: "arraybuffer"
+    // responseType: "arraybuffer",
+    // headers: {
+    //   // "Content-Type": "image/png",
+    //   "Accept": "image/png"
+    // }
+
   })
 }

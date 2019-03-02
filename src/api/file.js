@@ -47,6 +47,7 @@ export const downloadBlob = (data, file) => {
   link.href = url
   link.setAttribute('download', file)
   document.body.appendChild(link)
+  console.log(url)
   link.click()
 }
 

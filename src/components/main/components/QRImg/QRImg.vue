@@ -1,16 +1,25 @@
 <template>
   <div class="btn-openQRImg">
-    <Button type="text"
-            @click="openQRImg">
-      <CommonIcon :size="iconSize"
-                  type="_barcode-qr" />
-    </Button>
+    <Tooltip content="二维码绑定课堂"
+             style="width:auto;">
+      <Button type="text"
+              @click="openQRImg">
+        <CommonIcon :size="iconSize"
+                    type="_barcode-qr" />
+      </Button>
+    </Tooltip>
+    <Modal title="扫描二维码绑定此课堂"
+           v-model="visible"
+           footer-hide>
+      <img :src="imgUrl"
+           v-if="visible"
+           style="width: 100%">
+    </Modal>
   </div>
 
 </template>
 <script>
 import CommonIcon from '_c/common-icon'
-import { getQRImg } from '@/api/sign'
 
 export default {
   name: 'QRImg',
@@ -19,24 +28,18 @@ export default {
   },
   data () {
     return {
-      iconSize: 30
+      iconSize: 25,
+      visible: false,
+    }
+  },
+  computed: {
+    imgUrl () {
+      return this.$store.state.app.QRbs64
     }
   },
   methods: {
     openQRImg () {
-      getQRImg().then(res => {
-        console.log(res)
-        return 'data:image/png;base64,' + btoa(
-          new Uint8Array(res.file_get).reduce((data, byte) => data + String.fromCharCode(byte), '')
-        )
-      }).then(data => {
-        obj.imgCodeUrl = data
-      }).catch(error => {
-        this.$Modal.error({
-          title: '二维码获取失败，请联系管理员。',
-          content: error
-        })
-      })
+      this.visible = true;
     }
   },
 }

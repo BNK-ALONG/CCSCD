@@ -1,5 +1,11 @@
-// import { login, logout, getUserInfo } from '@/api/user'
-// import { setToken, getToken } from '@/libs/util'
+import {
+  login,
+  logout
+} from '@/api/user'
+import {
+  setToken,
+  getToken
+} from '@/libs/util'
 
 import {
   getClassInfo,
@@ -16,8 +22,7 @@ export default {
     avatorImgPath: '',
     access: '',
     hasGetInfo: false,
-    className: '这里是课堂名'
-
+    token: getToken()
   },
   mutations: {
     setAvator(state, avatorPath) {
@@ -42,39 +47,12 @@ export default {
     setHasGetInfo(state, status) {
       state.hasGetInfo = status
     },
-    //课堂名
-    setClassName(state, className) {
-      state.className = className
-    },
 
 
   },
   actions: {
 
-    //获取课堂登入接口的课堂名，赋给state的className，最后返回后台传过来的message信息
-    getClassName({
-      commit
-    }, {
-      course_id
-    }) {
-      return new Promise((resolve, reject) => {
-        courseLogin({
-          course_id
-        }).then(res => {
-          const message = res.message
-          const status = res.status
-          const className = res.course_name.substring(0, 1).toUpperCase() + res.course_name.substring(1)
-          if (status === 200) {
-            commit('setClassName', className)
-            resolve(message)
-          } else {
-            reject(message)
-          }
-        }).catch(error => {
-          reject(error)
-        })
-      })
-    },
+
     // 登录
     handleLogin({
       commit
@@ -88,9 +66,12 @@ export default {
           userName,
           password
         }).then(res => {
-          const data = res.data
-          commit('setToken', data.token)
-          resolve()
+          if (res.status === 200) {
+            commit('setToken', userName)
+            resolve(res.message)
+          } else {
+            reject(res.message)
+          }
         }).catch(err => {
           reject(err)
         })
@@ -102,17 +83,17 @@ export default {
       commit
     }) {
       return new Promise((resolve, reject) => {
-        logout(state.token).then(() => {
-          commit('setToken', '')
-          commit('setAccess', [])
-          resolve()
-        }).catch(err => {
-          reject(err)
-        })
+        // logout(state.token).then(() => {
+        //   commit('setToken', '')
+        //   commit('setAccess', [])
+        //   resolve()
+        // }).catch(err => {
+        //   reject(err)
+        // })
         // 如果你的退出登录无需请求接口，则可以直接使用下面三行代码而无需使用logout调用接口
-        // commit('setToken', '')
-        // commit('setAccess', [])
-        // resolve()
+        commit('setToken', '')
+        commit('setAccess', [])
+        resolve()
       })
     },
 

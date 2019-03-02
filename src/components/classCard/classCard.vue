@@ -95,7 +95,8 @@ export default {
 
   methods: {
     ...mapActions([
-      'getClassName'
+      'getClassName',
+      'getQRbs64'
     ]),
     del () {
       this.modal_loading = true;
@@ -112,6 +113,7 @@ export default {
     },
     sendClassId (classId) {
       this.getClassName({ course_id: classId }).then(message => {
+        this.getQRbs64()
         this.$router.push({
           name: 'home'
         })
@@ -126,6 +128,7 @@ export default {
           content: error
         })
       })
+
     }
   },
 }

@@ -172,7 +172,7 @@ import particles from 'particles.js'
 import particlesJSON from 'particles.js/demo/particles.json'
 // import registerFrom from '@/components/register'
 import {
-  login,
+  // login,
   register
 } from '@/api/user'
 
@@ -268,10 +268,10 @@ export default {
 
   methods: {
     //注册一个action
-    // ...mapActions([
-    //   'login',
-    //   'register'
-    // ]),
+    ...mapActions([
+      'handleLogin',
+      // 'register'
+    ]),
     initParticles () {
       window.particlesJS("particles", particlesJSON)
     },
@@ -304,31 +304,23 @@ export default {
         //   content: '用户信息验证中...',
         //   duration: 0
         // })
-        login({
+        this.handleLogin({
           userName: this.userid,
           password: this.password
-        }).then(res => {
-          const message = res.message
-          const status = res.status
-          if (status === 200) {
-            this.$router.push({
-              name: 'course_list',
-              //以参数的形式将用户名传到课堂页（course_list）
-              query: {
-                userName: this.userid
-              }
-            })
-            //登陆成功时候，把message打印出来
-            this.$Message.success(message)
-          } else {
-            this.$Modal.error({
-              title: '登录失败',
-              content: message
-            })
-          }
+        }).then(message => {
+
+          // this.$router.push({
+          //   name: 'course_list',
+          //   //以参数的形式将用户名传到课堂页（course_list）
+          //   query: {
+          //     userName: this.userid
+          //   }
+          // })
+          //登陆成功时候，把message打印出来
+          this.$Message.success(message)
         }).catch(error => {
           this.$Modal.error({
-            title: '错误！',
+            title: '登录失败',
             content: error
           })
         })

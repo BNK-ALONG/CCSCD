@@ -3,22 +3,24 @@ import store from '@/store'
 import qs from 'qs'
 
 // import { Spin } from 'iview'
-const addErrorLog = errorInfo => {
-  const {
-    statusText,
-    status,
-    request: {
-      responseURL
-    }
-  } = errorInfo
-  let info = {
-    type: 'ajax',
-    code: status,
-    mes: statusText,
-    url: responseURL
-  }
-  if (!responseURL.includes('save_error_logger')) store.dispatch('addErrorLog', info)
-}
+
+//收集错误信息，错误日志
+// const addErrorLog = errorInfo => {
+//   const {
+//     statusText,
+//     status,
+//     request: {
+//       responseURL
+//     }
+//   } = errorInfo
+//   let info = {
+//     type: 'ajax',
+//     code: status,
+//     mes: statusText,
+//     url: responseURL
+//   }
+//   if (!responseURL.includes('save_error_logger')) store.dispatch('addErrorLog', info)
+// }
 
 class HttpRequest {
   constructor(baseUrl = baseURL) {
@@ -71,7 +73,8 @@ class HttpRequest {
       return data
     }, error => {
       this.destroy(url)
-      addErrorLog(error.response)
+      // 把错误原因填写到错误日志里
+      // addErrorLog(error.response)
       return Promise.reject(error)
     })
   }

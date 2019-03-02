@@ -9,14 +9,26 @@ import {
   routeEqual,
   getRouteTitleHandled,
   localSave,
-  localRead
+  localRead,
+  setClassNameInSessionstorage,
+  getClassNameFromSessionstorage,
+  setQRbs64InSessionstorage,
+  getQRbs64FromSessionstorage
 } from '@/libs/util'
 import beforeClose from '@/router/before-close'
-import { saveErrorLogger } from '@/api/data'
+import {
+  saveErrorLogger
+} from '@/api/data'
+import {
+  courseLogin,
+  getQRImg
+} from '@/api/sign'
 import router from '@/router'
 import routers from '@/router/routers'
 import config from '@/config'
-const { homeName } = config
+const {
+  homeName
+} = config
 
 const closePage = (state, route) => {
   const nextRoute = getNextRoute(state.tagNavList, route)
@@ -33,17 +45,19 @@ export default {
     homeRoute: getHomeRoute(routers, homeName),
     local: localRead('local'),
     errorList: [],
-    hasReadErrorPage: false
+    hasReadErrorPage: false,
+    className: getClassNameFromSessionstorage(),
+    QRbs64: getQRbs64FromSessionstorage()
   },
   getters: {
     menuList: (state, getters, rootState) => getMenuByRouter(routers, rootState.user.access),
     errorCount: state => state.errorList.length
   },
   mutations: {
-    setBreadCrumb (state, route) {
+    setBreadCrumb(state, route) {
       state.breadCrumbList = getBreadCrumbList(route, state.homeRoute)
     },
-    setTagNavList (state, list) {
+    setTagNavList(state, list) {
       let tagList = []
       if (list) {
         tagList = [...list]
@@ -57,7 +71,7 @@ export default {
       state.tagNavList = tagList
       setTagNavListInLocalstorage([...tagList])
     },
-    closeTag (state, route) {
+    closeTag(state, route) {
       let tag = state.tagNavList.filter(item => routeEqual(item, route))
       route = tag[0] ? tag[0] : null
       if (!route) return
@@ -71,7 +85,10 @@ export default {
         closePage(state, route)
       }
     },
-    addTag (state, { route, type = 'unshift' }) {
+    addTag(state, {
+      route,
+      type = 'unshift'
+    }) {
       let router = getRouteTitleHandled(route)
       if (!routeHasExist(state.tagNavList, router)) {
         if (type === 'push') state.tagNavList.push(router)
@@ -82,21 +99,39 @@ export default {
         setTagNavListInLocalstorage([...state.tagNavList])
       }
     },
-    setLocal (state, lang) {
+    setLocal(state, lang) {
       localSave('local', lang)
       state.local = lang
     },
-    addError (state, error) {
+    addError(state, error) {
       state.errorList.push(error)
     },
-    setHasReadErrorLoggerStatus (state, status = true) {
+    setHasReadErrorLoggerStatus(state, status = true) {
       state.hasReadErrorPage = status
+    },
+    //课堂名
+    setClassName(state, className) {
+      state.className = className
+      setClassNameInSessionstorage(className)
+    },
+    setQRbs64(state, QRbs64) {
+      state.QRbs64 = QRbs64
+      setQRbs64InSessionstorage(QRbs64)
     }
   },
   actions: {
-    addErrorLog ({ commit, rootState }, info) {
+    addErrorLog({
+      commit,
+      rootState
+    }, info) {
       if (!window.location.href.includes('error_logger_page')) commit('setHasReadErrorLoggerStatus', false)
-      const { user: { token, userId, userName } } = rootState
+      const {
+        user: {
+          token,
+          userId,
+          userName
+        }
+      } = rootState
       let data = {
         ...info,
         time: Date.parse(new Date()),
@@ -106,6 +141,51 @@ export default {
       }
       saveErrorLogger(info).then(() => {
         commit('addError', data)
+      })
+    },
+    /**
+     *   @description 请求课堂登录接口获取课堂名
+     * @returns {Promise} 200存储课堂名并返回message，201返回message
+     */
+    getClassName({
+      commit
+    }, {
+      course_id
+    }) {
+      return new Promise((resolve, reject) => {
+        courseLogin({
+          course_id
+        }).then(res => {
+          const message = res.message
+          const status = res.status
+          const className = res.course_name.substring(0, 1).toUpperCase() + res.course_name.substring(1)
+          if (status === 200) {
+            commit('setClassName', className)
+            resolve(message)
+          } else {
+            reject(message)
+          }
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+    /**
+     *   @description 请求课堂登录接口获取二维码的路径
+     * @returns {Promise} 200存储二维码的路径并返回二维码的路径，201返回"获取二维码失败"
+     */
+    getQRbs64({
+      commit
+    }) {
+      getQRImg().then(res => {
+        if (res) {
+          const QRbs64 = 'data:image/png;base64,' + res
+          commit("setQRbs64", QRbs64)
+        } else {
+          commit("setQRbs64", '@/assets/images/error-qr.jpg')
+        }
+      }).catch(error => {
+        console.log("获取二维码失败：", error)
       })
     }
   }

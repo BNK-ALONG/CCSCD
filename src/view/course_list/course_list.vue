@@ -115,7 +115,6 @@ import ClassCard from '@/components/classCard'
 import { getClassInfo, classAdd } from '@/api/user'
 import { mapActions } from 'vuex'
 import { forClassTime } from '@/libs/util'
-// import { mapActions } from 'vuex'
 export default {
   name: "course_list",
   components: {

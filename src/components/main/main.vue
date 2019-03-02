@@ -16,8 +16,6 @@
                  :menu-list="menuList">
         <!-- 需要放在菜单上面的内容，如Logo，写在side-menu标签内部，如下 -->
         <div class="logo-con">
-          <!-- <img v-show="!collapsed" :src="maxLogo" key="max-logo" />
-          <img v-show="collapsed" :src="minLogo" key="min-logo" /> -->
           <div class="className-wrap"
                v-show="!collapsed">
             <div class="className-box className-box-max">{{className}}</div>
@@ -42,14 +40,14 @@
                     :lang="local" />
 
           <!-- 错误日志收集 -->
-          <error-store v-if="$config.plugin['error-store'] && $config.plugin['error-store'].showInHeader"
+          <!-- <error-store v-if="$config.plugin['error-store'] && $config.plugin['error-store'].showInHeader"
                        :has-read="hasReadErrorPage"
-                       :count="errorCount"></error-store>
-
+                       :count="errorCount"></error-store> -->
+          <q-RImg></q-RImg>
           <!-- 全屏的按钮 -->
           <fullscreen v-model="isFullscreen"
                       style="margin-right: 10px;" />
-          <!-- <q-RImg></q-RImg> -->
+
         </header-bar>
       </Header>
       <Content class="main-content-con">
@@ -82,15 +80,13 @@ import User from './components/user'
 import ABackTop from './components/a-back-top'
 import Fullscreen from './components/fullscreen'
 import Language from './components/language'
-import ErrorStore from './components/error-store'
-// import QRImg from './components/QRImg'
+import QRImg from './components/QRImg'
 import { mapMutations, mapActions, mapGetters } from 'vuex'
 import { getNewTagList, getNextRoute, routeEqual } from '@/libs/util'
 import minLogo from '@/assets/images/logo-min.jpg'
 import maxLogo from '@/assets/images/logo.jpg'
 // import CommonIcon from '_c/common-icon'
 import './main.less'
-// import { getQRImg } from '@/api/sign'
 export default {
   name: 'Main',
   components: {
@@ -99,11 +95,9 @@ export default {
     Language,
     TagsNav,
     Fullscreen,
-    ErrorStore,
     User,
     ABackTop,
-    // QRImg
-    // CommonIcon
+    QRImg
   },
   data () {
     return {
@@ -140,7 +134,7 @@ export default {
     },
     //获取课堂名
     className () {
-      return this.$store.state.user.className
+      return this.$store.state.app.className
     }
 
   },
