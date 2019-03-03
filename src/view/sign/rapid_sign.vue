@@ -4,7 +4,8 @@
              placement="right"
              max-width="250"
              :offset="tooltipOffset"
-             always>
+             always
+             style="z-index:0">
       <span slot="content"
             style="font-size:20px;margin-left:2em;">{{content}}</span>
       <Button type="primary"

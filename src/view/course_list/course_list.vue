@@ -168,12 +168,19 @@ export default {
   },
   mounted () {
     this.getClassInfo().then(courseList => {
+      this.cards = courseList
+    }).catch(error => {
+      this.$Modal.error({
+        title: '获取课堂列表信息错误！',
+        content: error
+      })
+    })
   },
 
   methods: {
-    //注册获取课堂列表的action
+    //引进action里的方法
     ...mapActions([
-      'getClassInfo'
+      'getClassInfo',
       'logout',
       'handleLogOut'
     ]),
