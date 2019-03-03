@@ -19,7 +19,8 @@ export default {
   state: {
     userName: '',
     userId: '',
-    avatorImgPath: '',
+    // 女生头像：https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=4084691320,1062400384&fm=26&gp=0.jpg
+    avatorImgPath: 'https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=3445867392,386919342&fm=26&gp=0.jpg',
     access: '',
     hasGetInfo: true,
     token: getToken()

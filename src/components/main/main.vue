@@ -38,7 +38,6 @@
                     @on-lang-change="setLocal"
                     style="margin-right: 10px;"
                     :lang="local" />
-
           <!-- 错误日志收集 -->
           <!-- <error-store v-if="$config.plugin['error-store'] && $config.plugin['error-store'].showInHeader"
                        :has-read="hasReadErrorPage"
@@ -183,16 +182,6 @@ export default {
     handleClick (item) {
       this.turnToPage(item)
     },
-    // openQRImg () {
-    //   getQRImg().then(res => {
-    //     console.log(res)
-    //   }).catch(error => {
-    //     this.$Modal.error({
-    //       title: '二维码获取失败，请联系管理员。',
-    //       content: error
-    //     })
-    //   })
-    // }
 
   },
   watch: {

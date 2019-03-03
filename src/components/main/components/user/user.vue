@@ -5,12 +5,16 @@
       <Icon :size="18"
             type="md-arrow-dropdown"></Icon>
       <DropdownMenu slot="list">
-        <DropdownItem name="logout">退出登录</DropdownItem>
+        <DropdownItem disabled>你好，{{userName}}</DropdownItem>
+        <DropdownItem>个人资料</DropdownItem>
+        <DropdownItem>消息</DropdownItem>
+        <DropdownItem>反馈邮箱</DropdownItem>
+        <DropdownItem divided
+                      name='logout'>退出登录</DropdownItem>
       </DropdownMenu>
     </Dropdown>
   </div>
 </template>
-
 <script>
 import './user.less'
 import { mapActions } from 'vuex'
@@ -20,6 +24,11 @@ export default {
     userAvator: {
       type: String,
       default: ''
+    }
+  },
+  computed: {
+    userName () {
+      return this.$store.state.user.token
     }
   },
   methods: {

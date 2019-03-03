@@ -222,15 +222,12 @@ export default {
             const message = res.message
             const status = res.status
             if (status === 200) {
-              this.cards.push({ className: this.formAddClass.className.trim(), classIntro: this.formAddClass.classIntro, classYear: this.ClassAddYear, classMonth: this.ClassAddMonth })
-              // this.getClassInfo().then(courseList => {
-              //   this.cards = courseList
-              // }).catch(error => {
-              //   this.$Modal.error({
-              //     title: '获取课堂列表信息错误！',
-              //     content: error
-              //   })
-              // })
+              this.cards.push({
+                className: this.formAddClass.className.trim(),
+                classIntro: this.formAddClass.classIntro,
+                classYear: this.ClassAddYear,
+                classMonth: this.ClassAddMonth
+              })
               this.$Message.success(message)
             } else {
               this.$Modal.error({
