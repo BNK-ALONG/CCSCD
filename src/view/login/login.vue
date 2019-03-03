@@ -309,13 +309,13 @@ export default {
           password: this.password
         }).then(message => {
 
-          // this.$router.push({
-          //   name: 'course_list',
-          //   //以参数的形式将用户名传到课堂页（course_list）
-          //   query: {
-          //     userName: this.userid
-          //   }
-          // })
+          this.$router.push({
+            name: 'course_list',
+            //以参数的形式将用户名传到课堂页（course_list）
+            query: {
+              userName: this.userid
+            }
+          })
           //登陆成功时候，把message打印出来
           this.$Message.success(message)
         }).catch(error => {
@@ -388,7 +388,7 @@ export default {
 </script>
 <style>
 /* @import "./../../static/css/main.css"; */
-@import "./main.css";
+@import "./login.css";
 #particles {
   background-image: url("./../../assets/bg.jpg");
 }

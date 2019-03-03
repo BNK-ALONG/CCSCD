@@ -27,6 +27,14 @@ export const login = ({
   })
 }
 
+// 登出
+export const logout = () => {
+  return axios.request({
+    url: '/users/logout',
+    method: 'post'
+  })
+}
+
 // 自动检验token方法
 // export const authorization = () => {
 //   return axios.request({

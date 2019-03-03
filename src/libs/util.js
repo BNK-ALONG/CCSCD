@@ -134,14 +134,14 @@ export const getTagNavListFromLocalstorage = () => {
  * @description 临时存储课堂名
  */
 export const setClassNameInSessionstorage = className => {
-  sessionStorage.setItem('className', className);
+  localStorage.setItem('className', className);
 }
 
 /**
  * @returns {String} 从SessionStorage中获取课堂名
  */
 export const getClassNameFromSessionstorage = () => {
-  const className = sessionStorage.getItem('className')
+  const className = localStorage.getItem('className')
   return className ? className : '课堂名获取失败'
 }
 
@@ -149,14 +149,14 @@ export const getClassNameFromSessionstorage = () => {
  * @description 临时存储二维码的base64编码
  */
 export const setQRbs64InSessionstorage = QRbs64 => {
-  sessionStorage.QRbs64 = QRbs64
+  localStorage.QRbs64 = QRbs64
 }
 
 /**
  * @returns {String} 从SessionStorage中获取二维码的base64编码
  */
 export const getQRbs64FromSessionstorage = () => {
-  const QRbs64 = sessionStorage.QRbs64
+  const QRbs64 = localStorage.QRbs64
   return QRbs64
 }
 

@@ -5,7 +5,7 @@
       <Header>
         <Dropdown style="margin-left:1260px;"
                   placement='bottom-start'
-                  @on-click="handleLogout">
+                  @on-click="logout">
           <Button type="primary">
             {{userName}}
             <Icon type="ios-arrow-down"></Icon>
@@ -14,7 +14,7 @@
             <DropdownItem>个人资料</DropdownItem>
             <DropdownItem disabled>消息</DropdownItem>
             <DropdownItem divided
-                          name='exit'>退出登录</DropdownItem>
+                          name='logout'>退出登录</DropdownItem>
           </DropdownMenu>
         </Dropdown>
         <span style="margin-left: 30px;"></span>
@@ -32,10 +32,10 @@
     </Content>
     <!-- 课堂列表 -->
     <div class='class_card'>
-      <class-card v-for="(card,index) in cards"
+      <class-card v-for="(classCard,index) in classCards"
                   :key="index"
                   :index="index"
-                  :cards="cards"
+                  :cards="classCards"
                   @deleteCard="deleteCard"></class-card>
     </div>
     <div class="btn_add">
@@ -127,9 +127,6 @@ export default {
       //添加按钮的气泡提示
       title: '添加课程',
       content: '点击此按钮填写添加课程的信息',
-      //添加卡片
-      // cards: [{}],
-      userName: '超管',
 
       //是否弹出课程添加的填写信息对话框
       modal1: false,
@@ -161,51 +158,44 @@ export default {
       ClassAddMonth: ''
     }
   },
-  created: function () {
-    this.getUserName();
-
+  computed: {
+    userName () {
+      return this.$store.state.user.token
+    },
+    classCards () {
+      return this.cards
+    }
   },
-  watch: {
-    // 监测路由变化,只要变化了就调用获取路由参数方法将数据存储本组件即可
-    '$route': 'getUserName'
+  mounted () {
+    this.getClassInfo().then(courseList => {
   },
 
   methods: {
     //注册获取课堂列表的action
     ...mapActions([
       'getClassInfo'
+      'logout',
+      'handleLogOut'
     ]),
-    //引入logout方法
-    // ...mapActions([
-    //   'logout'
-    // ]),
-    //获取用户名的值
 
-    getUserName: function () {
-      // 取到路由带过来的参数
-      var loginUserName = this.$route.query.userName
-      this.getClassInfo().then(courseList => {
-        this.cards = courseList
-      }).catch(error => {
-        this.$Modal.error({
-          title: '获取课堂列表信息错误！',
-          content: error
-        })
-      })
-      // 将数据放在当前组件的数据内
-      this.userName = loginUserName
-    },
+
     //退出登录
-    handleLogout (name) {
-      if (name === 'exit') {
+    logout (name) {
+      // 获取下拉列表中name为logout的选项的事件
+      if (name === 'logout') {
         this.$Modal.confirm({
           title: '确定退出微云课堂吗',
           onOk: () => {
             //清除本地缓存的Token
-            // this.logout()
-            this.$router.push({
-              name: 'login'
+            this.handleLogOut().then(res => {
+              this.$router.push({
+                name: 'login'
+              })
+              this.$Message.success(res)
+            }).catch(error => {
+              this.$Message.error(error)
             })
+
           }
         })
       }
@@ -218,22 +208,22 @@ export default {
         if (valid) {
           this.modal1 = false
           classAdd({
-            get_course_name: this.formAddClass.className,
+            get_course_name: this.formAddClass.className.trim(),
             start_time: this.classAddTime,
             brief: this.formAddClass.classIntro
           }).then(res => {
             const message = res.message
             const status = res.status
             if (status === 200) {
-              // this.cards.push({ className: this.formAddClass.className, classIntro: this.formAddClass.classIntro, classYear: this.ClassAddYear, classMonth: this.ClassAddMonth })
-              this.getClassInfo().then(courseList => {
-                this.cards = courseList
-              }).catch(error => {
-                this.$Modal.error({
-                  title: '获取课堂列表信息错误！',
-                  content: error
-                })
-              })
+              this.cards.push({ className: this.formAddClass.className.trim(), classIntro: this.formAddClass.classIntro, classYear: this.ClassAddYear, classMonth: this.ClassAddMonth })
+              // this.getClassInfo().then(courseList => {
+              //   this.cards = courseList
+              // }).catch(error => {
+              //   this.$Modal.error({
+              //     title: '获取课堂列表信息错误！',
+              //     content: error
+              //   })
+              // })
               this.$Message.success(message)
             } else {
               this.$Modal.error({
@@ -279,88 +269,11 @@ export default {
         }
       })
     },
-  },
-  //监听路有的变化
-  /*   // watch: {
-    //   $route: {
-    //     handler: function (route) {
-    //       if (route.name === 'index') {
-    //         getClassInfo().then(res => {
-    //           let courseList = res.get_courses
-    //           for (var index in courseList) {
-    //             console.log("course_id:", courseList[index].course_id)
-    //             console.log("course_name:", courseList[index].course_name)
-    //             console.log("start_time:", courseList[index].start_time)
-    //           }
-  
-    //         }).catch(error => {
-    //           console.log("错误：", error)
-    //         })
-    //       }
-    //     },
-    //     // 深度观察监听
-    //     deep: true
-    //   }
-    // } */
+  }
 }
 </script>
 
 <style scoped>
-.my-add-size {
-  font-size: 30px;
-}
-.btn_add {
-  position: fixed;
-  bottom: 10%;
-  right: 5%;
-  font-size: 20px !important;
-}
-.btn_add button {
-  box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2),
-    0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12);
-}
-.btn_add button:hover {
-  background-color: #f44336 !important;
-  border-color: #f44336 !important;
-}
-.poptip_content {
-  font-size: 20px !important;
-}
-.layout {
-  box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2),
-    0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
-}
-.content {
-  height: auto;
-  width: 100%;
-  font-size: 40px;
-  text-align: center;
-  margin-top: 10px;
-}
-.class_card {
-  width: 100%;
-  height: 900px;
-  position: absolute;
-  margin: 30px 150px 0px 110px;
-  float: left;
-  overflow: scroll;
-}
-.registerHeader {
-  display: flex;
-  justify-content: center;
-  /* -ms-align-items: center;
-  align-items: center; */
-  box-sizing: border-box;
-  font-size: 24px;
-}
-.icon_register_info {
-  font-size: 20px;
-}
-.icon_register_title {
-  color: #2d8cf0;
-}
-.icon_classAdd_info {
-  font-size: 20px;
-}
+@import "./course_list.css";
 </style>
 

@@ -115,7 +115,7 @@ export default {
       this.getClassName({ course_id: classId }).then(message => {
         this.getQRbs64()
         this.$router.push({
-          name: 'home'
+          name: '_home'
         })
         //课堂登入成功时候，把message打印出来
         this.$Notice.success({
