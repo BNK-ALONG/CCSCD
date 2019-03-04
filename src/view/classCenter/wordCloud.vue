@@ -98,12 +98,9 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
 #wordcloud {
   width: 100%;
   height: 100%;
-}
-.content-wrapper {
-  padding: 0px !important;
 }
 </style>
