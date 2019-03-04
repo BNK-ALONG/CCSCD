@@ -2,7 +2,8 @@
   <div style="height:100%;width:100%;">
     <!-- name 和action是必需的，否则无法上传 -->
 
-    <Upload multiple
+    <Upload ref="upload"
+            multiple
             type="drag"
             action="/documents/upload_file"
             name="myfiles"

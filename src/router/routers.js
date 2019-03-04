@@ -65,21 +65,21 @@ export default [{
     }
   },
   {
-    path: '/multilevel',
-    name: 'multilevel',
+    path: '/classCenter',
+    name: 'classCenter',
     meta: {
       icon: 'md-menu',
-      title: '多级菜单'
+      title: '课堂中心'
     },
     component: Main,
     children: [{
-        path: 'level_2_1',
-        name: 'level_2_1',
+        path: 'wordCloud',
+        name: 'wordCloud',
         meta: {
           icon: 'md-funnel',
-          title: '二级-1'
+          title: '词云'
         },
-        component: () => import('@/view/multilevel/level-2-1.vue')
+        component: () => import('@/view/classCenter/wordCloud.vue')
       },
       {
         path: 'level_2_2',

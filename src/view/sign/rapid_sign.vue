@@ -32,8 +32,6 @@ export default {
   methods: {
     handleRapidSign () {
       rapidSign().then(res => {
-        console.log(res.message)
-        console.log(res.status)
         if (res.status === 200) {
           this.$router.push({
             name: 'record_sign'
