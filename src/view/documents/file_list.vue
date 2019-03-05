@@ -224,9 +224,6 @@ export default {
     })
   },
   methods: {
-    remove (index) {
-      this.data6.splice(index, 1);
-    },
     handleSelectAll (status) {
       this.$refs.fileList.selectAll(status);
     },
