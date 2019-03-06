@@ -3,7 +3,7 @@
     <div>
       <div class="message-page-con message-category-con">
         <Menu width="auto"
-              active-name="newNotice"
+              active-name="draftNotice"
               @on-select="handleSelect">
           <MenuItem name="draftNotice">
           <span class="category-title">发布公告</span>
@@ -20,55 +20,100 @@
       </div>
       <!-- 题目栏 -->
       <div class="message-page-con message-list-con">
+
         <Menu width="auto"
-              active-name=""
+              active-name="直接发布"
               :class="titleClass"
               @on-select="handleView">
-          <MenuItem>
-          <Icon type="md-add" />
-          </MenuItem>
-          <MenuItem v-for="item in noticeList"
-                    :name="item.notice_uid"
-                    :key="`notice_${item.notice_uid}`">
-          <div>
-            <p class="msg-title">{{ item.title }}</p>
-            <Badge :status="currentNoticeType==='draftNotice'? 'error':'default'"
-                   :text="item.time" />
-            <Button :style="{ display: item.delLoading ? 'inline-block !important' : '' ,padding: '5px'}"
-                    :loading="item.delLoading"
-                    size="large"
-                    custom-icon="iconfont icon-shanchu btn-icon-red"
-                    title='删除'
-                    type="text"
-                    @click.native.stop="delNotice(item)"></Button>
-            <Button :style="{ display: item.sendLoading ? 'inline-block !important' : '',padding: '5px' }"
-                    :loading="item.sendLoading"
-                    size="large"
-                    custom-icon="iconfont icon-fabu btn-icon-blue"
-                    title='发布'
-                    type="text"
-                    v-show="currentNoticeType==='draftNotice'"
-                    @click.native.stop="handleDraftNotice(item)"></Button>
-          </div>
-          </MenuItem>
+          <Tooltip content="点击写公告"
+                   style="width:100%;">
+            <MenuItem name="直接发布"
+                      v-show="currentNoticeType==='draftNotice'"
+                      style="text-align: center;">
+            <Icon type="md-add"
+                  :size='24' />
+            </MenuItem>
+          </Tooltip>
+          <MenuGroup :title="currentNoticeType==='draftNotice'?'草稿箱':'历史公告'">
+
+            <MenuItem v-for="item in noticeList"
+                      :name="item.notice_uid"
+                      :key="`notice_${item.notice_uid}`">
+            <div>
+              <p class="msg-title">{{ item.title }}</p>
+              <Badge :status="currentNoticeType==='draftNotice'? 'error':'default'"
+                     :text="currentNoticeType==='draftNotice'? '保存于：'+item.time:'发布于：'+item.time" />
+              <div style="float:right;">
+                <tooltip content="删除">
+                  <Button :style="{ display: item.delLoading ? 'inline-block !important' : '' ,padding: '5px'}"
+                          :loading="item.delLoading"
+                          size="large"
+                          custom-icon="iconfont icon-shanchu btn-icon-gray"
+                          type="text"
+                          @click.native.stop="delNotice(item)">
+                  </Button>
+                </tooltip>
+                <tooltip content="发布">
+                  <Button :style="{ display: item.sendLoading ? 'inline-block !important' : '',padding: '5px' }"
+                          :loading="item.sendLoading"
+                          size="large"
+                          custom-icon="iconfont icon-fabu btn-icon-blue"
+                          type="text"
+                          v-show="currentNoticeType==='draftNotice'"
+                          @click.native.stop="handleDraftNotice(item)">
+                  </Button>
+                </tooltip>
+              </div>
+            </div>
+            </MenuItem>
+          </MenuGroup>
+
         </Menu>
       </div>
 
-      <div class="message-page-con message-view-con">
+      <div class="message-page-con message-view-con"
+           v-if="!newNotice">
         <Spin fix
               v-if="contentLoading"
               size="large"></Spin>
         <div class="message-view-header">
-          <h2 class="message-view-title">{{ noticeContent.title }}</h2>
-          <time class="message-view-time">{{ noticeContent.time }}</time>
+          <h2 class="message-view-title">{{ oneContent.title }}</h2>
+          <time class="message-view-time">{{ oneContent.time }}</time>
         </div>
-        <div>{{noticeContent.content}}</div>
+        <div>{{oneContent.content}}</div>
       </div>
+      <div class="message-page-con message-view-con edit-notice"
+           v-if="newNotice">
+        <Tooltip>
+          <input v-model="titleVal"
+                 placeholder="这里是公告标题"
+                 class="edit-input" />
+          <div slot="content">字数：{{ titleVal.length }}/40</div>
+        </Tooltip>
+        <Tooltip>
+          <Input v-model="contentVal"
+                 type="textarea"
+                 placeholder="这里是公告内容"
+                 element-id="content-textarea" />
+          <div slot="content">字数：{{ contentVal.length }}/200</div>
+        </Tooltip>
+        <div class="btn-submit">
+          <Button type="success"
+                  @click="handleSaveToDraft"
+                  style=" width: 30%;font-size:18px;letter-spacing:4px;">保存到草稿箱</Button>
+          <Button type="primary"
+                  @click="handleSendToPast"
+                  style=" width: 30%;font-size:18px;letter-spacing:4px;">直接发布</Button>
+        </div>
+
+      </div>
+
     </div>
   </Card>
 </template>
 
 <script>
+import TestSign from '../sign/test_sign.vue'
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 import { sendNewNotice, delNoticeById, saveDraftNotice, sendDraftNotice } from '@/api/classCenter'
 const listDic = {
@@ -77,11 +122,15 @@ const listDic = {
 }
 export default {
   name: 'notice',
+  components: { TestSign },
   data () {
     return {
       contentLoading: false,
+      newNotice: false,
       currentNoticeType: 'draftNotice',
-      noticeContent: {}
+      noticeContent: {},
+      titleVal: '',
+      contentVal: ''
     }
   },
   computed: {
@@ -98,6 +147,9 @@ export default {
         }
       }
     }),
+    oneContent () {
+      return this.noticeContent
+    },
     // 分别获取各类公告的数量
     ...mapGetters([
       'draftNoticeCount',
@@ -120,11 +172,17 @@ export default {
       console.log(name)
       console.log(this.noticeList)
     },
-    // 选择哪一题目展示其内容
-    handleView (notice_uid) {
-      this.contentLoading = true
-      const item = this.noticeList.find(item => item.notice_uid === notice_uid)
-      this.noticeContent = item
+    // 选择哪一题目展示其内容，selection的值有两种类型，一种是notice_uid和‘直接发布’
+    handleView (selection) {
+      if (selection === '直接发布') {
+        this.newNotice = true
+      } else {
+        this.contentLoading = true
+        const item = this.noticeList.find(item => item.notice_uid === selection)
+        this.noticeContent = item
+        this.newNotice = false
+      }
+
       this.stopLoading('contentLoading')
     },
     // 通过公告的id删除公告
@@ -143,6 +201,7 @@ export default {
             delNoticeById({ notice_uid }).then(res => {
               if (res.status === 200) {
                 this.noticeList.splice(index, 1)
+                this.noticeContent = {}
                 this.$Message.success(res.message)
               } else {
                 this.$Message.error(res.message)
@@ -163,19 +222,20 @@ export default {
       })
 
     },
+    // 发布草稿箱的公告
     handleDraftNotice (item) {
       item.sendLoading = true
       const notice_uid = item.notice_uid
       const index = this.noticeList.findIndex(item => item.notice_uid === notice_uid)
       setTimeout(() => {
-        sendNewNotice({ notice_uid }).then(res => {
+        sendDraftNotice({ notice_uid }).then(res => {
           if (res.status === 200) {
             item.time = res.add_time
             item.sendLoading = false
             console.log(item)
-            this.pastNoticeList.push(item)
-            console.log(this.pastNoticeList)
+            this.pastNoticeList.unshift(item)
             this.noticeList.splice(index, 1)
+            this.noticeContent = {}
             this.$Message.success({
               content: '发布成功！可在历史公告栏查看。',
               duration: 3
@@ -196,6 +256,70 @@ export default {
         })
       }, 1500)
     },
+    // 保存到草稿箱
+    handleSaveToDraft () {
+      let title = this.titleVal
+      let content = this.contentVal
+      saveDraftNotice({
+        title: title,
+        content: content
+      }).then(res => {
+        if (res.status === 200) {
+          this.draftNoticeList.unshift({
+            title: title,
+            content: content,
+            time: res.add_time,
+            notice_uid: res.notice_uid
+          })
+          this.$Message.success({
+            content: res.message,
+            duration: 3
+          })
+        } else {
+          this.$Message.error({
+            content: res.message,
+            duration: 3
+          })
+        }
+      }).catch(err => {
+        this.$Modal.error({
+          title: '保存失败，请联系管理员。',
+          content: err
+        })
+      })
+    },
+    // 直接发布
+    handleSendToPast () {
+      let title = this.titleVal
+      let content = this.contentVal
+      sendNewNotice({
+        title: title,
+        content: content
+      }).then(res => {
+        if (res.status === 200) {
+          this.pastNoticeList.unshift({
+            title: title,
+            content: content,
+            time: res.add_time,
+            notice_uid: res.notice_uid
+          })
+          this.$Message.success({
+            content: res.message,
+            duration: 3
+          })
+        } else {
+          this.$Message.error({
+            content: res.message,
+            duration: 3
+          })
+        }
+      }).catch(err => {
+        this.$Modal.error({
+          title: '直接发布失败，请联系管理员。',
+          content: err
+        })
+      })
+    }
   },
   mounted () {
     // 请求获取消息列表
@@ -223,11 +347,11 @@ export default {
     }
     &.message-list-con {
       border-right: 1px solid #e6e6e6;
-      width: 230px;
+      width: 270px;
     }
     &.message-view-con {
       position: absolute;
-      left: 446px;
+      left: 520px;
       top: 16px;
       right: 16px;
       bottom: 16px;
@@ -267,12 +391,47 @@ export default {
     }
   }
 }
-.btn-icon-red {
+.btn-icon-gray {
   font-size: 18px;
-  color: red;
+  color: black;
 }
 .btn-icon-blue {
   font-size: 18px;
   color: #2d8cf0;
+}
+.edit-notice {
+  // background: #eee;
+  padding: 0px !important;
+  .ivu-tooltip {
+    width: 100%;
+  }
+  .btn-submit {
+    margin-top: 30px;
+    display: -webkit-flex;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+}
+.edit-input {
+  width: 60%;
+  height: 40px;
+  border: none;
+  border-bottom: 1.5px solid gray;
+  text-align: center;
+  outline: none;
+  font-size: 24px;
+}
+.edit-input:focus {
+  border-bottom: 2px solid #2d8cf0;
+}
+#content-textarea {
+  margin-top: 20px;
+  border: 1.5px solid gray;
+  height: 200px;
+  font-size: 24px;
+}
+#content-textarea:focus {
+  border: 1.5px solid #2d8cf0;
 }
 </style>

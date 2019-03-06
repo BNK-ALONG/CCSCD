@@ -23,6 +23,7 @@
 <script>
 import { sendNewNotice, getAllNotice, delNoticeById, saveDraftNotice, sendDraftNotice } from '@/api/classCenter'
 export default {
+  name: 'TestSign',
   data () {
     return {
       titleVal: '',
@@ -87,9 +88,31 @@ export default {
       })
     },
 
-    // 草稿箱公告
-
-
+    // 保存草稿箱公告
+    handleSaveNotice () {
+      saveDraftNotice({
+        title: this.titleVal,
+        content: this.contentVal
+      }).then(res => {
+        if (res.status === 200) {
+          console.log(res)
+          this.$Message.success({
+            content: res.message,
+            duration: 3
+          })
+        } else {
+          this.$Message.error({
+            content: res.message,
+            duration: 3
+          })
+        }
+      }).catch(err => {
+        this.$Modal.error({
+          title: '保存公告失败，请联系管理员。',
+          content: err
+        })
+      })
+    },
   },
 }
 </script>
