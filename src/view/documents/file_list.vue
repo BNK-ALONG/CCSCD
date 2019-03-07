@@ -67,7 +67,7 @@
               <i-switch v-model="row.NowStatus"
                         :true-value="trueVal"
                         :false-value="falseVal"
-                        :disabled="row.extension!=='pdf'"
+                        :disabled="playPPTtype.indexOf(row.extension)===-1"
                         @on-change="statusChange(index,row.NowStatus,'导入')">
                 <!-- 填坑：想让disabled的值等于表达式的值，则需要绑定disabled的形式:disabled，对vue的双向绑定又多了一份理解。 -->
                 <Icon type="md-checkmark"
@@ -96,11 +96,6 @@
 
     </Card>
   </div>
-  <!-- 开发测试按钮 -->
-  <!-- <Button type="error"
-              @click="handleSelect">打印已选择的项</Button> -->
-  <!-- <Button type="error"
-              @click="handlePrintFileData">打印fileData</Button>-->
 </template>
 <script>
 import { getFileList, ShareOrImport, downloadBlob, DownloadOrDelete } from '@/api/file'
@@ -112,6 +107,7 @@ export default {
       btnSize: 'large',
       trueVal: 1,
       falseVal: 0,
+      playPPTtype: ['pptx', 'ppsx', 'ppt', 'pps', 'potx', 'ppsm'],
       columns: [
         {
           //type 某一列的类型

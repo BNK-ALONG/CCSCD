@@ -26,15 +26,6 @@ export default [{
     component: () => import('@/view/login/login.vue')
   },
   {
-    path: '/course_list',
-    name: 'course_list',
-    meta: {
-      title: '课堂列表',
-      hideInMenu: true
-    },
-    component: () => import('@/view/course_list/course_list.vue')
-  },
-  {
     path: '/',
     name: '_home',
     redirect: '/home',
@@ -68,15 +59,24 @@ export default [{
     path: '/classCenter',
     name: 'classCenter',
     meta: {
-      icon: 'md-menu',
+      icon: '_ketang',
       title: '课堂中心'
     },
     component: Main,
     children: [{
+        path: 'playPpt',
+        name: 'playPpt',
+        meta: {
+          icon: 'md-play',
+          title: 'PPT播放'
+        },
+        component: () => import('@/view/classCenter/playPpt.vue')
+      },
+      {
         path: 'wordCloud',
         name: 'wordCloud',
         meta: {
-          icon: 'md-funnel',
+          icon: '_tepin-words-chart',
           title: '词云'
         },
         component: () => import('@/view/classCenter/wordCloud.vue')
@@ -86,7 +86,7 @@ export default [{
         name: 'notice',
         meta: {
           // access: ['super_admin'],
-          icon: 'md-notifications',
+          icon: '_gonggao',
           title: '公告'
         },
         component: () => import('@/view/classCenter/notice.vue')
@@ -97,7 +97,7 @@ export default [{
     path: '/sign',
     name: 'sign',
     meta: {
-      icon: 'md-menu',
+      icon: '_qiandao2',
       title: '签到'
     },
     component: Main,
@@ -105,7 +105,7 @@ export default [{
         path: 'issue_sign',
         name: 'issue_sign',
         meta: {
-          icon: 'md-funnel',
+          icon: '_fabu',
           title: '发布新签到'
         },
         component: () => import('@/view/sign/issue_sign.vue')
@@ -123,7 +123,7 @@ export default [{
         path: 'rapid_sign',
         name: 'rapid_sign',
         meta: {
-          icon: 'md-funnel',
+          icon: '_kuaisu3',
           title: '快速签到'
         },
         component: () => import('@/view/sign/rapid_sign.vue')
@@ -132,7 +132,7 @@ export default [{
         path: 'record_sign',
         name: 'record_sign',
         meta: {
-          icon: 'md-funnel',
+          icon: '_jilu',
           title: '签到记录表'
         },
         component: () => import('@/view/sign/record_sign.vue')
@@ -143,7 +143,7 @@ export default [{
     path: '/documents',
     name: 'documents',
     meta: {
-      icon: 'ios-book',
+      icon: 'ios-stats',
       title: '数据中心'
     },
     component: Main,
@@ -151,7 +151,7 @@ export default [{
         path: 'file_list',
         name: 'file_list',
         meta: {
-          icon: 'ios-book',
+          icon: '_wenjian',
           title: '文件列表'
         },
         component: () => import('@/view/documents/file_list.vue')
@@ -160,7 +160,7 @@ export default [{
         path: 'student_info',
         name: 'student_info',
         meta: {
-          icon: 'ios-book',
+          icon: '_biaoge',
           title: '学生信息'
         },
         component: () => import('@/view/documents/student_info.vue')

@@ -71,3 +71,35 @@ export const sendDraftNotice = ({
     }
   })
 }
+
+// 展示导入文件
+export const showFileList = () => {
+  return axios.request({
+    url: '/class_center/file_info',
+    method: 'post'
+  })
+}
+// 点击展示按钮
+export const showOneFile = ({
+  file_name_uuid
+}) => {
+  return axios.request({
+    url: '/class_center/show_file',
+    method: 'post',
+    data: {
+      file_name_uuid
+    }
+  })
+}
+// 导出文件
+export const exportFile = ({
+  file_name_uuid
+}) => {
+  return axios.request({
+    url: '/class_center/file_out',
+    method: 'post',
+    data: {
+      file_name_uuid
+    }
+  })
+}
