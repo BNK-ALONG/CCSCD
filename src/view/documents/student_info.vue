@@ -18,6 +18,7 @@
       <tables ref="tables"
               border
               editable
+              :isShowLoadBtn="true"
               searchable
               search-place="top"
               v-model="tableData"

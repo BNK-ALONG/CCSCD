@@ -310,11 +310,8 @@ export default {
         }).then(message => {
 
           this.$router.push({
-            name: 'course_list',
+            name: 'course_list'
             //以参数的形式将用户名传到课堂页（course_list）
-            query: {
-              userName: this.userid
-            }
           })
           //登陆成功时候，把message打印出来
           this.$Message.success(message)
@@ -390,6 +387,7 @@ export default {
 /* @import "./../../static/css/main.css"; */
 @import "./login.css";
 #particles {
-  background-image: url("./../../assets/bg.jpg");
+  /* background-image: url("./../../assets/pexels-photo-207691.jpeg"); */
+  background-color: #42a5f5;
 }
 </style>

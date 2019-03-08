@@ -39,7 +39,6 @@
 </template>
 <script>
 import { showFileList, showOneFile, exportFile } from '@/api/classCenter'
-import img1 from '@/assets/images/pexels-photo-207691.jpeg'
 export default {
   name: 'playPpt',
   data () {

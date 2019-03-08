@@ -1,15 +1,164 @@
 <template>
   <div>
-    <iframe src="https://view.officeapps.live.com/op/embed.aspx?src=https%3A%2F%2Fwww%2Epsycollege%2Ecom%2Ecn%3A443%2Fclass%5Fcenter%2Ftest%5Ffile%3Ffile%5Fname%5Fuuid%3D595d36c8%2Epptx&amp;wdAr=1.7777777777777777"
-            width="1186px"
-            height="691px"
-            frameborder="0">这是嵌入 <a target="_blank"
-         href="https://office.com">Microsoft Office</a> 演示文稿，由 <a target="_blank"
-         href="https://office.com/webapps">Office Online</a> 支持。</iframe>
+    <Card>
+      <div class="drag-box-card">
+
+        <!-- 切记设置list1和list2属性时，一定要添加.sync修饰符 -->
+        <drag-list :list1.sync="list1"
+                   :list2.sync="list2"
+                   :dropConClass="dropConClass"
+                   @on-change="handleChange">
+          <h3 slot="left-title">待办事项</h3>
+          <Card class="drag-item"
+                slot="left"
+                slot-scope="left">{{ left.itemLeft.name }}</Card>
+          <h3 slot="right-title">完成事项</h3>
+          <Card class="drag-item"
+                slot="right"
+                slot-scope="right">{{ right.itemRight.name }}</Card>
+        </drag-list>
+
+      </div>
+      <div class="handle-log-box">
+        <h3>操作记录</h3>
+        <div class="handle-inner-box">
+          <p v-for="(item, index) in handleList"
+             :key="`handle_item_${index}`">{{ item }}</p>
+        </div>
+      </div>
+      <div class="res-show-box">
+        <pre>{{ list1 }}</pre>
+      </div>
+      <div class="res-show-box">
+        <pre>{{ list2 }}</pre>
+      </div>
+    </Card>
   </div>
 </template>
 <script>
-// https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Fwww.psycollege.com.cn%2Fclass_center%2Ftest_file%3Ffile_name_uuid%3D595d36c8.pptx
+import DragList from '_c/drag-list'
+import { getDragList } from '@/api/data'
+import { allSignRecord, nowSignRecord, newSignRecord } from '@/api/sign'
+
 export default {
+  name: 'record_sign',
+  components: {
+    DragList
+  },
+  data () {
+    return {
+      list1: [],
+      list2: [],
+      dropConClass: {
+        left: ['drop-box', 'left-drop-box'],
+        right: ['drop-box', 'right-drop-box']
+      },
+      handleList: [],
+      timeoutID: ''
+    }
+  },
+  created () {
+    this.getNowSignRecord()
+  },
+  beforeRouteLeave (to, from, next) {
+    clearTimeout(this.timeoutID)
+    next()
+  },
+  methods: {
+    handleChange ({ src, target, oldIndex, newIndex }) {
+      this.handleList.push(`${src} => ${target}, ${oldIndex} => ${newIndex}`)
+    },
+    handleAllSignRecord () {
+      allSignRecord().then(res => {
+        console.log(res)
+      }).catch(err => {
+        this.$Modal.error({
+          title: '获取全部的签到情况表失败！请联系管理员。',
+          content: err
+        })
+      })
+    },
+    getNowSignRecord () {
+      let self = this
+      nowSignRecord().then(res => {
+        const located_records = res.located_records
+        if (res.status === 200) {
+          for (let item of located_records) {
+            if (item.status === '未签到') {
+              this.list1.push(item)
+            } else {
+              this.list2.push(item)
+            }
+          }
+          self.timeoutID = setTimeout(() => {
+            self.getNowSignRecord()
+          }, 1500)
+        }
+      }).catch(err => {
+        self.$Modal.error({
+          title: '获取当前的签到情况表失败！请联系管理员。',
+          content: err
+        })
+      })
+    }
+  },
+  mounted () {
+    getDragList().then(res => {
+      this.list1 = res.data
+      this.list2 = [res.data[0]]
+    })
+  }
 }
 </script>
+<style lang="less">
+.drag-box-card {
+  display: inline-block;
+  width: 600px;
+  height: 560px;
+  .drag-item {
+    margin: 10px;
+  }
+  h3 {
+    padding: 10px 15px;
+  }
+  .drop-box {
+    border: 1px solid #eeeeee;
+    height: 455px;
+    border-radius: 5px;
+  }
+  .left-drop-box {
+    margin-right: 10px;
+  }
+  .right-drop-box {
+    //
+  }
+}
+.handle-log-box {
+  display: inline-block;
+  margin-left: 20px;
+  border: 1px solid #eeeeee;
+  vertical-align: top;
+  width: 200px;
+  height: 500px;
+  h3 {
+    padding: 10px 14px;
+  }
+  .handle-inner-box {
+    height: ~"calc(100% - 44px)";
+    overflow: auto;
+    p {
+      padding: 14px 0;
+      margin: 0 14px;
+      border-bottom: 1px dashed #eeeeee;
+    }
+  }
+}
+.res-show-box {
+  display: inline-block;
+  margin-left: 20px;
+  border: 1px solid #eeeeee;
+  vertical-align: top;
+  width: 350px;
+  height: 570px;
+}
+</style>

@@ -46,11 +46,31 @@ export const getQRImg = () => {
   return axios.request({
     url: '/sign/show_qrcode',
     method: 'post',
-    // responseType: "arraybuffer",
-    // headers: {
-    //   // "Content-Type": "image/png",
-    //   "Accept": "image/png"
-    // }
+  })
+}
 
+// 获取全部的签到记录表
+export const allSignRecord = () => {
+  return axios.request({
+    url: '/sign/all_records_export',
+    method: 'post',
+    responseType: 'blob'
+  })
+}
+
+// 获取最新的签到记录表
+export const newSignRecord = () => {
+  return axios.request({
+    url: '/sign/records_export',
+    method: 'post',
+    responseType: 'blob'
+  })
+}
+
+
+export const nowSignRecord = () => {
+  return axios.request({
+    url: '/sign/located_records',
+    method: 'post'
   })
 }

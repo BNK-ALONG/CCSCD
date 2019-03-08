@@ -22,6 +22,7 @@
       <Button style="float:right;"
               type="success"
               icon="md-download"
+              v-show="isShowLoadBtn"
               @click="downloadExcel">下载excel模板</Button>
     </div>
     <Table ref="tablesMain"
@@ -86,7 +87,12 @@ import './index.less'
 export default {
   name: 'Tables',
   props: {
+    isShowLoadBtn: {
+      type: Boolean,
+      default: true
+    },
     value: {
+
       type: Array,
       default () {
         return []

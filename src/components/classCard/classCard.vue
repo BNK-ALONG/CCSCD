@@ -1,7 +1,8 @@
 <template>
   <div class="card">
     <header class="card__thumb">
-      <img src="img/1.jpg" />
+      <!-- <img src="@/assets/images/1.jpg" /> -->
+      <div></div>
     </header>
     <!-- <Button shape="circle">{{index}}</Button> -->
     <div class="card__date">

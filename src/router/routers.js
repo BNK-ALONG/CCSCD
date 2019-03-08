@@ -26,6 +26,15 @@ export default [{
     component: () => import('@/view/login/login.vue')
   },
   {
+    path: '/course_list',
+    name: 'course_list',
+    meta: {
+      title: '课堂列表',
+      hideInMenu: true
+    },
+    component: () => import('@/view/course_list/course_list.vue')
+  },
+  {
     path: '/',
     name: '_home',
     redirect: '/home',
@@ -43,18 +52,18 @@ export default [{
         notCache: true,
         icon: 'md-home'
       },
-      component: () => import('@/view/single-page/home')
+      component: () => import('@/view/classCenter/playPpt.vue')
     }]
   },
-  {
-    path: '',
-    name: 'doc',
-    meta: {
-      title: '文档',
-      href: 'https://lison16.github.io/iview-admin-doc/#/',
-      icon: 'ios-book'
-    }
-  },
+  // {
+  //   path: '',
+  //   name: 'doc',
+  //   meta: {
+  //     title: '文档',
+  //     href: 'https://lison16.github.io/iview-admin-doc/#/',
+  //     icon: 'ios-book'
+  //   }
+  // },
   {
     path: '/classCenter',
     name: 'classCenter',
