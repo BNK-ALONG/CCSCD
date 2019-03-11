@@ -33,7 +33,7 @@ import Tables from '_c/tables'
 import { allSignRecord, nowSignRecord, newSignRecord } from '@/api/sign'
 import { downloadBlob } from '@/api/file'
 export default {
-  name: 'record_sign',
+  // name: 'record_sign',
   components: {
     Tables
   },

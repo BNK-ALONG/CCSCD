@@ -43,12 +43,12 @@ export default {
   data () {
     return {
       columns: [
-        { title: '学号', key: 'stuid', width: 250, align: 'center' },
-        { title: '姓名', key: 'name', maxWidth: 150, align: 'center' },
+        { title: '学号', key: 'stuid', align: 'center' },
+        { title: '姓名', key: 'name', align: 'center' },
         {
           title: '性别',
           key: 'sex',
-          maxWidth: 100,
+          maxWidth: 90,
           align: 'center',
           filters: [
             {
@@ -65,8 +65,10 @@ export default {
             return row.sex === value
           }
         },
+        { title: '大学', key: 'college', align: 'center' },
+        { title: '学院', key: 'academy', align: 'center' },
         { title: '专业', key: 'major', align: 'center' },
-        { title: '班级', key: 'classnum', align: 'center' },
+        { title: '班级', key: 'classnum', maxWidth: 100, align: 'center' },
         {
           title: '解绑',
           key: 'handle',

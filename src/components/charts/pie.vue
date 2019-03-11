@@ -1,5 +1,6 @@
 <template>
-  <div ref="dom" class="charts chart-pie"></div>
+  <div ref="dom"
+       class="charts chart-pie"></div>
 </template>
 
 <script>
@@ -22,10 +23,8 @@ export default {
   methods: {
     resize () {
       this.dom.resize()
-    }
-  },
-  mounted () {
-    this.$nextTick(() => {
+    },
+    initEcharts () {
       let legend = this.value.map(_ => _.name)
       let option = {
         title: {
@@ -35,7 +34,7 @@ export default {
         },
         tooltip: {
           trigger: 'item',
-          formatter: '{a} <br/>{b} : {c} ({d}%)'
+          formatter: '{b} <br/>人数 : {c} ({d}%)'
         },
         legend: {
           orient: 'vertical',
@@ -61,7 +60,19 @@ export default {
       this.dom = echarts.init(this.$refs.dom, 'tdTheme')
       this.dom.setOption(option)
       on(window, 'resize', this.resize)
-    })
+    }
+  },
+  // mounted () {
+  //   this.initEcharts()
+  // },
+  watch: {
+    value () {
+      this.$nextTick(() => {
+        if (this.value) {
+          this.initEcharts()
+        }
+      });
+    }
   },
   beforeDestroy () {
     off(window, 'resize', this.resize)

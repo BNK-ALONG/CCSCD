@@ -217,7 +217,7 @@ export default {
   }
 }
 </script>
-<style>
+<style lang="less">
 .className-wrap {
   /* 父元素根据内容改变大小 */
   width: auto;
@@ -248,11 +248,5 @@ export default {
   font-size: 24px;
   width: 40px;
   text-align: center;
-}
-.btn-openQRImg {
-  margin-right: 12px;
-}
-.btn-openQRImg > .ivu-btn.ivu-btn-text {
-  padding: 5px 1px 6px;
 }
 </style>

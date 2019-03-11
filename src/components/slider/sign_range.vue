@@ -51,7 +51,7 @@
              size="large"
              element-id="location-input"
              prefix="ios-navigate-outline"
-             placeholder="备注此签到的教室"
+             placeholder="备注此教室，以便下次直接签到"
              style="width: 488px;height:36px;"
              @on-blur="handleInputValue" /></div>
   </div>
@@ -63,9 +63,9 @@ export default {
     return {
       interval_max: 60,
       interval_min: 3,
-      radius_max: 100,
-      radius_min: 5,
-      slider_radius: 20,
+      radius_max: 150,
+      radius_min: 20,
+      slider_radius: 50,
       slider_interval: 5,
       isSubmit: false,
       locationRemark: ''

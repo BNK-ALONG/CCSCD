@@ -67,7 +67,22 @@ export const newSignRecord = () => {
   })
 }
 
+// 修改签到状态
+export const updateSignRecord = ({
+  stuid,
+  status
+}) => {
+  return axios.request({
+    url: '/sign/update_record',
+    method: 'post',
+    data: {
+      stuid,
+      status
+    }
+  })
+}
 
+// 获取当前的签到情况
 export const nowSignRecord = () => {
   return axios.request({
     url: '/sign/located_records',

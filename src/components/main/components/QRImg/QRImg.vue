@@ -45,11 +45,11 @@ export default {
 }
 </script>
 
-<style>
+<style lang="less">
 .btn-openQRImg {
   margin-right: 12px;
-}
-.btn-openQRImg > .ivu-btn.ivu-btn-text {
-  padding: 5px 1px 6px;
+  .ivu-btn.ivu-btn-text {
+    padding: 5px 1px 6px;
+  }
 }
 </style>

@@ -52,7 +52,7 @@ export default [{
         notCache: true,
         icon: 'md-home'
       },
-      component: () => import('@/view/classCenter/playPpt.vue')
+      component: () => import('@/view/single-page/home')
     }]
   },
   // {

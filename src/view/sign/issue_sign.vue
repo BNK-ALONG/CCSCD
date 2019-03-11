@@ -15,7 +15,7 @@
         <div class="search-box-wrapper">
           <input type="text"
                  id="pickerInput" />
-          <span class="search-btn">搜索</span>
+          <span class="sign-search-btn">搜索</span>
         </div>
       </div>
 
@@ -36,6 +36,7 @@
 import MapLoader from '@/assets/js/AMap.js'
 import slider from '_c/slider'
 import { issueSign } from '@/api/sign'
+import { mapMutations } from 'vuex';
 export default {
   name: 'test',
   components: { slider },
@@ -122,6 +123,8 @@ export default {
             onOk: () => {
               // 提交签到数据到后台
               // 如果用户没有备注则，自动备注为在地图上选址的地标
+              console.log('lngX:', lnglat.getLng())
+              console.log('latY:', lnglat.getLat())
               issueSign({
                 lngX: lnglat.getLng(),
                 latY: lnglat.getLat(),
@@ -132,8 +135,9 @@ export default {
                 const message = res.message
                 const status = res.status
                 if (status === 200) {
+                  that.setTimeDown(that.sign_interval)
                   that.$router.push({
-                    name: 'record_sign'
+                    name: 'test_sign'
                   })
                   that.$Message.success(message)
                 } else {
@@ -243,7 +247,12 @@ export default {
     }, e => {
       console.log('地图加载失败', e)
     })
-  }
+  },
+  methods: {
+    ...mapMutations([
+      "setTimeDown"
+    ])
+  },
 }
 </script>
 <style>
@@ -287,7 +296,7 @@ input {
   /* 背景色透明  生效时长  过渡效果  启用时延迟的时间 */
   transition: background-color 50000s ease-in-out 0s;
 }
-.search-btn {
+.sign-search-btn {
   width: 45px;
   height: 100%;
   display: flex;
