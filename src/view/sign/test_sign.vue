@@ -48,27 +48,33 @@
                :lg="16"
                style="margin-bottom: 20px;">
           <keep-alive>
-            <time-down :setTimer='timeDown'
+            <time-down :setTimer='setTimer'
                        color="rgb(45, 183, 245)"></time-down>
           </keep-alive>
         </i-col>
       </Row>
+      <Row>
+        <chart-cate style="height: 350px;width:100%;"
+                    :allSignList="allSignList">历史签到记录情况</chart-cate>
+      </Row>
+
       <Button type="success"
-              @click="handleGetNowSignRecord">测试专用</Button>
+              @click="handleTest">测试专用</Button>
     </Card>
   </div>
 </template>
 <script>
 import DragList from '_c/drag-list'
 import timeDown from '_c/timeDown'
-import { allSignRecord, newSignRecord, updateSignRecord, nowSignRecord } from '@/api/sign'
-import { ChartPie, ChartBar } from '_c/charts'
+import { allSignRecord, newSignRecord, updateSignRecord, nowSignRecord, allLocatedRecord } from '@/api/sign'
+import { ChartPie, ChartCate } from '_c/charts'
 export default {
   name: 'record_sign',
   components: {
     DragList,
     ChartPie,
-    timeDown
+    timeDown,
+    ChartCate
   },
   data () {
     return {
@@ -83,8 +89,18 @@ export default {
       signRemark: '补签',
       late: 0,
       leave: 0,
-      // setTimer: 300000
+      allSignList: [],
+      websock: null,
     }
+  },
+  created () {
+    //页面刚进入时开启长连接
+    this.initWebSocket()
+    this.websock.onmessage()
+  },
+  destroyed: function () {
+    //页面销毁时关闭长连接
+    this.websocketclose();
   },
   mounted () {
     nowSignRecord().then(res => {
@@ -95,6 +111,7 @@ export default {
         this.$Message.error(res.message)
       }
     }).catch(err => console.log(err))
+    allLocatedRecord().then(res => res.status === 200 ? this.allSignList = res.all_record_data : console.log(res.message)).catch(err => console.log(err))
   },
   computed: {
     setTimer () {
@@ -112,9 +129,16 @@ export default {
         { value: this.late, name: '迟到' },
         { value: this.leave, name: '请假' },
         { value: this.unSignLength, name: '未签到' }
-      ]    },
+      ]
+    },
   },
   methods: {
+
+    // 测试专用方法
+    handleTest () {
+      // 
+    },
+
     // 两个列表的变化
     handleChange ({ oldIndex, newIndex }) {
       this.signRemarkModal(this.list2[newIndex], 'drag', newIndex, oldIndex)
@@ -259,11 +283,48 @@ export default {
     handleChangeSign (student, index) {
       this.signRemarkModal(student, 'Alert', index)
     },
-    // 获取当前签到情况
-    handleGetNowSignRecord () {
-      console.log(this.pieData)
+    initWebSocket () { //初始化weosocket 
+      if ("WebSocket" in window) {
+        const WS_API = 'wss://www.psycollege.com.cn'
+        const wsuri = WS_API + "/sign/changed_located_records"//ws地址
+        this.websock = new WebSocket(wsuri)
+        console.log(this.websock)
+        this.websock.onmessage = (evt) => {
+          // var received_msg = evt;
+          console.log(JSON.stringify(evt))
+          // alert("数据已接收...");
+        };
+
+        // this.websock.onmessage = this.websocketonmessage();
+        // this.websock.onclose = this.websocketclose();
+      } else {
+        alert("您的浏览器不支持 WebSocket!");
+      }
+
     },
 
+    websocketonopen () {
+      console.log("WebSocket连接成功");
+    },
+    websocketonerror (e) { //错误
+      console.log("WebSocket连接发生错误");
+    },
+    websocketonmessage (e) { //数据接收 
+      console.log(e)
+      const redata = JSON.parse(e.data);
+      //注意：长连接我们是后台直接1秒推送一条数据， 
+      //但是点击某个列表时，会发送给后台一个标识，后台根据此标识返回相对应的数据，
+      //这个时候数据就只能从一个出口出，所以让后台加了一个键，例如键为1时，是每隔1秒推送的数据，为2时是发送标识后再推送的数据，以作区分
+      // console.log(redata);
+    },
+
+    websocketsend (agentData) {//数据发送 
+      this.websock.send(agentData);
+    },
+
+    websocketclose (e) { //关闭 
+      console.log("connection closed (" + e.code + ")");
+    },
   },
 
 }

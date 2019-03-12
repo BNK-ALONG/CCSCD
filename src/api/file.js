@@ -106,3 +106,12 @@ export const downloadStuModel = () => {
     responseType: 'blob'
   })
 }
+
+
+// 文件下载量
+export const downloadNumber = () => {
+  return axios.request({
+    url: '/documents/download_file_num',
+    method: 'post'
+  })
+}

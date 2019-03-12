@@ -89,3 +89,11 @@ export const nowSignRecord = () => {
     method: 'post'
   })
 }
+
+// 获取全部签到信息
+export const allLocatedRecord = () => {
+  return axios.request({
+    url: '/sign/all_located_records',
+    method: 'post'
+  })
+}

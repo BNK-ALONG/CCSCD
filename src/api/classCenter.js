@@ -103,3 +103,11 @@ export const exportFile = ({
     }
   })
 }
+
+// 读秒统计
+export const getDuration = () => {
+  return axios.request({
+    url: '/class_center/get_duration',
+    method: 'post'
+  })
+}

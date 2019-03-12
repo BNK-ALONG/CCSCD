@@ -79,16 +79,26 @@ export default {
   data () {
     return {
       timeLeft: this.setTimer,
-      dashLen: (100 - this.border / 2) * Math.PI * 2,
-      colorEnd: 'rgb(234, 238, 242)',
-      opacityEnd: 0.4,
-      isEnd: true
+      dashLen: (100 - this.border / 2) * Math.PI * 2
     }
   },
   computed: {
+    isEnd () {
+      return this.timeLeft <= 0 ? false : true
+
+    },
+    colorEnd () {
+      return this.timeLeft <= 0 ? '#5cb85c' : 'rgb(234, 238, 242)'
+    },
+    opacityEnd () {
+      return this.timeLeft <= 0 ? 1 : 0.4
+    },
     countDown () {
       let time = this.timeLeft
       if (time <= 0) {
+        this.colorEnd = '#5cb85c'
+        this.opacityEnd = 1
+        this.isEnd = false
         return '00:00:00'
       } else {
         let result = []
@@ -110,9 +120,6 @@ export default {
       this.timeLeft -= diff
       if (this.timeLeft <= 0) {
         clearInterval(this.interval)
-        this.colorEnd = '#5cb85c'
-        this.opacityEnd = 1
-        this.isEnd = false
       }
       if (diff >= 1000) {
         this.lastDate = curDate

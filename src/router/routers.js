@@ -173,6 +173,15 @@ export default [{
           title: '学生信息'
         },
         component: () => import('@/view/documents/student_info.vue')
+      },
+      {
+        path: 'download',
+        name: 'download',
+        meta: {
+          icon: '_biaoge',
+          title: '下载量测试'
+        },
+        component: () => import('@/view/documents/download.vue')
       }
     ]
   },
