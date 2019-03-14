@@ -30,6 +30,8 @@
                       @click="handleShowFile(row.file_name_uuid)"
                       :to="pptUrl+row.file_name_uuid"
                       target="_blank">展示</Button>
+              <!-- <Button type="success"
+                      @click="handleShowFile(row.file_name_uuid)">展示</Button> -->
             </template>
           </Table>
         </div>
@@ -39,10 +41,13 @@
 </template>
 <script>
 import { showFileList, showOneFile, exportFile } from '@/api/classCenter'
+import { downloadBlob } from '@/api/file'
 export default {
   name: 'playPpt',
   data () {
     return {
+      pdfURL: 'https%3A%2F%2Fwww.psycollege.com.cn%2Fclass_center%2Ftest_file%3Ffile_name_uuid%3D',
+      pdfUrl: 'https://www.psycollege.com.cn/class_center/show_file?file_name_uuid=',
       pptUrl: 'https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Fwww.psycollege.com.cn%2Fclass_center%2Ftest_file%3Ffile_name_uuid%3D',
       columns: [
         {
@@ -137,6 +142,9 @@ export default {
     },
     handleShowFile (file_name_uuid) {
 
+      let url = encodeURIComponent(this.pdfUrl + file_name_uuid)
+      window.open('/static/pdf/web/viewer.html?file=' + encodeURIComponent(url))
+      console.log(url)
       showOneFile({ file_name_uuid }).then(res => {
         console.log(res)
       }).catch(err => {

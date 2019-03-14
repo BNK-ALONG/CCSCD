@@ -40,12 +40,14 @@ export default {
           left: '20%'
         },
         xAxis: {
+          name: '下载量',
           type: 'value',
           max: (value) => {
             return value.max + value.max / 10
           }
         },
         yAxis: {
+          name: '文件名',
           type: 'category',
           nameTextStyle: {
             color: '#000',

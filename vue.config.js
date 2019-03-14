@@ -46,5 +46,9 @@ module.exports = {
     proxy: 'https://www.psycollege.com.cn'
     // proxy: 'http://193.112.71.146:80'
     // proxy: 'http://localhost:3000'
+  },
+  dev: {
+    assetsSubDirectory: 'static',
+    assetsPublicPath: '/',
   }
 }

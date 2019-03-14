@@ -86,6 +86,7 @@ export const showOneFile = ({
   return axios.request({
     url: '/class_center/show_file',
     method: 'post',
+    responseType: 'blob',
     data: {
       file_name_uuid
     }
@@ -108,6 +109,13 @@ export const exportFile = ({
 export const getDuration = () => {
   return axios.request({
     url: '/class_center/get_duration',
+    method: 'post'
+  })
+}
+// 获取高频词汇
+export const topWord = () => {
+  return axios.request({
+    url: '/class_center/high_frequency_word',
     method: 'post'
   })
 }

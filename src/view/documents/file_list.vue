@@ -107,7 +107,7 @@ export default {
       btnSize: 'large',
       trueVal: 1,
       falseVal: 0,
-      playPPTtype: ['pptx', 'ppsx', 'ppt', 'pps', 'potx', 'ppsm'],
+      playPPTtype: ['pptx', 'ppsx', 'ppt', 'pps', 'potx', 'ppsm','pdf'],
       columns: [
         {
           //type 某一列的类型

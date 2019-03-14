@@ -82,6 +82,15 @@ export default [{
         component: () => import('@/view/classCenter/playPpt.vue')
       },
       {
+        path: 'playPdf',
+        name: 'playPdf',
+        meta: {
+          icon: 'md-play',
+          title: 'PDF播放'
+        },
+        component: () => import('@/view/classCenter/playPdf.vue')
+      },
+      {
         path: 'wordCloud',
         name: 'wordCloud',
         meta: {
