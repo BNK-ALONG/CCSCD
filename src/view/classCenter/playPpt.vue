@@ -14,7 +14,7 @@
                  stripe
                  width='auto'
                  :columns="columns"
-                 :data="fileData">
+                 :data="classFileList">
             <template slot-scope="{row,index}"
                       slot="delete">
               <Poptip confirm
@@ -27,8 +27,7 @@
                       slot="show">
               <!-- 这里的slot-scope="{row}"只有获取行的数据，不具有修改本行的数据源的能力 -->
               <Button type="success"
-                      @click="handleShowFile(row.file_name_uuid)"
-                      :to="pptUrl+row.file_name_uuid"
+                      @click="handleShowFile(row.extension,row.file_name_uuid)"
                       target="_blank">展示</Button>
               <!-- <Button type="success"
                       @click="handleShowFile(row.file_name_uuid)">展示</Button> -->
@@ -41,7 +40,6 @@
 </template>
 <script>
 import { showFileList, showOneFile, exportFile } from '@/api/classCenter'
-import { downloadBlob } from '@/api/file'
 export default {
   name: 'playPpt',
   data () {
@@ -60,7 +58,7 @@ export default {
           className: 'tableFontSize'
         },
         {
-          title: 'PPT文件',
+          title: '上课文件',
           key: 'file_name',
           sortable: true,
           align: 'center',
@@ -73,7 +71,26 @@ export default {
           className: 'tableFontSize'
 
         },
-
+        {
+          title: '格式',
+          key: 'extension',
+          align: 'center',
+          width: 100,
+          className: 'tableFontSize',
+          filters: [
+            {
+              label: 'pdf',
+              value: 'pdf'
+            },
+            {
+              label: 'ppt',
+              value: 'ppt'
+            }
+          ],
+          filterMethod (value, row) {
+            return row.extension === value
+          }
+        },
         {
           title: '导出',
           key: 'file_name_uuid',
@@ -90,23 +107,32 @@ export default {
           className: 'tableFontSize',
         }
       ],
-      fileData: []
+      classFileList: [],
+      publicPath: process.env.BASE_URL
+
     }
   },
+  // vue 实例挂载之后触发的钩子函数，仅在页面第一次打开的时候触发
   mounted () {
     this.getFileList()
   },
+
+  // 请求后台获取文件列表，只要进入此页面（第一次进入此页面不算）就会触发
   activated () {
-    // 请求后台获取文件列表
     this.getFileList()
   },
   methods: {
+    // 获取导入文件的列表
     getFileList () {
       showFileList().then(res => {
         const message = res.message
         const status = res.status
         if (status === 200) {
-          this.fileData = res.file_info
+          this.classFileList = res.file_info
+          for (let index in this.classFileList) {
+            let extension = this.classFileList[index].file_name_uuid.split('.').pop()
+            this.classFileList[index]['extension'] = extension
+          }
         } else {
           this.$Modal.warning({
             title: '无课件！',
@@ -125,6 +151,7 @@ export default {
         })
       })
     },
+    // 导出上课的文件
     handleDelFile (file_name_uuid, index) {
       exportFile({ file_name_uuid }).then(res => {
         if (res.status === 200) {
@@ -140,11 +167,15 @@ export default {
         })
       })
     },
-    handleShowFile (file_name_uuid) {
-
-      let url = encodeURIComponent(this.pdfUrl + file_name_uuid)
-      window.open('/static/pdf/web/viewer.html?file=' + encodeURIComponent(url))
-      console.log(url)
+    // 点击展示按钮，分别调用不同的接口展示pdf和ppt
+    handleShowFile (extension, file_name_uuid) {
+      console.log(extension)
+      if (extension === 'pdf') {
+        let url = encodeURIComponent(this.pdfUrl + file_name_uuid)
+        window.open(`${this.publicPath}/pdf/web/viewer.html?file=` + url)
+      } else {
+        window.open(this.pptUrl + file_name_uuid)
+      }
       showOneFile({ file_name_uuid }).then(res => {
         console.log(res)
       }).catch(err => {

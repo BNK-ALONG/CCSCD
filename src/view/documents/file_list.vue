@@ -58,6 +58,7 @@
         <div class="table-btn-container">
           <Table ref="fileList"
                  stripe
+                 border
                  width='auto'
                  :columns="columns"
                  :data="fileData">
@@ -107,7 +108,7 @@ export default {
       btnSize: 'large',
       trueVal: 1,
       falseVal: 0,
-      playPPTtype: ['pptx', 'ppsx', 'ppt', 'pps', 'potx', 'ppsm','pdf'],
+      playPPTtype: ['pptx', 'ppsx', 'ppt', 'pps', 'potx', 'ppsm', 'pdf'],
       columns: [
         {
           //type 某一列的类型
@@ -175,6 +176,14 @@ export default {
           }
         },
         {
+          title: '下载量',
+          sortable: true,
+          key: 'download_num',
+          align: 'center',
+          width: 105,
+          className: 'tableFontSize',
+        },
+        {
           title: '导入',
           key: 'NowStatus',
           slot: 'import',
@@ -197,29 +206,37 @@ export default {
   },
   mounted () {
     // 请求后台获取文件列表
-    getFileList().then(res => {
-      const message = res.message
-      const status = res.status
-      if (status === 200) {
-        this.fileData = res.file_info
-        for (let index in this.fileData) {
-          let extension = this.fileData[index].file_name_uuid.split('.').pop()
-          this.fileData[index]['extension'] = extension
-        }
-      } else {
-        this.$Modal.error({
-          title: '文件列表获取失败！',
-          content: '原因：' + message
-        })
-      }
-    }).catch(error => {
-      this.$Modal.error({
-        title: '文件列表获取失败！',
-        content: error
-      })
-    })
+    this.handleGetFileList()
+  },
+  activated () {
+    this.handleGetFileList()
   },
   methods: {
+    handleGetFileList () {
+      getFileList().then(res => {
+        const message = res.message
+        const status = res.status
+        if (status === 200) {
+          this.fileData = res.file_info
+          for (let index in this.fileData) {
+            let extension = this.fileData[index].file_name_uuid.split('.').pop()
+            this.fileData[index]['extension'] = extension
+          }
+        } else {
+          this.$Modal.error({
+            title: '文件列表获取失败！',
+            content: '原因：' + message
+          })
+        }
+      }).catch(error => {
+        this.$Modal.error({
+          title: '文件列表获取失败！',
+          content: error
+        })
+      })
+    }
+
+    ,
     handleSelectAll (status) {
       this.$refs.fileList.selectAll(status);
     },
@@ -238,15 +255,7 @@ export default {
         NowStatus: 0
       })
     },
-    // 打印fileData
-    handlePrintFileData () {
-      console.log(this.fileData)
-    },
-    // 打印已选择的项
-    // 通过打印this.$refs.fileList可以知道该组件的所有属性
-    handleSelect () {
-      console.log(this.$refs.fileList["tableWidth"])
-    },
+
     // 分享和取消分享成功或失败、导入和取消导入成功或失败的提示信息
     share_import_change ({ ResponseStatus, ResponseMessage, statusType, status, file_name }) {
       if (ResponseStatus === 200) {
@@ -398,8 +407,8 @@ export default {
 </script>
 <style>
 .table-card {
-  margin: 30px 10% 100px 10%;
-  width: 80%;
+  margin: 30px 5% 100px 5%;
+  width: 90%;
   padding-bottom: 30px;
 }
 .tableFontSize {
@@ -415,7 +424,7 @@ export default {
   -o-justify-content: space-between;
 }
 .btn-wrap {
-  width: 849px;
+  width: 956px;
 }
 .select-btn {
   float: left;

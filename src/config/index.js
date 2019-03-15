@@ -14,7 +14,7 @@ export default {
    */
   baseUrl: {
     dev: '',
-    pro: 'https://produce.com'
+    pro: 'https://www.psycollege.com.cn'
   },
   /**
    * @description 默认打开的首页的路由name值，默认为home

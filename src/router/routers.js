@@ -77,18 +77,9 @@ export default [{
         name: 'playPpt',
         meta: {
           icon: 'md-play',
-          title: 'PPT播放'
+          title: '课件播放'
         },
         component: () => import('@/view/classCenter/playPpt.vue')
-      },
-      {
-        path: 'playPdf',
-        name: 'playPdf',
-        meta: {
-          icon: 'md-play',
-          title: 'PDF播放'
-        },
-        component: () => import('@/view/classCenter/playPdf.vue')
       },
       {
         path: 'wordCloud',
@@ -179,7 +170,7 @@ export default [{
         name: 'student_info',
         meta: {
           icon: '_biaoge',
-          title: '学生信息'
+          title: '学生信息管理'
         },
         component: () => import('@/view/documents/student_info.vue')
       },

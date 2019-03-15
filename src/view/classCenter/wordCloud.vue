@@ -14,14 +14,14 @@ export default {
   name: 'wordCloud',
   data () {
     return {
-      timeoutID: ''
+      timeoutId: ''
     }
   },
   created () {
     this.getWords()
   },
   beforeRouteLeave (to, from, next) {
-    clearTimeout(this.timeoutID)
+    clearTimeout(this.timeoutId)
     next()
   },
   methods: {
@@ -30,7 +30,7 @@ export default {
       wordCloud().then(res => {
         if (res.status === 200) {
           self.renderCloud(res.search_details, 100, 30)
-          self.timeoutID = setTimeout(() => {
+          self.timeoutId = setTimeout(() => {
             self.getWords()
           }, 3000)
         } else {
