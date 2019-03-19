@@ -18,7 +18,7 @@ export default {
     setUnSignList(state, list) {
       state.unSignList = list
     },
-    setTimeDown(state, time) {
+    setTimerDown(state, time) {
       state.timeDown = time
       setTimerInSessionstorage(time)
     }

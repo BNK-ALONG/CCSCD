@@ -25,11 +25,12 @@ export default {
       this.dom.resize()
     },
     initEcharts () {
-      let legend = this.value.map(_ => _.name)
+      const self = this
+      let legend = self.value.map(_ => _.name)
       let option = {
         title: {
-          text: this.text,
-          subtext: this.subtext,
+          text: self.text,
+          subtext: self.subtext,
           x: 'center'
         },
         tooltip: {
@@ -46,7 +47,7 @@ export default {
             type: 'pie',
             radius: '55%',
             center: ['50%', '60%'],
-            data: this.value,
+            data: self.value,
             itemStyle: {
               emphasis: {
                 shadowBlur: 10,
@@ -57,9 +58,9 @@ export default {
           }
         ]
       }
-      this.dom = echarts.init(this.$refs.dom, 'tdTheme')
-      this.dom.setOption(option)
-      on(window, 'resize', this.resize)
+      self.dom = echarts.init(self.$refs.dom, 'tdTheme')
+      self.dom.setOption(option)
+      on(window, 'resize', self.resize)
     }
   },
   // mounted () {
@@ -75,7 +76,8 @@ export default {
     }
   },
   beforeDestroy () {
-    off(window, 'resize', this.resize)
+    const self = this
+    off(window, 'resize', self.resize)
   }
 }
 </script>

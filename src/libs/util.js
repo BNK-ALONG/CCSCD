@@ -194,7 +194,7 @@ export const setTimerInSessionstorage = (Timer) => {
  */
 export const getTimerFromSessionstorage = () => {
   const Timer = sessionStorage.Timer
-  return Timer ? Timer : 5
+  return Timer ? Timer : 0
 }
 
 /**

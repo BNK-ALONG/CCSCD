@@ -135,9 +135,13 @@ export default {
                 const message = res.message
                 const status = res.status
                 if (status === 200) {
-                  that.setTimeDown(that.sign_interval)
+                  let startTime = Date.now()
+                  that.setTimerDown(that.sign_interval)
                   that.$router.push({
-                    name: 'record_sign'
+                    name: 'record_sign',
+                    query: {
+                      startTime: startTime
+                    }
                   })
                   that.$Message.success(message)
                 } else {
@@ -250,7 +254,7 @@ export default {
   },
   methods: {
     ...mapMutations([
-      "setTimeDown"
+      "setTimerDown"
     ])
   },
 }

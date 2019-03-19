@@ -94,8 +94,9 @@ export default {
 }
 .ivu-card-body {
   .drop-box {
-    border: none !important;
+    border: 1.5px dashed #666 !important;
     height: auto !important;
+    padding: 10px;
   }
 }
 .drag-box-card {

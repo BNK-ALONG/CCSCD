@@ -37,21 +37,7 @@ export default {
   },
   data () {
     return {
-      pieData: [
-        { value: 335, name: '直接访问' },
-        { value: 310, name: '邮件营销' },
-        { value: 234, name: '联盟广告' },
-        { value: 1548, name: '搜索引擎' }
-      ],
-      barData: {
-        Mon: 13253,
-        Tue: 34235,
-        Wed: 26321,
-        Thu: 12340,
-        Fri: 24643,
-        Sat: 1322,
-        Sun: 1324
-      },
+      // 
     }
   },
   computed: {
@@ -106,6 +92,6 @@ export default {
 
 <style lang="less">
 .count-style {
-  font-size: 60px;
+  font-size: 50px;
 }
 </style>

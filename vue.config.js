@@ -25,7 +25,8 @@ module.exports = {
   // https://www.foobar.com/my-app/
   // then change this to '/my-app/'
   publicPath: BASE_URL,
-
+  assetsDir: 'static',
+  // assetsPublicPath: '/lison/',
   // tweak internal webpack configuration.
   // see https://github.com/vuejs/vue-cli/blob/dev/docs/webpack.md
   // 如果你不需要使用eslint，把lintOnSave设为false即可
@@ -39,12 +40,7 @@ module.exports = {
 
   configureWebpack: {
     plugins: [
-      // new VuetifyLoaderPlugin()
-      // new CopyWebpackPlugin([{
-      //   from: path.resolve(__dirname, '../static'),
-      //   to: config.dev.assetsSubDirectory,
-      //   ignore: ['.*']
-      // }])
+      // 
     ]
   },
 

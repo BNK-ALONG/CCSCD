@@ -5,7 +5,11 @@
       <div class="wrap-login100">
         <div class="login100-form validate-form">
 
-          <span class="login100-form-title">登录</span>
+          <span class="login100-form-title"> <svg class="iconfont-svg"
+                 aria-hidden="true"
+                 style="font-size: 3.5em;">
+              <use xlink:href="#icon-icon"></use>
+            </svg></span>
 
           <div class="wrap-input100 validate-input"
                data-validate="请输入用户名"
@@ -51,22 +55,6 @@
                       @click="handleLoginSubmit">登 录</button>
             </div>
           </div>
-
-          <!-- <div class="txt1">
-            <span>第三方登录</span>
-          </div>
-
-          <div class="flex-c-m">
-            <div class="login100-social-item bg1"
-                 @click="handleOtherLogin">
-            </div>
-            <div class="login100-social-item bg2"
-                 @click="handleOtherLogin">
-            </div>
-            <div class="login100-social-item bg3"
-                 @click="handleOtherLogin">
-            </div>
-          </div> -->
 
         </div>
         <div class="container-login100-form-btn"

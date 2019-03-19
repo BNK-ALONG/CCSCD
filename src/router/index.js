@@ -15,9 +15,7 @@ const {
 
 Vue.use(Router)
 const router = new Router({
-  routes,
-  mode: 'history',
-  base: '/lison/'
+  routes
 })
 
 

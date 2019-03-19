@@ -48,21 +48,19 @@
                    show-icon
                    closable
                    style="cursor:move;"
-                   @on-close="handleChangeSign(left.itemLeft,left.index)">{{ left.itemLeft.stuid }}<span style="margin-right:3em;"></span>{{ left.itemLeft.classnum }}<span style="margin-right:3em;"></span>{{ left.itemLeft.stuname }}
+                   @on-close="handleChangeSign(left.itemLeft,left.index)">{{ left.itemLeft.stuid }}<span style="margin-right:2em;"></span>{{ left.itemLeft.classnum }}<span style="margin-right:2em;"></span>{{ left.itemLeft.stuname }}
               <div slot="close">修改
                 <Icon type="md-return-right" />
               </div>
 
             </Alert>
             <h3 slot="right-title">已签到:{{list2.length}} 人</h3>
-            <!-- <Card class="drag-item"
-                slot="right"
-                slot-scope="right">{{right.itemRight.stuid }} {{ right.itemRight.stuname }}</Card> -->
+
             <Alert slot="right"
                    slot-scope="right"
                    type="success"
                    style="cursor:not-allowed;"
-                   show-icon>{{right.itemRight.stuid }} <span style="margin-right:3em;"></span>{{ right.itemRight.classnum}}<span style="margin-right:3em;"></span>{{ left.itemLeft.stuname }}
+                   show-icon>{{right.itemRight.stuid }} <span style="margin-right:2em;"></span>{{ right.itemRight.classnum}}<span style="margin-right:2em;"></span>{{ right.itemRight.stuname }}
             </Alert>
           </drag-list>
         </div>
@@ -96,19 +94,24 @@ export default {
       },
       handleList: [],
       timeoutID: '',
-      signRemark: '补签'
-      // websock: null,
+      signRemark: '补签',
+      // setTimer: 5,
     }
   },
   created () {
     this.getNowSignRecord()
+    // this.setTimer = this.$store.state.sign.timeDown * 60 * 1000
   },
   activated () {
     this.getNowSignRecord()
   },
   computed: {
+
     setTimer () {
-      return this.$store.state.sign.timeDown * 60 * 1000
+      // let startTime = this.$route.query.startTime
+      let endTime = Number(this.$route.query.startTime) + this.$store.state.sign.timeDown * 60 * 1000
+      let nowTime = Date.now()
+      return endTime - nowTime
     },
     unSignLength () {
       return this.list1.length
@@ -298,51 +301,7 @@ export default {
     // 事件：修改签到状态
     handleChangeSign (student, index) {
       this.signRemarkModal(student, 'Alert', index)
-    },
-
-
-    // initWebSocket () { //初始化weosocket 
-    //   if ("WebSocket" in window) {
-    //     const WS_API = 'wss://www.psycollege.com.cn'
-    //     const wsuri = WS_API + "/sign/changed_located_records"//ws地址
-    //     this.websock = new WebSocket(wsuri)
-    //     console.log(this.websock)
-    //     this.websock.onmessage = (evt) => {
-    //       // var received_msg = evt;
-    //       console.log(JSON.stringify(evt))
-    //       // alert("数据已接收...");
-    //     };
-
-    //     // this.websock.onmessage = this.websocketonmessage();
-    //     // this.websock.onclose = this.websocketclose();
-    //   } else {
-    //     alert("您的浏览器不支持 WebSocket!");
-    //   }
-
-    // },
-
-    // websocketonopen () {
-    //   console.log("WebSocket连接成功");
-    // },
-    // websocketonerror (e) { //错误
-    //   console.log("WebSocket连接发生错误");
-    // },
-    // websocketonmessage (e) { //数据接收 
-    //   console.log(e)
-    //   const redata = JSON.parse(e.data);
-    //   //注意：长连接我们是后台直接1秒推送一条数据， 
-    //   //但是点击某个列表时，会发送给后台一个标识，后台根据此标识返回相对应的数据，
-    //   //这个时候数据就只能从一个出口出，所以让后台加了一个键，例如键为1时，是每隔1秒推送的数据，为2时是发送标识后再推送的数据，以作区分
-    //   // console.log(redata);
-    // },
-
-    // websocketsend (agentData) {//数据发送 
-    //   this.websock.send(agentData);
-    // },
-
-    // websocketclose (e) { //关闭 
-    //   console.log("connection closed (" + e.code + ")");
-    // },
+    }
   },
 
 }

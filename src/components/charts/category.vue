@@ -28,10 +28,10 @@ export default {
       this.dom.resize()
     },
     initEcharts () {
-
-      this.dom = echarts.init(this.$refs.dom, 'tdTheme')
-      this.dom.setOption(this.option)
-      on(window, 'resize', this.resize)
+      const self = this
+      self.dom = echarts.init(self.$refs.dom, 'tdTheme')
+      self.dom.setOption(self.option)
+      on(window, 'resize', self.resize)
     }
   },
   mounted () {
@@ -47,7 +47,8 @@ export default {
     }
   },
   beforeDestroy () {
-    off(window, 'resize', this.resize)
+    const self = this
+    off(window, 'resize', self.resize)
   }
 }
 </script>

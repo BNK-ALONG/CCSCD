@@ -49,7 +49,7 @@
           <div class="tag-nav-wrapper">
             <tags-nav :value="$route"
                       @input="handleClick"
-                      :list="tagNavList"
+                      :list="tagNavNoRapid_SignList"
                       @on-close="handleCloseTag" />
           </div>
           <Content class="content-wrapper">
@@ -106,6 +106,15 @@ export default {
     ]),
     tagNavList () {
       return this.$store.state.app.tagNavList
+    },
+    tagNavNoRapid_SignList () {
+      let list = this.tagNavList
+      for (let index in list) {
+        if (list[index].meta.title === '快速签到') {
+          list.splice(index, 1)
+        }
+      }
+      return list
     },
     tagRouter () {
       return this.$store.state.app.tagRouter
