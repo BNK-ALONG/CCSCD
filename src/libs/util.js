@@ -131,35 +131,71 @@ export const getTagNavListFromLocalstorage = () => {
 }
 
 /**
- * @description 临时存储课堂名
+ * @description 本地存储课堂名
  */
-export const setClassNameInSessionstorage = className => {
+export const setClassNameInLocalstorage = className => {
   localStorage.setItem('className', className);
 }
 
 /**
- * @returns {String} 从SessionStorage中获取课堂名
+ * @returns {String} 从Localstorage中获取课堂名
  */
-export const getClassNameFromSessionstorage = () => {
+export const getClassNameFromLocalstorage = () => {
   const className = localStorage.getItem('className')
   return className ? className : '课堂名获取失败'
 }
 
 /**
- * @description 临时存储二维码的base64编码
+ * @description 本地存储二维码的base64编码
  */
-export const setQRbs64InSessionstorage = QRbs64 => {
+export const setQRbs64InLocalstorage = QRbs64 => {
   localStorage.QRbs64 = QRbs64
 }
 
 /**
- * @returns {String} 从SessionStorage中获取二维码的base64编码
+ * @returns {String} 从Localstorage中获取二维码的base64编码
  */
-export const getQRbs64FromSessionstorage = () => {
+export const getQRbs64FromLocalstorage = () => {
   const QRbs64 = localStorage.QRbs64
   return QRbs64
 }
 
+/**
+ * @param {Object} 临时存储课程的六大数字信息
+ */
+export const setClassNumberInSessionstorage = (classNumber) => {
+  sessionStorage.setItem('classNumber', JSON.stringify(classNumber))
+}
+
+/**
+ * @returns {Object} 从Sessionstorage中获取课程的六大数字信息
+ */
+export const getClassNumberFromSessionstorage = () => {
+  const classNumber = sessionStorage.classNumber
+  return classNumber ? JSON.parse(classNumber) : {
+    'students': 19,
+    'download': 20,
+    'questions': 50,
+    'sign': 10,
+    'notices': 5,
+    'files': 5
+  }
+}
+
+/**
+ * @param {Object} 临时存储课程的六大数字信息
+ */
+export const setTimerInSessionstorage = (Timer) => {
+  sessionStorage.setItem('Timer', Timer)
+}
+
+/**
+ * @returns {Object} 从Sessionstorage中获取课程的六大数字信息
+ */
+export const getTimerFromSessionstorage = () => {
+  const Timer = sessionStorage.Timer
+  return Timer ? Timer : 5
+}
 
 /**
  * @param {Array} routers 路由列表数组
@@ -445,34 +481,34 @@ export const forClassTime = (daterange) => {
   let Number_month = parseInt(time[2])
   switch (Number_month) {
     case (1):
-      month = '壹月'
+      month = '1月'
       break;
     case (2):
-      month = '贰月'
+      month = '2月'
       break;
     case (3):
-      month = '叁月'
+      month = '3月'
       break;
     case (4):
-      month = '肆月'
+      month = '4月'
       break;
     case (5):
-      month = '伍月'
+      month = '5月'
       break;
     case (6):
-      month = '陆月'
+      month = '6月'
       break;
     case (7):
-      month = '柒月'
+      month = '7月'
       break;
     case (8):
-      month = '捌月'
+      month = '8月'
       break;
     case (9):
-      month = '玖月'
+      month = '9月'
       break;
     case (10):
-      month = '拾月'
+      month = '10月'
       break;
     case (11):
       month = '11月'
@@ -482,4 +518,261 @@ export const forClassTime = (daterange) => {
       break;
   }
   return [year, month]
+}
+// 历史签到折线图的配置项
+export const getSignOption = (allSignList) => {
+  return {
+    animation: true,
+    dataset: {
+      dimensions: ['sign_time', 'signed_num', 'unsigned_num'],
+      source: allSignList
+    },
+    tooltip: {
+      trigger: 'axis',
+    },
+    legend: {
+      data: ['已签到', '未签到']
+    },
+    // 图表组件的样式
+    grid: {
+      show: true,
+      left: '3%',
+      right: '4%',
+      containLabel: true,
+    },
+    // 图表的工具栏
+    toolbox: {
+      show: true,
+      feature: {
+        dataView: {
+          readOnly: false
+        },
+        magicType: {
+          type: ['line', 'bar']
+        },
+        restore: {},
+        saveAsImage: {}
+      }
+    },
+    textStyle: {
+      fontSize: 16,
+      color: '#000'
+    },
+    // 图表的区域缩放
+    dataZoom: [{
+      type: 'slider',
+      start: 0,
+      end: 20,
+      realtime: true,
+      show: true,
+      showDataShadow: true
+    }, {
+      handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+      handleSize: '80%',
+      handleStyle: {
+        color: '#fff',
+        shadowBlur: 5,
+        shadowColor: 'rgba(0, 0, 0, 0.6)'
+      }
+    }],
+    xAxis: {
+      name: '时间',
+      type: 'category',
+      boundaryGap: false,
+      // 坐标轴的样式
+      axisLine: {
+        lineStyle: {
+          color: '#606060',
+        },
+        symbol: ['none', 'arrow'],
+        symbolOffset: 18
+      },
+    },
+    yAxis: {
+      name: '人数',
+      type: 'value',
+      // 坐标轴的样式
+      axisLine: {
+        lineStyle: {
+          color: '#606060',
+        },
+        symbol: ['none', 'arrow'],
+        symbolOffset: 15
+      },
+
+    },
+    series: [{
+        name: '已签到',
+        type: 'line',
+        color: '#19BE6B'
+      },
+      {
+        name: '未签到',
+        type: 'line',
+        color: '#ED4014'
+      }
+    ]
+  }
+}
+// 提问词柱状图的配置项
+export const getWordsOption = (topWordList) => {
+  return {
+    legend: {},
+    title: {
+      text: '本课程的提问热榜',
+      x: 'center'
+    },
+    textStyle: {
+      fontSize: 16
+    },
+    tooltip: {
+
+      formatter: function (params, ticket, callback) {
+        let color = params.color
+        let seriesIndex = params.seriesIndex
+        let showHtml
+        switch (seriesIndex) {
+          case 0:
+            showHtml = params.data.time + '<br>' + '<span style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:' + color + ';"></span>' + params.data.letter1 + '：' + params.data.frequency1 + '次'
+            break;
+          case 1:
+            showHtml = params.data.time + '<br>' + '<span style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:' + color + ';"></span>' + params.data.letter2 + '：' + params.data.frequency2 + '次'
+
+            break;
+          case 2:
+            showHtml = params.data.time + '<br>' + '<span style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:' + color + ';"></span>' + params.data.letter3 + '：' + params.data.frequency3 + '次'
+            break;
+        }
+        return showHtml
+      }
+    },
+    dataset: {
+      dimensions: ['time', 'letter1', 'letter2', 'letter3', 'frequency1', 'frequency2', 'frequency3'],
+      source: topWordList
+    },
+    xAxis: {
+      name: '时间',
+      type: 'category',
+      axisLine: {
+        lineStyle: {
+          color: '#606060',
+        },
+        symbol: ['none', 'arrow'],
+        symbolOffset: 18
+      },
+    },
+    yAxis: {
+      name: '提问量',
+      max: (value) => {
+        return value.max + value.max / 4
+      },
+      axisLine: {
+        lineStyle: {
+          color: '#606060',
+        },
+        symbol: ['none', 'arrow'],
+        symbolOffset: 15
+      },
+    },
+    series: [{
+        type: 'bar',
+        dimensions: ['time', 'letter1', 'letter2', 'letter3', 'frequency1', 'frequency2', 'frequency3'],
+
+        encode: {
+
+          x: 'time',
+          y: ['frequency1']
+        },
+        label: {
+          show: true,
+          formatter: '{@letter1}',
+          position: 'top'
+        }
+      },
+      {
+        type: 'bar',
+        encode: {
+          x: 'time',
+          y: ['frequency2']
+        },
+        label: {
+          show: true,
+          formatter: '{@letter2}',
+          position: 'top'
+        }
+      },
+      {
+        type: 'bar',
+        encode: {
+          x: 'time',
+          y: ['frequency3']
+        },
+        label: {
+          show: true,
+          formatter: '{@letter3}',
+          position: 'top'
+        }
+      }
+    ]
+
+  }
+}
+
+// 文件下载量柱状图的配置项
+export const getDownloadOption = (downloadList) => {
+  return {
+    title: {
+      text: '本课程的文件下载量',
+      x: 'center'
+    },
+    textStyle: {
+      fontSize: 16,
+      color: '#000'
+    },
+    dataset: {
+      dimensions: ['file_name', 'download_num'],
+      source: downloadList
+    },
+    tooltip: {
+      trigger: 'axis',
+    },
+    grid: {
+      left: '20%'
+    },
+    xAxis: {
+      name: '下载量',
+      type: 'value',
+      max: (value) => {
+        return value.max * 2
+      },
+      axisLine: {
+        lineStyle: {
+          color: '#606060',
+        },
+        symbol: ['none', 'arrow'],
+        symbolOffset: 18
+      },
+    },
+    yAxis: {
+      name: '文件名',
+      type: 'category',
+      nameTextStyle: {
+        color: '#000',
+        fontStyle: 'italic',
+        fontSize: 18,
+        align: 'right',
+      },
+      axisLine: {
+        lineStyle: {
+          color: '#606060',
+        },
+        symbol: ['none', 'arrow'],
+        symbolOffset: 15
+      },
+    },
+    series: [{
+      name: '总下载量',
+      type: 'bar'
+    }]
+  }
 }

@@ -40,6 +40,7 @@
 </template>
 <script>
 import { showFileList, showOneFile, exportFile } from '@/api/classCenter'
+// import viewer from('@/assets/plugins/pdf/web/viewer.html')
 export default {
   name: 'playPpt',
   data () {
@@ -172,7 +173,7 @@ export default {
       console.log(extension)
       if (extension === 'pdf') {
         let url = encodeURIComponent(this.pdfUrl + file_name_uuid)
-        window.open(`${this.publicPath}/pdf/web/viewer.html?file=` + url)
+        window.open(`${this.publicPath}pdf/web/viewer.html?file=` + url)
       } else {
         window.open(this.pptUrl + file_name_uuid)
       }

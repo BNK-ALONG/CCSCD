@@ -34,18 +34,13 @@
         <header-bar :collapsed="collapsed"
                     @on-coll-change="handleCollapsedChange">
           <user :user-avator="userAvator" />
-          <language v-if="$config.useI18n"
-                    @on-lang-change="setLocal"
-                    style="margin-right: 10px;"
-                    :lang="local" />
-          <!-- 错误日志收集 -->
-          <!-- <error-store v-if="$config.plugin['error-store'] && $config.plugin['error-store'].showInHeader"
-                       :has-read="hasReadErrorPage"
-                       :count="errorCount"></error-store> -->
           <q-RImg></q-RImg>
+          <random-stu></random-stu>
+          <start-end></start-end>
           <!-- 全屏的按钮 -->
+          <return-courseList></return-courseList>
           <fullscreen v-model="isFullscreen"
-                      style="margin-right: 10px;" />
+                      style="margin-right: 20px;" />
 
         </header-bar>
       </Header>
@@ -78,31 +73,30 @@ import TagsNav from './components/tags-nav'
 import User from './components/user'
 import ABackTop from './components/a-back-top'
 import Fullscreen from './components/fullscreen'
-import Language from './components/language'
 import QRImg from './components/QRImg'
+import ReturnCourseList from './components/ReturnCourseList'
+import StartEnd from './components/Start-End'
+import RandomStu from './components/RandomStu'
 import { mapMutations, mapActions, mapGetters } from 'vuex'
 import { getNewTagList, getNextRoute, routeEqual } from '@/libs/util'
-import minLogo from '@/assets/images/logo-min.jpg'
-import maxLogo from '@/assets/images/logo.jpg'
-// import CommonIcon from '_c/common-icon'
 import './main.less'
 export default {
   name: 'Main',
   components: {
     SideMenu,
     HeaderBar,
-    Language,
     TagsNav,
     Fullscreen,
     User,
     ABackTop,
-    QRImg
+    QRImg,
+    ReturnCourseList,
+    StartEnd,
+    RandomStu
   },
   data () {
     return {
       collapsed: false,
-      minLogo,
-      maxLogo,
       isFullscreen: false
     }
   },

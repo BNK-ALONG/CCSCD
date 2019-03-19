@@ -10,10 +10,12 @@ import {
   getRouteTitleHandled,
   localSave,
   localRead,
-  setClassNameInSessionstorage,
-  getClassNameFromSessionstorage,
-  setQRbs64InSessionstorage,
-  getQRbs64FromSessionstorage
+  setClassNameInLocalstorage,
+  getClassNameFromLocalstorage,
+  setQRbs64InLocalstorage,
+  getQRbs64FromLocalstorage,
+  setClassNumberInSessionstorage,
+  getClassNumberFromSessionstorage
 } from '@/libs/util'
 import beforeClose from '@/router/before-close'
 import {
@@ -21,7 +23,8 @@ import {
 } from '@/api/data'
 import {
   courseLogin,
-  getQRImg
+  getQRImg,
+  classNumber
 } from '@/api/sign'
 import router from '@/router'
 import routers from '@/router/routers'
@@ -46,8 +49,9 @@ export default {
     local: localRead('local'),
     errorList: [],
     hasReadErrorPage: false,
-    className: getClassNameFromSessionstorage(),
-    QRbs64: getQRbs64FromSessionstorage()
+    className: getClassNameFromLocalstorage(),
+    QRbs64: getQRbs64FromLocalstorage(),
+    classNumber: getClassNumberFromSessionstorage()
   },
   getters: {
     menuList: (state, getters, rootState) => getMenuByRouter(routers, rootState.user.access),
@@ -112,11 +116,15 @@ export default {
     //课堂名
     setClassName(state, className) {
       state.className = className
-      setClassNameInSessionstorage(className)
+      setClassNameInLocalstorage(className)
     },
     setQRbs64(state, QRbs64) {
       state.QRbs64 = QRbs64
-      setQRbs64InSessionstorage(QRbs64)
+      setQRbs64InLocalstorage(QRbs64)
+    },
+    setClassNumber(state, classNumber) {
+      state.classNumber = classNumber
+      setClassNumberInSessionstorage(classNumber)
     }
   },
   actions: {
@@ -172,7 +180,7 @@ export default {
     },
     /**
      *   @description 请求课堂登录接口获取二维码的路径
-     * @returns {Promise} 200存储二维码的路径并返回二维码的路径，201返回"获取二维码失败"
+     * 200存储二维码的路径并返回二维码的路径，201返回"获取二维码失败"
      */
     getQRbs64({
       commit
@@ -187,6 +195,22 @@ export default {
       }).catch(error => {
         console.log("获取二维码失败：", error)
       })
+    },
+
+    /**
+     *   @description 课堂登录之后获取课堂的六大数字信息
+     * 200临时存储六大数字信息，201后台打印错误
+     */
+    getClassNumber({
+      commit
+    }) {
+      classNumber().then(res => {
+        if (res.status === 200) {
+          commit("setClassNumber", res.number)
+        } else {
+          console.log('获取本课堂数字信息失败。')
+        }
+      }).catch(err => console.log(err))
     }
   }
 }

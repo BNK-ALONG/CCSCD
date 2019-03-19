@@ -1,20 +1,18 @@
 <template>
   <div class="btn-openQRImg">
-    <Tooltip content="二维码绑定本课堂"
+    <Tooltip content="返回我的课堂"
              style="width:auto;">
       <Button type="text"
-              @click="openQRImg">
+              @click="handleTeturn">
         <CommonIcon :size="iconSize"
-                    type="_barcode-qr" />
+                    type="_i-fh" />
+        <!-- <svg class="iconfont-svg"
+             aria-hidden="true"
+             style="font-size: 30px;">
+          <use xlink:href="#icon-fanhui1"></use>
+        </svg> -->
       </Button>
     </Tooltip>
-    <Modal title="扫描二维码绑定此课堂"
-           v-model="visible"
-           footer-hide>
-      <img :src="imgUrl"
-           v-if="visible"
-           style="width: 100%">
-    </Modal>
   </div>
 
 </template>
@@ -22,24 +20,20 @@
 import CommonIcon from '_c/common-icon'
 
 export default {
-  name: 'QRImg',
+  name: 'ReturnCourseList',
   components: {
     CommonIcon
   },
   data () {
     return {
       iconSize: 25,
-      visible: false,
-    }
-  },
-  computed: {
-    imgUrl () {
-      return this.$store.state.app.QRbs64
     }
   },
   methods: {
-    openQRImg () {
-      this.visible = true;
+    handleTeturn () {
+      this.$router.push({
+        name: 'course_list'
+      })
     }
   },
 }

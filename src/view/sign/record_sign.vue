@@ -1,82 +1,168 @@
 <template>
-  <div>
-    <Card>
-      <Button type="success"
-              ref="btnUpload"
-              icon="ios-download-outline"
-              custom-icon="btn-icon"
-              @click="handleNewSignRecord">最新签到表</Button>
+  <div class="card-wrap">
+    <Card shadow
+          style="background:#eee;">
+      <Card shadow
+            title="当前签到记录">
+        <Button type="success"
+                slot="extra"
+                icon="ios-download-outline"
+                custom-icon="btn-icon"
+                @click="handleNewSignRecord">当前数据导出</Button>
 
-      <Button type="success"
-              ref="btnUpload"
-              icon="ios-download-outline"
-              custom-icon="btn-icon"
-              style="margin-left:50px;"
-              @click="handleAllSignRecord">全部签到表</Button>
-      <tables ref="tables"
-              border
-              editable
-              searchable
-              search-place="top"
-              v-model="located_records"
-              :columns="columns"
-              :isShowLoadBtn="false"
-              @on-delete="handleDelete">
-      </tables>
+        <Row :gutter="20"
+             style="margin-top: 10px;">
+          <i-col span="8"
+                 push='4'>
 
+            <keep-alive>
+              <time-down style="margin:0px auto;"
+                         :setTimer='setTimer'
+                         color="rgb(45, 183, 245)"></time-down>
+            </keep-alive>
+          </i-col>
+          <i-col span="8"
+                 push='2'>
+            <chart-pie style="height: 300px;"
+                       :value="pieData"
+                       text="当前签到统计图"></chart-pie>
+          </i-col>
+
+        </Row>
+        <Divider>当前学生签到情况详细</Divider>
+
+        <!-- </Card> -->
+        <!-- <Card style="margin-top:10px;height:auto;"> -->
+        <div class="drag-box-card">
+          <!-- 切记设置list1和list2属性时，一定要添加.sync修饰符 -->
+          <drag-list :list1.sync="list1"
+                     :list2.sync="list2"
+                     :dropConClass="dropConClass"
+                     @on-change="handleChange">
+            <h3 slot="left-title">未签到:{{list1.length}} 人</h3>
+            <Alert slot="left"
+                   ref="alert"
+                   :key="left.itemLeft.stuid"
+                   slot-scope="left"
+                   type="error"
+                   show-icon
+                   closable
+                   style="cursor:move;"
+                   @on-close="handleChangeSign(left.itemLeft,left.index)">{{ left.itemLeft.stuid }}<span style="margin-right:3em;"></span>{{ left.itemLeft.classnum }}<span style="margin-right:3em;"></span>{{ left.itemLeft.stuname }}
+              <div slot="close">修改
+                <Icon type="md-return-right" />
+              </div>
+
+            </Alert>
+            <h3 slot="right-title">已签到:{{list2.length}} 人</h3>
+            <!-- <Card class="drag-item"
+                slot="right"
+                slot-scope="right">{{right.itemRight.stuid }} {{ right.itemRight.stuname }}</Card> -->
+            <Alert slot="right"
+                   slot-scope="right"
+                   type="success"
+                   style="cursor:not-allowed;"
+                   show-icon>{{right.itemRight.stuid }} <span style="margin-right:3em;"></span>{{ right.itemRight.classnum}}<span style="margin-right:3em;"></span>{{ left.itemLeft.stuname }}
+            </Alert>
+          </drag-list>
+        </div>
+      </Card>
     </Card>
+
   </div>
 </template>
-
 <script>
-import Tables from '_c/tables'
-import { allSignRecord, nowSignRecord, newSignRecord } from '@/api/sign'
+import DragList from '_c/drag-list'
+import timeDown from '_c/timeDown'
+import { allSignRecord, newSignRecord, updateSignRecord, nowSignRecord } from '@/api/sign'
+import { ChartPie, ChartCate } from '_c/charts'
 import { downloadBlob } from '@/api/file'
+
 export default {
-  // name: 'record_sign',
+  name: 'record_sign',
   components: {
-    Tables
+    DragList,
+    ChartPie,
+    timeDown,
+    ChartCate
   },
   data () {
     return {
-      trueVal: '已签到',
-      falseVal: '未签到',
-      columns: [
-        { title: '学号', key: 'stuid', width: 250, align: 'center' },
-        { title: '姓名', key: 'stuname', maxWidth: 200, align: 'center' },
-        {
-          title: '签到状态',
-          key: 'status',
-          maxWidth: 150,
-          align: 'center',
-          sortable: true
-        }
-      ],
-      located_records: [],
-      timeoutID: ''
+      list1: [],
+      list2: [],
+      dropConClass: {
+        left: ['drop-box', 'left-drop-box'],
+        right: ['drop-box', 'right-drop-box']
+      },
+      handleList: [],
+      timeoutID: '',
+      signRemark: '补签'
+      // websock: null,
     }
   },
   created () {
     this.getNowSignRecord()
   },
-  beforeRouteLeave (to, from, next) {
-    clearTimeout(this.timeoutID)
-    next()
+  activated () {
+    this.getNowSignRecord()
+  },
+  computed: {
+    setTimer () {
+      return this.$store.state.sign.timeDown * 60 * 1000
+    },
+    unSignLength () {
+      return this.list1.length
+    },
+    signedLength () {
+      return this.list2.length - this.late - this.leave
+    },
+    late () {
+      let lateLen = 0
+      for (let student of this.list2) {
+        let status = student.status
+        if (status === '迟到') {
+          lateLen += 1
+        }
+      }
+      return lateLen
+    },
+    leave () {
+      let leaveLen = 0
+      for (let student of this.list2) {
+        let status = student.status
+        if (status === '迟到') {
+          leaveLen += 1
+        }
+      }
+      return leaveLen
+    },
+    pieData () {
+      return [
+        { value: this.signedLength, name: '已签到' },
+        { value: this.late, name: '迟到' },
+        { value: this.leave, name: '请假' },
+        { value: this.unSignLength, name: '未签到' }
+      ]
+    },
+
   },
   methods: {
-    handleChange ({ src, target, oldIndex, newIndex }) {
-      this.handleList.push(`${src} => ${target}, ${oldIndex} => ${newIndex}`)
+    getNowSignRecord () {
+      nowSignRecord().then(res => {
+        if (res.status === 200) {
+          this.list1 = res.unsigned_record
+          this.list2 = res.signed_record
+        } else {
+          this.$Message.error(res.message)
+        }
+      }).catch(err => console.log(err))
     },
-    handleAllSignRecord () {
-      allSignRecord().then(res => {
-        downloadBlob(res, '全部签到表.xls')
-      }).catch(err => {
-        this.$Modal.error({
-          title: '获取全部签到表失败！请联系管理员。',
-          content: err
-        })
-      })
+
+    // 两个列表的变化
+    handleChange ({ oldIndex, newIndex }) {
+      this.signRemarkModal(this.list2[newIndex], 'drag', newIndex, oldIndex)
     },
+    // 获取当前签到情况表
     handleNewSignRecord () {
       newSignRecord().then(res => {
         downloadBlob(res, '最新签到表.xls')
@@ -87,28 +173,210 @@ export default {
         })
       })
     },
-    getNowSignRecord () {
+
+    // 备注消息的对话框内容
+    signRemarkModal (student, alterType, ...args) {
       let self = this
-      nowSignRecord().then(res => {
-        if (res.status === 200) {
-          self.located_records = res.located_records
-          self.timeoutID = setTimeout(() => {
-            self.getNowSignRecord()
-          }, 5000)
+      let status = '已签到'
+      let index = args[0]
+      let index2 = args[1]
+      self.$Modal.confirm({
+        title: '修改未签到同学的状态备注信息',
+        render: (h) => {
+          return h('div', [
+            // 第一个输入框
+            h('Input', {
+              style: {
+                margin: '10px',
+                width: '70%'
+              },
+              props: {
+                value: student.stuid,
+                disabled: true
+              }
+            }, [
+                h('span', {
+                  props: {},
+                  slot: 'prepend'
+                }, '学生学号')
+              ]),
+            // 第二个输入框
+            h('Input', {
+              style: {
+                margin: '10px',
+                width: '70%'
+              },
+              props: {
+                value: student.stuname,
+                disabled: true
+              }
+            }, [
+                h('span', {
+                  props: {},
+                  slot: 'prepend'
+                }, '学生姓名')
+              ]),
+            // 选择备注信息
+            h('span', {
+              style: {
+                margin: '10px',
+                width: '70%'
+              },
+            }, '备注信息'),
+            h('Select', {
+              style: {
+                width: '53%'
+              },
+              props: {
+                remote: true,
+                filterable: true,
+                value: status
+              },
+              on: {
+                input: (value) => {
+                  status = value
+                }
+              }
+            }, [
+                h('Option', {
+                  props: {
+                    value: '已签到',
+                    label: '补签'
+                  },
+                }),
+                h('Option', {
+                  props: {
+                    value: '迟到',
+                    label: '迟到'
+                  },
+                }),
+                h('Option', {
+                  props: {
+                    value: '请假',
+                    label: '请假'
+                  },
+                })
+              ])
+          ])
+        },
+        onOk: () => {
+          student.status = status
+          // if (student.status === '迟到') {
+          //   self.late += 1
+          // } else if (student.status === '请假') {
+          //   self.leave += 1
+          // }
+          if (alterType === 'Alert') {
+            self.list1.splice(index, 1)
+            self.list2.push(student)
+          }
+          updateSignRecord({
+            stuid: student.stuid,
+            status: student.status
+          }).then(res => {
+            if (res.status === 200) {
+              self.$Message.success('修改成功!')
+            } else {
+              self.$Message.error('修改失败!')
+            }
+          }).catch(err => {
+            console.log(err)
+          })
+        },
+        // 取消修改备注消息，强制Alert警告提示框不关闭（默认时关闭的）
+        onCancel: () => {
+          if (alterType === 'Alert') {
+            self.$refs.alert.closed = false
+          } else {
+            let student = self.list2.splice(index, 1)
+            self.list1.splice(index2, 0, student[0])
+          }
         }
-      }).catch(err => {
-        self.$Modal.error({
-          title: '获取当前的签到情况表失败！请联系管理员。',
-          content: err
-        })
       })
-    }
+    },
+
+    // 事件：修改签到状态
+    handleChangeSign (student, index) {
+      this.signRemarkModal(student, 'Alert', index)
+    },
+
+
+    // initWebSocket () { //初始化weosocket 
+    //   if ("WebSocket" in window) {
+    //     const WS_API = 'wss://www.psycollege.com.cn'
+    //     const wsuri = WS_API + "/sign/changed_located_records"//ws地址
+    //     this.websock = new WebSocket(wsuri)
+    //     console.log(this.websock)
+    //     this.websock.onmessage = (evt) => {
+    //       // var received_msg = evt;
+    //       console.log(JSON.stringify(evt))
+    //       // alert("数据已接收...");
+    //     };
+
+    //     // this.websock.onmessage = this.websocketonmessage();
+    //     // this.websock.onclose = this.websocketclose();
+    //   } else {
+    //     alert("您的浏览器不支持 WebSocket!");
+    //   }
+
+    // },
+
+    // websocketonopen () {
+    //   console.log("WebSocket连接成功");
+    // },
+    // websocketonerror (e) { //错误
+    //   console.log("WebSocket连接发生错误");
+    // },
+    // websocketonmessage (e) { //数据接收 
+    //   console.log(e)
+    //   const redata = JSON.parse(e.data);
+    //   //注意：长连接我们是后台直接1秒推送一条数据， 
+    //   //但是点击某个列表时，会发送给后台一个标识，后台根据此标识返回相对应的数据，
+    //   //这个时候数据就只能从一个出口出，所以让后台加了一个键，例如键为1时，是每隔1秒推送的数据，为2时是发送标识后再推送的数据，以作区分
+    //   // console.log(redata);
+    // },
+
+    // websocketsend (agentData) {//数据发送 
+    //   this.websock.send(agentData);
+    // },
+
+    // websocketclose (e) { //关闭 
+    //   console.log("connection closed (" + e.code + ")");
+    // },
   },
+
 }
 </script>
-
-<style>
+<style lang="less">
+.drag-box-card {
+  display: inline-block;
+  width: 600px;
+  height: 560px;
+  .drag-item {
+    margin: 10px;
+  }
+  h3 {
+    padding: 10px 15px;
+  }
+  .drop-box {
+    border: 1px solid #eeeeee;
+    height: 455px;
+    border-radius: 5px;
+  }
+  .left-drop-box {
+    margin-right: 10px;
+  }
+}
+.drag-list-con {
+  h3 {
+    font-weight: bold !important;
+  }
+}
+.ivu-card-extra {
+  right: 1px !important;
+  top: 9px !important;
+}
 .btn-icon {
-  font-size: 18px;
+  font-size: 16px;
 }
 </style>

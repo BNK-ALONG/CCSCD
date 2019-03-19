@@ -52,7 +52,7 @@
             </div>
           </div>
 
-          <div class="txt1">
+          <!-- <div class="txt1">
             <span>第三方登录</span>
           </div>
 
@@ -66,7 +66,7 @@
             <div class="login100-social-item bg3"
                  @click="handleOtherLogin">
             </div>
-          </div>
+          </div> -->
 
         </div>
         <div class="container-login100-form-btn"

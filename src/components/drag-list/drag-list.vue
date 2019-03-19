@@ -17,6 +17,7 @@
         </div>
       </draggable>
     </div>
+    <Divider type="vertical">可拖拽进行修改</Divider>
     <div class="drag-list-con con2">
       <slot name="right-title"></slot>
       <draggable class="drop-box2"
@@ -32,8 +33,10 @@
                 :itemRight="itemRight">{{ itemRight }}</slot>
         </div>
       </draggable>
+
     </div>
   </div>
+
 </template>
 <script>
 import draggable from 'vuedraggable'
@@ -80,8 +83,32 @@ export default {
 .drag-list-wrapper {
   height: 100%;
   .drag-list-con {
-    width: 50%;
+    width: 45%;
+  }
+  .con1 {
     float: left;
+  }
+  .con2 {
+    float: right;
+  }
+}
+.ivu-card-body {
+  .drop-box {
+    border: none !important;
+    height: auto !important;
+  }
+}
+.drag-box-card {
+  height: auto !important;
+  width: 70% !important;
+  margin-left: 15%;
+  .ivu-divider {
+    top: 20px;
+    width: 2px;
+    height: 10em;
+  }
+  .ivu-divider-inner-text {
+    padding: 0 8px !important;
   }
 }
 </style>

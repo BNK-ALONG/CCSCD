@@ -52,7 +52,7 @@ export default [{
         notCache: true,
         icon: 'md-home'
       },
-      component: () => import('@/view/single-page/home')
+      component: () => import('@/view/home')
     }]
   },
   // {
@@ -119,15 +119,15 @@ export default [{
         },
         component: () => import('@/view/sign/issue_sign.vue')
       },
-      {
-        path: 'test_sign',
-        name: 'test_sign',
-        meta: {
-          icon: 'md-funnel',
-          title: '地图测试'
-        },
-        component: () => import('@/view/sign/test_sign.vue')
-      },
+      // {
+      //   path: 'test_sign',
+      //   name: 'test_sign',
+      //   meta: {
+      //     icon: 'md-funnel',
+      //     title: '地图测试'
+      //   },
+      //   component: () => import('@/view/sign/test_sign.vue')
+      // },
       {
         path: 'rapid_sign',
         name: 'rapid_sign',
@@ -135,6 +135,7 @@ export default [{
           icon: '_kuaisu3',
           title: '快速签到'
         },
+
         component: () => import('@/view/sign/rapid_sign.vue')
       },
       {
@@ -142,7 +143,7 @@ export default [{
         name: 'record_sign',
         meta: {
           icon: '_jilu',
-          title: '签到记录表'
+          title: '当前签到记录'
         },
         component: () => import('@/view/sign/record_sign.vue')
       }
@@ -174,15 +175,6 @@ export default [{
         },
         component: () => import('@/view/documents/student_info.vue')
       },
-      {
-        path: 'download',
-        name: 'download',
-        meta: {
-          icon: '_biaoge',
-          title: '下载量测试'
-        },
-        component: () => import('@/view/documents/download.vue')
-      }
     ]
   },
   {

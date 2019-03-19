@@ -65,17 +65,21 @@
             <template slot-scope="{row,index}"
                       slot="import">
               <!-- i-switch开关如果双向绑定的是原数据 开关的动画会卡顿 -->
-              <i-switch v-model="row.NowStatus"
-                        :true-value="trueVal"
-                        :false-value="falseVal"
-                        :disabled="playPPTtype.indexOf(row.extension)===-1"
-                        @on-change="statusChange(index,row.NowStatus,'导入')">
-                <!-- 填坑：想让disabled的值等于表达式的值，则需要绑定disabled的形式:disabled，对vue的双向绑定又多了一份理解。 -->
-                <Icon type="md-checkmark"
-                      slot="open"></Icon>
-                <Icon type="md-close"
-                      slot="close"></Icon>
-              </i-switch>
+              <Tooltip content="只支持pdf或ppt文件"
+                       placement="top"
+                       :disabled="playPPTtype.indexOf(row.extension)!==-1">
+                <i-switch v-model="row.NowStatus"
+                          :true-value="trueVal"
+                          :false-value="falseVal"
+                          :disabled="playPPTtype.indexOf(row.extension)===-1"
+                          @on-change="statusChange(index,row.NowStatus,'导入')">
+                  <!-- 填坑：想让disabled的值等于表达式的值，则需要绑定disabled的形式:disabled，对vue的双向绑定又多了一份理解。 -->
+                  <Icon type="md-checkmark"
+                        slot="open"></Icon>
+                  <Icon type="md-close"
+                        slot="close"></Icon>
+                </i-switch>
+              </Tooltip>
             </template>
             <template slot-scope="{row,index}"
                       slot="share">
@@ -182,6 +186,14 @@ export default {
           align: 'center',
           width: 105,
           className: 'tableFontSize',
+          render: (h, params) => {
+            return h('Tooltip', {
+              props: {
+                content: '学生下载此文件的人数',
+                placement: 'top'
+              }
+            }, params.row.download_num)
+          },
         },
         {
           title: '导入',
@@ -199,6 +211,7 @@ export default {
           sortable: true,
           maxWidth: 90,
           className: 'tableFontSize',
+
         }
       ],
       fileData: []

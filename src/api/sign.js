@@ -49,7 +49,7 @@ export const getQRImg = () => {
   })
 }
 
-// 获取全部的签到记录表
+// 下载全部的签到记录表
 export const allSignRecord = () => {
   return axios.request({
     url: '/sign/all_records_export',
@@ -58,7 +58,7 @@ export const allSignRecord = () => {
   })
 }
 
-// 获取最新的签到记录表
+// 下载最新的签到记录表
 export const newSignRecord = () => {
   return axios.request({
     url: '/sign/records_export',
@@ -94,6 +94,14 @@ export const nowSignRecord = () => {
 export const allLocatedRecord = () => {
   return axios.request({
     url: '/sign/all_located_records',
+    method: 'post'
+  })
+}
+
+// 获取课程的六大数字信息
+export const classNumber = () => {
+  return axios.request({
+    url: '/sign/course_details',
     method: 'post'
   })
 }

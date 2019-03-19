@@ -33,12 +33,12 @@
   </div>
 </template>
 <script>
-import MapLoader from '@/assets/js/AMap.js'
+import MapLoader from '@/assets/plugins/AMap.js'
 import slider from '_c/slider'
 import { issueSign } from '@/api/sign'
 import { mapMutations } from 'vuex';
 export default {
-  name: 'test',
+  name: 'issue_sign',
   components: { slider },
   data () {
     return {
@@ -137,7 +137,7 @@ export default {
                 if (status === 200) {
                   that.setTimeDown(that.sign_interval)
                   that.$router.push({
-                    name: 'test_sign'
+                    name: 'record_sign'
                   })
                   that.$Message.success(message)
                 } else {

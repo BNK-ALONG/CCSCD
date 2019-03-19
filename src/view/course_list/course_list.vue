@@ -3,41 +3,56 @@
     <!-- 导航栏 -->
     <Layout class="layout">
       <Header>
-        <Dropdown style="margin-left:1260px;"
-                  placement='bottom-start'
-                  @on-click="logout">
-          <Button type="primary">
-            {{userName}}
-            <Icon type="ios-arrow-down"></Icon>
-          </Button>
-          <DropdownMenu slot="list">
-            <DropdownItem>个人资料</DropdownItem>
-            <DropdownItem disabled>消息</DropdownItem>
-            <DropdownItem divided
-                          name='logout'>退出登录</DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
-        <span style="margin-left: 30px;"></span>
-        <Button type="warning"
-                @click="handleBtnRegister">注册</Button>
+        <Row type="flex"
+             justify="end">
+          <i-col span="8"
+                 push="2">
+            <div class="content_div">
+              <Icon type="ios-book" />
+              <span style="margin-left: 15px;"></span>
+              <span>我的课堂</span>
+            </div>
+          </i-col>
+          <i-col span='8'>
+            <i-col span="6"> 3123</i-col>
+            <i-col span="6"> 123</i-col>
+            <i-col span="6">
+              <Dropdown placement='bottom-start'
+                        @on-click="logout">
+                <Button type="primary">
+                  {{userName}}
+                  <Icon type="ios-arrow-down"></Icon>
+                </Button>
+                <DropdownMenu slot="list">
+                  <DropdownItem>个人资料</DropdownItem>
+                  <DropdownItem disabled>消息</DropdownItem>
+                  <DropdownItem divided
+                                name='logout'>退出登录</DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </i-col>
+
+            <i-col span="6">
+              <Button type="warning"
+                      @click="handleBtnRegister">注册</Button>
+            </i-col>
+          </i-col>
+
+        </Row>
       </Header>
+      <!-- 内容栏 -->
+      <!-- 课堂列表 -->
+      <div class=' bg bg-blur'></div>
+
+      <Content class="content">
+        <class-card v-for="(classCard,index) in classCards"
+                    :key="index"
+                    :index="index"
+                    :cards="classCards"
+                    @deleteCard="deleteCard"></class-card>
+      </Content>
     </Layout>
-    <!-- 内容栏 -->
-    <Content class="content">
-      <div class="content_div">
-        <Icon type="ios-book" />
-        <span style="margin-left: 15px;"></span>
-        <span>我的课堂</span>
-      </div>
-    </Content>
-    <!-- 课堂列表 -->
-    <div class='class_card'>
-      <class-card v-for="(classCard,index) in classCards"
-                  :key="index"
-                  :index="index"
-                  :cards="classCards"
-                  @deleteCard="deleteCard"></class-card>
-    </div>
+
     <div class="btn_add">
       <Poptip trigger="hover"
               :title="title"
@@ -155,7 +170,8 @@ export default {
       //开学时间
       classAddTime: '',
       ClassAddYear: '',
-      ClassAddMonth: ''
+      ClassAddMonth: '',
+      colorArr: ['4D2C37', 'F4B56B', '9E8C89', 'EADDCE', '3F88EB', '4O4F68', 'D1D9DE', '3AAB87']
     }
   },
   computed: {
@@ -164,7 +180,8 @@ export default {
     },
     classCards () {
       return this.cards
-    }
+    },
+
   },
   mounted () {
     this.getClassInfo().then(courseList => {
@@ -225,6 +242,7 @@ export default {
               this.cards.push({
                 className: this.formAddClass.className.trim(),
                 classIntro: this.formAddClass.classIntro,
+                classAddTime: this.classTime,
                 classYear: this.ClassAddYear,
                 classMonth: this.ClassAddMonth
               })
@@ -279,5 +297,34 @@ export default {
 
 <style scoped>
 @import "./course_list.css";
+.content_div {
+  font-size: 3em;
+  color: #fff;
+}
+.content {
+  margin: 100px calc((100% - 300px * 3) / 4);
+  position: absolute;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  height: 100%;
+}
+.bg {
+  background-image: url(~@/assets/pexels-photo-207691.jpeg);
+  width: 100%;
+  height: 900px;
+  line-height: 900px;
+  overflow-x: hidden;
+}
+.bg-blur {
+  float: left;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  -webkit-filter: blur(5px);
+  -moz-filter: blur(5px);
+  -o-filter: blur(9px);
+  -ms-filter: blur(9px);
+  filter: blur(9px);
+}
 </style>
 

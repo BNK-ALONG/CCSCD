@@ -1,8 +1,8 @@
 <template>
   <div class="card">
     <header class="card__thumb">
-      <!-- <img src="@/assets/images/1.jpg" /> -->
-      <div></div>
+      <div :style="{background:`#${color}`}"
+           class="card-background"> </div>
     </header>
     <!-- <Button shape="circle">{{index}}</Button> -->
     <div class="card__date">
@@ -13,6 +13,7 @@
     <div class="card__body">
       <div class="card__category">{{cards[index].classId}}</div>
       <h2 class="card__title">{{cards[index].className}}</h2>
+      <p>课程编号：{{cards[index].classId}}，开学时间：{{cards[index].classTime}}</p>
       <div class="card__description">
         <p>{{cards[index].classIntro}}</p>
         <div class="box_btn">
@@ -57,6 +58,7 @@ import { courseLogin } from '@/api/user'
 import { mapActions } from 'vuex'
 export default {
   name: "classCard",
+
   props: {
     index: {
       type: Number,
@@ -84,20 +86,30 @@ export default {
         type: String,
         required: true
       }
-    }
+    },
+    // color: {
+    //   type: String
+    // }
   },
   data () {
     return {
       modal2: false,
       modal_loading: false,
-      btn_text: '忍心删除'
+      btn_text: '忍心删除',
+      colorArr: ['4D2C37', 'F4B56B', '9E8C89', 'EADDCE', '3F88EB', '4O4F68', 'D1D9DE', '3AAB87']
     }
   },
-
+  computed: {
+    color () {
+      let index = Math.floor(Math.random() * this.colorArr.length + 1) - 1
+      return this.colorArr[index]
+    }
+  },
   methods: {
     ...mapActions([
       'getClassName',
-      'getQRbs64'
+      'getQRbs64',
+      'getClassNumber'
     ]),
     del () {
       this.modal_loading = true;

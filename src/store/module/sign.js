@@ -1,11 +1,15 @@
 import {
   nowSignRecord
 } from '@/api/sign'
+import {
+  setTimerInSessionstorage,
+  getTimerFromSessionstorage
+} from '@/libs/util'
 export default {
   state: {
     signedList: [],
     unSignList: [],
-    timeDown: 0
+    timeDown: getTimerFromSessionstorage()
   },
   mutations: {
     setSignedList(state, list) {
@@ -16,6 +20,7 @@ export default {
     },
     setTimeDown(state, time) {
       state.timeDown = time
+      setTimerInSessionstorage(time)
     }
   },
   actions: {

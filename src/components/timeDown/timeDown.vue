@@ -65,7 +65,7 @@ export default {
     },
     border: {
       type: Number,
-      default: 8
+      default: 14
     },
     color: {
       type: String,
@@ -88,7 +88,7 @@ export default {
 
     },
     colorEnd () {
-      return this.timeLeft <= 0 ? '#5cb85c' : 'rgb(234, 238, 242)'
+      return this.timeLeft <= 0 ? '#5cb85c' : '#eee'
     },
     opacityEnd () {
       return this.timeLeft <= 0 ? 1 : 0.4

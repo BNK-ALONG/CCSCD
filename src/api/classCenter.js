@@ -105,6 +105,34 @@ export const exportFile = ({
   })
 }
 
+// 上课
+export const startClass = ({
+  brief
+}) => {
+  return axios.request({
+    url: '/class_center/start_lesson',
+    method: 'post',
+    data: {
+      brief
+    }
+  })
+}
+
+// 下课
+export const endClass = () => {
+  return axios.request({
+    url: '/class_center/end_lesson',
+    method: 'post'
+  })
+}
+// 随机点人，返回学号和姓名
+export const randomStu = () => {
+  return axios.request({
+    url: '/class_center/random_call',
+    method: 'post'
+  })
+}
+
 // 读秒统计
 export const getDuration = () => {
   return axios.request({
