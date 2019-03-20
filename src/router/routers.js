@@ -143,7 +143,8 @@ export default [{
         name: 'record_sign',
         meta: {
           icon: '_jilu',
-          title: '当前签到记录'
+          title: '当前签到记录',
+          notCache: true
         },
         component: () => import('@/view/sign/record_sign.vue')
       }

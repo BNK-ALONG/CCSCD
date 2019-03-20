@@ -14,12 +14,12 @@ export default {
     rapidSign().then(res => {
       if (res.status === 200) {
         this.setTimerDown(res.interval)
-        let startTime = Date.now()
-        this.$router.go({
-          name: 'record_sign',
-          query: {
-            startTime: startTime
-          }
+        // 开始的时间，单位毫秒
+        sessionStorage.setItem('startTime', Date.now())
+        // 时间间隔，单位毫秒
+        sessionStorage.setItem('interval', res.interval * 60 * 1000)
+        this.$router.push({
+          name: 'record_sign'
         })
         this.$Notice.success({
           title: '发布签到成功！',

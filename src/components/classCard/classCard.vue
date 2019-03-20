@@ -2,7 +2,7 @@
   <div class="card">
     <header class="card__thumb">
       <div :style="{background:`#${color}`}"
-           class="card-background"> </div>
+           class="card-background"><span> {{cards[index].className}}</span></div>
     </header>
     <!-- <Button shape="circle">{{index}}</Button> -->
     <div class="card__date">

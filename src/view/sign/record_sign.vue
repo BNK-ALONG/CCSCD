@@ -59,8 +59,8 @@
             <Alert slot="right"
                    slot-scope="right"
                    type="success"
-                   style="cursor:not-allowed;"
-                   show-icon>{{right.itemRight.stuid }} <span style="margin-right:2em;"></span>{{ right.itemRight.classnum}}<span style="margin-right:2em;"></span>{{ right.itemRight.stuname }}
+                   style="cursor:not-allowed;padding: 8px 0px 8px 38px;"
+                   show-icon>{{right.itemRight.stuid }} <span style="margin-right:2em;"></span>{{ right.itemRight.classnum}}<span style="margin-right:2em;"></span>{{ right.itemRight.stuname }}<span style="margin-right:2em;"></span>{{ right.itemRight.status }}
             </Alert>
           </drag-list>
         </div>
@@ -75,6 +75,7 @@ import timeDown from '_c/timeDown'
 import { allSignRecord, newSignRecord, updateSignRecord, nowSignRecord } from '@/api/sign'
 import { ChartPie, ChartCate } from '_c/charts'
 import { downloadBlob } from '@/api/file'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'record_sign',
@@ -93,26 +94,38 @@ export default {
         right: ['drop-box', 'right-drop-box']
       },
       handleList: [],
-      timeoutID: '',
-      signRemark: '补签',
-      // setTimer: 5,
+      signRemark: '补签'
     }
   },
   created () {
     this.getNowSignRecord()
-    // this.setTimer = this.$store.state.sign.timeDown * 60 * 1000
+    this.setTimer = sessionStorage.getItem('interval') ? parseInt(sessionStorage.getItem('interval')) : 0
   },
   activated () {
     this.getNowSignRecord()
+
   },
   computed: {
-
-    setTimer () {
-      // let startTime = this.$route.query.startTime
-      let endTime = Number(this.$route.query.startTime) + this.$store.state.sign.timeDown * 60 * 1000
-      let nowTime = Date.now()
-      return endTime - nowTime
-    },
+    // color () {
+    //   let color = '#2db7f5'
+    //   if (this.percent == 0) {
+    //     color = '#5cb85c'
+    //   }
+    //   return color;
+    // },
+    // countDown () {
+    //   let time = this.residueTime ? this.residueTime * 1000 : 0
+    //   console.log(time)
+    //   if (time <= 0) {
+    //     return '00:00:00'
+    //   } else {
+    //     let result = []
+    //     result.push(Math.floor(time / 3.6e+6))
+    //     result.push(Math.floor(time % 3.6e+6 / 60000))
+    //     result.push(Math.floor(time % 60000 / 1000))
+    //     return result.map(x => x < 10 ? '0' + x : x).join(':')
+    //   }
+    // },
     unSignLength () {
       return this.list1.length
     },
@@ -150,6 +163,37 @@ export default {
 
   },
   methods: {
+    // getNowPercent () {
+    //   let startTime = parseInt(sessionStorage.getItem('startTime'))
+    //   let interval = parseInt(sessionStorage.getItem('interval'))
+    //   if (!startTime) {
+    //     return
+    //   }
+    //   // 过去的时间，单位秒
+    //   let pastTime = parseInt((Date.now() - startTime) / 1000)
+    //   if (pastTime > interval) {
+    //     sessionStorage.removeItem('startTime')
+    //     sessionStorage.removeItem('interval')
+    //   } else {
+    //     let nowPercent = parseInt(pastTime * 100 / interval)
+    //     console.log('nowPercent', nowPercent)
+    //     this.timeDown(nowPercent)
+    //   }
+    // },
+    // timeDown (nowPercent) {
+    //   let interval = parseInt(sessionStorage.getItem('interval'))
+    //   console.log('interval', interval)
+    //   this.percent = 100 - nowPercent
+    //   this.timer = setInterval(() => {
+    //     this.percent -= 100 / interval
+    //     this.residueTime--
+    //     if (this.percent < 0) {
+    //       this.percent = 0
+    //       clearInterval(this.timer)
+    //     }
+    //     console.log('this.percent', this.percent)
+    //   }, 1000)
+    // },
     getNowSignRecord () {
       nowSignRecord().then(res => {
         if (res.status === 200) {

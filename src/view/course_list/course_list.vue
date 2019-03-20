@@ -2,9 +2,17 @@
   <div style="width:100%;height:100%;">
     <!-- 导航栏 -->
     <Layout class="layout">
-      <Header>
+      <Header style="z-index:999;">
+
         <Row type="flex"
              justify="end">
+          <i-col span="8">
+            <svg class="iconfont-svg"
+                 aria-hidden="true"
+                 style="font-size: 5em;">
+              <use xlink:href="#icon-icon"></use>
+            </svg>
+          </i-col>
           <i-col span="8"
                  push="2">
             <div class="content_div">
@@ -18,7 +26,7 @@
             <i-col span="6"> 123</i-col>
             <i-col span="6">
               <Dropdown placement='bottom-start'
-                        @on-click="logout">
+                        @on-click="handleDowndrop">
                 <Button type="primary">
                   {{userName}}
                   <Icon type="ios-arrow-down"></Icon>
@@ -44,32 +52,36 @@
       <!-- 课堂列表 -->
       <div class=' bg bg-blur'></div>
 
-      <Content class="content">
-        <class-card v-for="(classCard,index) in classCards"
-                    :key="index"
-                    :index="index"
-                    :cards="classCards"
-                    @deleteCard="deleteCard"></class-card>
+      <Content class="content"
+               style="z-index:1;">
+        <div style="margin:100px;">
+          <class-card v-for="(classCard,index) in classCards"
+                      :key="index"
+                      :index="index"
+                      :cards="classCards"
+                      @deleteCard="deleteCard"></class-card>
+        </div>
       </Content>
+
+      <div class="btn_add">
+        <Poptip trigger="hover"
+                :title="title"
+                word-wrap
+                width="180"
+                placement='top'
+                popper-class='poptip_content'>
+          <span slot="content"
+                style="font-size:16px;">{{content}}</span>
+          <Button type="primary"
+                  shape="circle"
+                  icon="md-add"
+                  AddClass-icon="my-add-size"
+                  style="width:56px;height:56px;font-size: 30px;"
+                  @click="handleAddClass"></Button>
+        </Poptip>
+      </div>
     </Layout>
 
-    <div class="btn_add">
-      <Poptip trigger="hover"
-              :title="title"
-              word-wrap
-              width="180"
-              placement='top'
-              popper-class='poptip_content'>
-        <span slot="content"
-              style="font-size:16px;">{{content}}</span>
-        <Button type="primary"
-                shape="circle"
-                icon="md-add"
-                AddClass-icon="my-add-size"
-                style="width:56px;height:56px;font-size: 30px;"
-                @click="handleAddClass"></Button>
-      </Poptip>
-    </div>
     <Modal v-model="modal1"
            footer-hide>
       <span slot="header"
@@ -198,30 +210,33 @@ export default {
     //引进action里的方法
     ...mapActions([
       'getClassInfo',
-      'logout',
       'handleLogOut'
     ]),
 
 
     //退出登录
-    logout (name) {
+    logout () {
+      this.$Modal.confirm({
+        title: '确定退出微云课堂吗',
+        onOk: () => {
+          //清除本地缓存的Token
+          this.handleLogOut().then(res => {
+            this.$router.push({
+              name: 'login'
+            })
+            this.$Message.success(res)
+          }).catch(error => {
+            this.$Message.error(error)
+          })
+
+        }
+      })
+    },
+
+    handleDowndrop (name) {
       // 获取下拉列表中name为logout的选项的事件
       if (name === 'logout') {
-        this.$Modal.confirm({
-          title: '确定退出微云课堂吗',
-          onOk: () => {
-            //清除本地缓存的Token
-            this.handleLogOut().then(res => {
-              this.$router.push({
-                name: 'login'
-              })
-              this.$Message.success(res)
-            }).catch(error => {
-              this.$Message.error(error)
-            })
 
-          }
-        })
       }
     },
     handleAddClass () {
@@ -281,15 +296,7 @@ export default {
     },
     //注册按钮——跳转到登录页面
     handleBtnRegister () {
-      this.$Modal.confirm({
-        title: '前往登录页',
-        content: '前往登陆页面进行注册——>',
-        onOk: () => {
-          this.$router.push({
-            name: 'login'
-          })
-        }
-      })
+      this.logout()
     },
   }
 }
@@ -302,10 +309,10 @@ export default {
   color: #fff;
 }
 .content {
-  margin: 100px calc((100% - 300px * 3) / 4);
+  /* margin: 100px calc((100% - 300px * 3) / 4); */
   position: absolute;
-  overflow-x: hidden;
-  overflow-y: scroll;
+  overflow: hidden;
+  /* overflow-y: scroll; */
   height: 100%;
 }
 .bg {

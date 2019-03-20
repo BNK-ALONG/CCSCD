@@ -7,6 +7,7 @@
   bottom: 10%;
   right: 5%;
   font-size: 20px !important;
+  z-index: 2;
 }
 
 .btn_add button {

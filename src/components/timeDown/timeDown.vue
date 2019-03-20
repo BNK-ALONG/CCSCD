@@ -21,8 +21,7 @@
               :stroke-dashoffset="dashOffset"
               style="transition: stroke-dashoffset 0.4s;stroke-linecap: round;" />
 
-      <text v-if="isEnd"
-            x="100"
+      <text x="100"
             y="100"
             text-anchor="middle"
             :font-size="fontSize + 5"
@@ -39,7 +38,7 @@
       </text>
       <text v-else
             x="100"
-            y="100"
+            y="150"
             text-anchor="middle"
             :font-size="fontSize"
             fill="rgb(81, 90, 110)">
@@ -51,6 +50,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'timeDown',
   props: {
@@ -83,6 +83,7 @@ export default {
     }
   },
   computed: {
+
     isEnd () {
       return this.timeLeft <= 0 ? false : true
 

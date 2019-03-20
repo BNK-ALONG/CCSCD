@@ -183,21 +183,6 @@ export const getClassNumberFromSessionstorage = () => {
 }
 
 /**
- * @param {Object} 临时存储课程的六大数字信息
- */
-export const setTimerInSessionstorage = (Timer) => {
-  sessionStorage.setItem('Timer', Timer)
-}
-
-/**
- * @returns {Object} 从Sessionstorage中获取课程的六大数字信息
- */
-export const getTimerFromSessionstorage = () => {
-  const Timer = sessionStorage.Timer
-  return Timer ? Timer : 0
-}
-
-/**
  * @param {Array} routers 路由列表数组
  * @description 用于找到路由列表中name为home的对象
  */
@@ -405,16 +390,16 @@ export const showByAccess = (access, canViewAccess) => {
 }
 
 /**
- * @description 根据name/params/query判断两个路由对象是否相等
+ * @description 根据name/params/query(已修改)判断两个路由对象是否相等
  * @param {*} route1 路由对象
  * @param {*} route2 路由对象
  */
 export const routeEqual = (route1, route2) => {
   const params1 = route1.params || {}
   const params2 = route2.params || {}
-  const query1 = route1.query || {}
-  const query2 = route2.query || {}
-  return (route1.name === route2.name) && objEqual(params1, params2) && objEqual(query1, query2)
+  // const query1 = route1.query || {}
+  // const query2 = route2.query || {} && objEqual(query1, query2)
+  return (route1.name === route2.name) && objEqual(params1, params2)
 }
 
 /**

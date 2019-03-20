@@ -36,7 +36,6 @@
 import MapLoader from '@/assets/plugins/AMap.js'
 import slider from '_c/slider'
 import { issueSign } from '@/api/sign'
-import { mapMutations } from 'vuex';
 export default {
   name: 'issue_sign',
   components: { slider },
@@ -136,12 +135,12 @@ export default {
                 const status = res.status
                 if (status === 200) {
                   let startTime = Date.now()
-                  that.setTimerDown(that.sign_interval)
+                  // 开始的时间，单位毫秒
+                  sessionStorage.setItem('startTime', Date.now())
+                  // 时间间隔，单位毫秒
+                  sessionStorage.setItem('interval', that.sign_interval * 60 * 1000)
                   that.$router.push({
-                    name: 'record_sign',
-                    query: {
-                      startTime: startTime
-                    }
+                    name: 'record_sign'
                   })
                   that.$Message.success(message)
                 } else {
@@ -252,11 +251,7 @@ export default {
       console.log('地图加载失败', e)
     })
   },
-  methods: {
-    ...mapMutations([
-      "setTimerDown"
-    ])
-  },
+
 }
 </script>
 <style>

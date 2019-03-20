@@ -44,7 +44,7 @@
 * THUMB
 **/
 .card__thumb {
-  height: 245px;
+  height: 200px;
   overflow: hidden;
   background-color: #000;
   -webkit-transition: height 0.5s;
@@ -95,14 +95,10 @@
   /* text-transform: uppercase; */
 }
 
-.card__footer {
-  position: absolute;
-  bottom: 12px;
-  left: 20px;
-  right: 20px;
-  font-size: 11px;
-  color: #a3a9a2;
+.card__body p {
+  font-size: 14px;
 }
+
 
 .card__description {
   left: 20px;
@@ -111,7 +107,6 @@
   margin: 0;
   padding: 0;
   color: #666c74;
-  line-height: 27px;
   opacity: 0;
   -webkit-transition: opacity 0.3s, -webkit-transform 0.3s;
   transition: opacity 0.3s, -webkit-transform 0.3s;
@@ -122,8 +117,10 @@
 }
 
 .card__description p {
-  overflow: auto;
-  height: 80px;
+  overflow: hidden;
+  height: auto;
+  text-indent: 2em;
+  font-size: 12px;
 }
 
 .left-dt {
@@ -162,4 +159,25 @@
 .card-background {
   width: 100%;
   height: 100%;
+  font-family: "MV Boli";
+  color: #fff;
+  font-size: 3em;
+  font-weight: bold;
+  display: -webkit-box !important;
+  /* Chrome 4+, Safari 3.1, iOS Safari 3.2+ */
+  display: -moz-box !important;
+  /* Firefox 17- */
+  display: -webkit-flex !important;
+  /* Chrome 21+, Safari 6.1+, iOS Safari 7+, Opera 15/16 */
+  display: -moz-flex !important;
+  /* Firefox 18+ */
+  display: -ms-flexbox !important;
+  /* IE 10 */
+  display: flex !important;
+  -webkit-justify-content: center;
+  -moz-justify-content: center;
+  -ms-justify-content: center;
+  -o-justify-content: center;
+  justify-content: center;
+  align-items: center;
 }
