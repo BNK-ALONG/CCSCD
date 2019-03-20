@@ -117,7 +117,6 @@ export default {
       setTimeout(() => {
         // this.modal_loading = true;
         this.modal2 = false;
-        this.$Message.success('删除成功！');
         this.$emit('deleteCard', this.index)
       }, 2000);
       setTimeout(() => {

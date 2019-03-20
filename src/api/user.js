@@ -95,3 +95,15 @@ export const getClassInfo = () => {
     }
   })
 }
+// 删除课堂
+export const delelteClass = ({
+  course_id
+}) => {
+  return axios.request({
+    url: '/sign/course_delete',
+    method: 'post',
+    data: {
+      course_id
+    }
+  })
+}

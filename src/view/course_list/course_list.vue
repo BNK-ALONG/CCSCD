@@ -139,7 +139,7 @@
 </template>
 <script>
 import ClassCard from '@/components/classCard'
-import { getClassInfo, classAdd } from '@/api/user'
+import { getClassInfo, classAdd, delelteClass } from '@/api/user'
 import { mapActions } from 'vuex'
 import { forClassTime } from '@/libs/util'
 export default {
@@ -293,6 +293,8 @@ export default {
     //删除课堂
     deleteCard (index) {
       this.cards.splice(index, 1)
+      let course_id = this.cards[index].classId
+      delelteClass({ course_id }).then(res => res.status === 200 ? this.$Message.success('删除成功！') : this.$Message.error(res.message)).catch(err => this.$Message.error(err))
     },
     //注册按钮——跳转到登录页面
     handleBtnRegister () {
