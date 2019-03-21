@@ -32,7 +32,7 @@
                   <Icon type="ios-arrow-down"></Icon>
                 </Button>
                 <DropdownMenu slot="list">
-                  <DropdownItem>个人资料</DropdownItem>
+                  <DropdownItem divided>个人资料</DropdownItem>
                   <DropdownItem disabled>消息</DropdownItem>
                   <DropdownItem divided
                                 name='logout'>退出登录</DropdownItem>
@@ -50,16 +50,17 @@
       </Header>
       <!-- 内容栏 -->
       <!-- 课堂列表 -->
-      <div class=' bg bg-blur'></div>
+      <div class=' bg bg-blur'
+           :style="{height:`${bgHeight}px`}"></div>
 
       <Content class="content"
-               style="z-index:1;">
+               :style="{height:`${contentHeight}px`}">
         <div style="margin:100px;">
           <class-card v-for="(classCard,index) in classCards"
                       :key="index"
                       :index="index"
-                      :cards="classCards"
-                      @deleteCard="deleteCard"></class-card>
+                      :card="classCard"
+                      @del-class="deleteCard"></class-card>
         </div>
       </Content>
 
@@ -174,15 +175,12 @@ export default {
           { type: 'string', max: 100, message: '课堂简介不能超过200个字符！', trigger: 'blur' }
         ],
         //开课时间检验
-        classTime: [
-          { required: true, message: '请选择开课时间', trigger: 'blur', pattern: /.+/ }
-        ],
+        // classTime: [
+        //   { required: true, message: '请选择开课时间', trigger: 'blur', pattern: /.+/ }
+        // ],
 
       },
-      //开学时间
-      classAddTime: '',
-      ClassAddYear: '',
-      ClassAddMonth: '',
+
       colorArr: ['4D2C37', 'F4B56B', '9E8C89', 'EADDCE', '3F88EB', '4O4F68', 'D1D9DE', '3AAB87']
     }
   },
@@ -193,7 +191,12 @@ export default {
     classCards () {
       return this.cards
     },
-
+    contentHeight () {
+      return Math.ceil(this.classCards.length / 3) * 490
+    },
+    bgHeight () {
+      return this.contentHeight < 900 ? 900 : this.contentHeight
+    }
   },
   mounted () {
     this.getClassInfo().then(courseList => {
@@ -236,7 +239,7 @@ export default {
     handleDowndrop (name) {
       // 获取下拉列表中name为logout的选项的事件
       if (name === 'logout') {
-
+        this.logout()
       }
     },
     handleAddClass () {
@@ -246,20 +249,27 @@ export default {
       this.$refs[name].validate((valid) => {
         if (valid) {
           this.modal1 = false
+          let classTime = this.formAddClass.classTime
+          console.log(classTime)
+          let daterage = forClassTime(classTime)
+          let classYear = daterage[0]
+          let classMonth = daterage[1]
           classAdd({
             get_course_name: this.formAddClass.className.trim(),
-            start_time: this.classAddTime,
+            start_time: classTime,
             brief: this.formAddClass.classIntro
           }).then(res => {
             const message = res.message
             const status = res.status
             if (status === 200) {
+
               this.cards.push({
+                classId: res.course_id,
                 className: this.formAddClass.className.trim(),
                 classIntro: this.formAddClass.classIntro,
-                classAddTime: this.classTime,
-                classYear: this.ClassAddYear,
-                classMonth: this.ClassAddMonth
+                classTime: classTime,
+                classYear: classYear,
+                classMonth: classMonth
               })
               this.$Message.success(message)
             } else {
@@ -280,22 +290,24 @@ export default {
         }
       })
     },
+    getClassAddTime (daterange) {
+      this.formAddClass.classTime = daterange
+    },
     //清空添加课程的填写信息
     handleReset (name) {
       this.$refs[name].resetFields();
     },
-    //添加课程-获取输入框的开学日期
-    getClassAddTime (daterange) {
-      this.classAddTime = daterange
-      this.ClassAddYear = forClassTime(daterange)[0]
-      this.ClassAddMonth = forClassTime(daterange)[1]
-    },
     //删除课堂
-    deleteCard (index) {
+    deleteCard (index, classId) {
+      console.log('删除前cards：', this.cards)
+      console.log('删除前classCards', this.classCards)
       this.cards.splice(index, 1)
-      let course_id = this.cards[index].classId
-      delelteClass({ course_id }).then(res => res.status === 200 ? this.$Message.success('删除成功！') : this.$Message.error(res.message)).catch(err => this.$Message.error(err))
+      console.log('删除后cards：', this.cards)
+      console.log('删除前classCards', this.cards)
+
+      delelteClass({ course_id: classId }).then(res => res.status === 200 ? this.$Message.success('删除成功！') : this.$Message.error(res.message)).catch(err => this.$Message.error(err))
     },
+
     //注册按钮——跳转到登录页面
     handleBtnRegister () {
       this.logout()
@@ -312,16 +324,16 @@ export default {
 }
 .content {
   /* margin: 100px calc((100% - 300px * 3) / 4); */
+  margin-top: 64px;
   position: absolute;
   overflow: hidden;
   /* overflow-y: scroll; */
-  height: 100%;
+  width: 100%;
+  z-index: 1;
 }
 .bg {
   background-image: url(~@/assets/pexels-photo-207691.jpeg);
   width: 100%;
-  height: 900px;
-  line-height: 900px;
   overflow-x: hidden;
 }
 .bg-blur {

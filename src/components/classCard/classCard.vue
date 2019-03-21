@@ -2,26 +2,26 @@
   <div class="card">
     <header class="card__thumb">
       <div :style="{background:`#${color}`}"
-           class="card-background"><span> {{cards[index].className}}</span></div>
+           class="card-background"><span> {{card.className}}</span></div>
     </header>
     <!-- <Button shape="circle">{{index}}</Button> -->
     <div class="card__date">
-      <span class="card__date__day">{{cards[index].classYear}}</span>
+      <span class="card__date__day">{{card.classYear}}</span>
       <br />
-      <span class="card__date__month">{{cards[index].classMonth}}</span>
+      <span class="card__date__month">{{card.classMonth}}</span>
     </div>
     <div class="card__body">
-      <div class="card__category">{{cards[index].classId}}</div>
-      <h2 class="card__title">{{cards[index].className}}</h2>
-      <p>课程编号：{{cards[index].classId}}，开学时间：{{cards[index].classTime}}</p>
+      <div class="card__category">{{card.classId}}</div>
+      <h2 class="card__title">{{card.className}}</h2>
+      <p>课程编号：{{card.classId}}，开学时间：{{card.classTime}}</p>
       <div class="card__description">
-        <p>{{cards[index].classIntro}}</p>
+        <p>{{card.classIntro}}</p>
         <div class="box_btn">
           <Button type="success"
-                  @click="sendClassId(cards[index].classId)">上课</Button>
+                  @click="sendClassId(card.classId)">上课</Button>
           <span class="left-dt"></span>
           <Button type="error"
-                  @click="modal2 = true">删除</Button>
+                  @click="handleDelClass">删除</Button>
           <Modal v-model="modal2"
                  width="400"
                  style="top:20%">
@@ -39,7 +39,11 @@
                       size="large"
                       long
                       :loading="modal_loading"
-                      @click="del">{{btn_text}}</Button>
+                      @click="del">
+                <span v-if="countDown>0"
+                      style="font-size:18px;">{{countDown}}s </span>
+                <span v-else>{{btn_text}}</span>
+              </Button>
             </div>
           </Modal>
         </div>
@@ -62,9 +66,9 @@ export default {
   props: {
     index: {
       type: Number,
-      required: true,
+      required: true
     },
-    cards: {
+    card: {
       classId: {
         type: String,
         required: true
@@ -78,6 +82,10 @@ export default {
         default: "课堂简介为空，介绍一下",
         required: false
       },
+      classTime: {
+        type: String,
+        required: false
+      },
       classYear: {
         type: Number,
         required: true
@@ -86,18 +94,17 @@ export default {
         type: String,
         required: true
       }
-    },
-    // color: {
-    //   type: String
-    // }
+    }
   },
   data () {
     return {
       modal2: false,
       modal_loading: false,
       btn_text: '忍心删除',
-      colorArr: ['4D2C37', 'F4B56B', '9E8C89', 'EADDCE', '3F88EB', '4O4F68', 'D1D9DE', '3AAB87']
+      colorArr: ['4D2C37', 'F4B56B', '9E8C89', 'EADDCE', '3F88EB', '4O4F68', 'D1D9DE', '3AAB87'],
+      countDown: 3
     }
+
   },
   computed: {
     color () {
@@ -111,18 +118,30 @@ export default {
       'getQRbs64',
       'getClassNumber'
     ]),
+    handleDelClass () {
+      this.countDown = 3
+      this.modal2 = true
+      this.modal_loading = true
+      let interval = setInterval(() => {
+        this.countDown--
+        if (this.countDown === 0) {
+          clearInterval(interval)
+          this.modal_loading = false
+        }
+      }, 1000)
+    },
     del () {
       this.modal_loading = true;
       this.btn_text = '删除中...'
       setTimeout(() => {
-        // this.modal_loading = true;
         this.modal2 = false;
-        this.$emit('deleteCard', this.index)
-      }, 2000);
+      }, 2000)
+      this.$emit('del-class', this.index, this.card.classId)
       setTimeout(() => {
         this.btn_text = '忍心删除'
-      }, 2001)
+      }, 3000)
     },
+
     sendClassId (classId) {
       this.getClassName({ course_id: classId }).then(message => {
         this.getQRbs64()
