@@ -45,7 +45,7 @@ export default {
       for (let item of words) {
         let arr = []
         arr.push(item.letter)
-        arr.push(item.perValue)
+        arr.push(item.frequency)
         list.push(arr)
       }
       let option = {
@@ -56,7 +56,7 @@ export default {
           show: true,
           backgroundColor: 'rgba(255, 255, 255, 0.9)',
           formatter: function (item) {
-            return '关键词：' + item[0] + '<br>' + '数值：' + item[1]
+            return '关键词：' + item[0] + '<br>' + '次数' + item[1]
           }
         },
         list: list,

@@ -226,7 +226,7 @@ export default {
     }) {
       return new Promise((resolve, reject) => {
         startClass({
-          brief
+          brief: brief
         }).then(res => {
           if (res.status === 200) {
             resolve("开始上课")

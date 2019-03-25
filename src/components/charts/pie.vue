@@ -4,7 +4,17 @@
 </template>
 
 <script>
-import echarts from 'echarts'
+// 引入 ECharts 主模块
+const echarts = require('echarts/lib/echarts');
+// 引入饼图
+require('echarts/lib/chart/pie');
+// 引入提示框
+require('echarts/lib/component/tooltip');
+// 标题组件
+require('echarts/lib/component/title');
+// 图列 说明
+require('echarts/lib/component/legend');
+// 区域缩放
 import tdTheme from './theme.json'
 import { on, off } from '@/libs/tools'
 echarts.registerTheme('tdTheme', tdTheme)
@@ -13,7 +23,6 @@ export default {
   props: {
     value: Array,
     text: String,
-    subtext: String
   },
   data () {
     return {
@@ -26,11 +35,9 @@ export default {
     },
     initEcharts () {
       const self = this
-      let legend = self.value.map(_ => _.name)
       let option = {
         title: {
           text: self.text,
-          subtext: self.subtext,
           x: 'center'
         },
         tooltip: {
@@ -40,7 +47,7 @@ export default {
         legend: {
           orient: 'vertical',
           left: 'left',
-          data: legend
+          data: self.value.map(_ => _.name)
         },
         series: [
           {
@@ -63,9 +70,7 @@ export default {
       on(window, 'resize', self.resize)
     }
   },
-  // mounted () {
-  //   this.initEcharts()
-  // },
+
   watch: {
     value () {
       this.$nextTick(() => {

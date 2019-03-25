@@ -5,7 +5,6 @@ import App from './App'
 import router from './router'
 import store from './store'
 import iView from 'iview'
-import i18n from '@/locale'
 import config from '@/config'
 import importDirective from '@/directive'
 import installPlugin from '@/plugin'
@@ -19,14 +18,12 @@ import '@/assets/icons/iconfont.js'
 // if (process.env.NODE_ENV !== 'production') require('@/mock')
 
 
-Vue.use(iView, {
-    i18n: (key, value) => i18n.t(key, value)
-  }),
+Vue.use(iView)
 
-  /**
-   * @description 注册admin内置插件
-   */
-  installPlugin(Vue)
+/**
+ * @description 注册admin内置插件
+ */
+installPlugin(Vue)
 /**
  * @description 生产环境关掉提示
  */
@@ -43,7 +40,6 @@ importDirective(Vue)
 /* eslint-disable no-new */
 new Vue({
   router,
-  i18n,
   store,
   render: h => h(App)
 }).$mount('#app')

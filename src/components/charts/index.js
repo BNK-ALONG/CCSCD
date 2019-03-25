@@ -1,9 +1,7 @@
-import ChartPie from './pie.vue'
-import ChartBar from './bar.vue'
 import ChartCate from './category.vue'
+import ChartPie from './pie.vue'
 export {
   ChartPie,
-  ChartBar,
   ChartCate
 
 }

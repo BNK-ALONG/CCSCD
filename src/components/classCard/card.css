@@ -116,11 +116,13 @@
   transition-delay: 0s;
 }
 
-.card__description p {
+.courseIntro {
   overflow: hidden;
-  height: auto;
+  max-height: 3.6em;
+  line-height: 1.2em;
   text-indent: 2em;
-  font-size: 12px;
+  font-size: 1em;
+  /* white-space: nowrap; */
 }
 
 .left-dt {

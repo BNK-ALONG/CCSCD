@@ -73,7 +73,7 @@
 import DragList from '_c/drag-list'
 import timeDown from '_c/timeDown'
 import { allSignRecord, newSignRecord, updateSignRecord, nowSignRecord } from '@/api/sign'
-import { ChartPie, ChartCate } from '_c/charts'
+import { ChartPie } from '_c/charts'
 import { downloadBlob } from '@/api/file'
 import { mapGetters } from 'vuex'
 
@@ -83,7 +83,6 @@ export default {
     DragList,
     ChartPie,
     timeDown,
-    ChartCate
   },
   data () {
     return {
@@ -106,26 +105,6 @@ export default {
 
   },
   computed: {
-    // color () {
-    //   let color = '#2db7f5'
-    //   if (this.percent == 0) {
-    //     color = '#5cb85c'
-    //   }
-    //   return color;
-    // },
-    // countDown () {
-    //   let time = this.residueTime ? this.residueTime * 1000 : 0
-    //   console.log(time)
-    //   if (time <= 0) {
-    //     return '00:00:00'
-    //   } else {
-    //     let result = []
-    //     result.push(Math.floor(time / 3.6e+6))
-    //     result.push(Math.floor(time % 3.6e+6 / 60000))
-    //     result.push(Math.floor(time % 60000 / 1000))
-    //     return result.map(x => x < 10 ? '0' + x : x).join(':')
-    //   }
-    // },
     unSignLength () {
       return this.list1.length
     },
@@ -146,7 +125,7 @@ export default {
       let leaveLen = 0
       for (let student of this.list2) {
         let status = student.status
-        if (status === '迟到') {
+        if (status === '请假') {
           leaveLen += 1
         }
       }
@@ -163,37 +142,7 @@ export default {
 
   },
   methods: {
-    // getNowPercent () {
-    //   let startTime = parseInt(sessionStorage.getItem('startTime'))
-    //   let interval = parseInt(sessionStorage.getItem('interval'))
-    //   if (!startTime) {
-    //     return
-    //   }
-    //   // 过去的时间，单位秒
-    //   let pastTime = parseInt((Date.now() - startTime) / 1000)
-    //   if (pastTime > interval) {
-    //     sessionStorage.removeItem('startTime')
-    //     sessionStorage.removeItem('interval')
-    //   } else {
-    //     let nowPercent = parseInt(pastTime * 100 / interval)
-    //     console.log('nowPercent', nowPercent)
-    //     this.timeDown(nowPercent)
-    //   }
-    // },
-    // timeDown (nowPercent) {
-    //   let interval = parseInt(sessionStorage.getItem('interval'))
-    //   console.log('interval', interval)
-    //   this.percent = 100 - nowPercent
-    //   this.timer = setInterval(() => {
-    //     this.percent -= 100 / interval
-    //     this.residueTime--
-    //     if (this.percent < 0) {
-    //       this.percent = 0
-    //       clearInterval(this.timer)
-    //     }
-    //     console.log('this.percent', this.percent)
-    //   }, 1000)
-    // },
+
     getNowSignRecord () {
       nowSignRecord().then(res => {
         if (res.status === 200) {

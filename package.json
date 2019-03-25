@@ -12,11 +12,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "clipboard": "^2.0.0",
-    "codemirror": "^5.38.0",
     "countup": "^1.8.2",
-    "cropperjs": "^1.2.2",
-    "dayjs": "^1.7.7",
     "echarts": "^4.0.4",
     "html2canvas": "^1.0.0-alpha.12",
     "iview": "^3.2.2",
@@ -25,15 +21,11 @@
     "js2wordcloud": "^1.1.12",
     "particles.js": "^2.0.0",
     "qs": "^6.6.0",
-    "simplemde": "^1.11.2",
     "sortablejs": "^1.7.0",
     "vue": "^2.5.10",
-    "vue-i18n": "^7.8.0",
     "vue-router": "^3.0.1",
     "vuedraggable": "^2.16.0",
-    "vuex": "^3.0.1",
-    "wangeditor": "^3.1.1",
-    "xlsx": "^0.13.3"
+    "vuex": "^3.0.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.1",

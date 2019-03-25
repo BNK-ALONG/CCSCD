@@ -180,8 +180,6 @@ export default {
         // ],
 
       },
-
-      colorArr: ['4D2C37', 'F4B56B', '9E8C89', 'EADDCE', '3F88EB', '4O4F68', 'D1D9DE', '3AAB87']
     }
   },
   computed: {

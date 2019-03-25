@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <header class="card__thumb">
-      <div :style="{background:`#${color}`}"
+      <div :style="{background:`${color}`}"
            class="card-background"><span> {{card.className}}</span></div>
     </header>
     <!-- <Button shape="circle">{{index}}</Button> -->
@@ -15,7 +15,18 @@
       <h2 class="card__title">{{card.className}}</h2>
       <p>课程编号：{{card.classId}}，开学时间：{{card.classTime}}</p>
       <div class="card__description">
-        <p>{{card.classIntro}}</p>
+        <Tooltip title="课程简介"
+                 max-width="200"
+                 placement="top"
+                 theme="dark"
+                 :content="card.classIntro">
+          <div slot="content">
+            <p><i>课程简介</i></p>
+            <p> {{card.classIntro}}</p>
+
+          </div>
+          <p class="courseIntro">{{card.classIntro}}</p>
+        </Tooltip>
         <div class="box_btn">
           <Button type="success"
                   @click="sendClassId(card.classId)">上课</Button>
@@ -101,7 +112,9 @@ export default {
       modal2: false,
       modal_loading: false,
       btn_text: '忍心删除',
-      colorArr: ['4D2C37', 'F4B56B', '9E8C89', 'EADDCE', '3F88EB', '4O4F68', 'D1D9DE', '3AAB87'],
+      colorArr: ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3'],
+
+      // colorArr: ['4D2C37', 'F4B56B', '9E8C89', 'EADDCE', '3F88EB', '4O4F68', 'D1D9DE', '3AAB87'],
       countDown: 3
     }
 
