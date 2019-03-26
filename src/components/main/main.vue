@@ -36,13 +36,23 @@
           <user :user-avator="userAvator" />
           <q-RImg></q-RImg>
           <random-stu></random-stu>
-          <start-end></start-end>
+          <start-end @on-start-change="handleStartChange"></start-end>
           <!-- 全屏的按钮 -->
           <return-courseList></return-courseList>
           <fullscreen v-model="isFullscreen"
                       style="margin-right: 20px;" />
-
+          <div style="font-size:40px;    position: absolute;
+    left: 40%;
+    clear: both;"
+               :class="{'animated':true,'bounceInRight':isStarting,'bounceOutRight':!isStarting}">
+            <svg class="iconfont-svg"
+                 aria-hidden="true"
+                 style="font-size: 2.5em;">
+              <use xlink:href="#icon-shangkezhong"></use>
+            </svg>
+          </div>
         </header-bar>
+
       </Header>
       <Content class="main-content-con">
         <Layout class="main-layout-con">
@@ -80,6 +90,8 @@ import RandomStu from './components/RandomStu'
 import { mapMutations, mapActions, mapGetters } from 'vuex'
 import { getNewTagList, getNextRoute, routeEqual } from '@/libs/util'
 import './main.less'
+require('animate.css/animate.min.css');
+
 export default {
   name: 'Main',
   components: {
@@ -97,7 +109,8 @@ export default {
   data () {
     return {
       collapsed: false,
-      isFullscreen: false
+      isFullscreen: false,
+      isStarting: false
     }
   },
   computed: {
@@ -171,6 +184,10 @@ export default {
     handleCollapsedChange (state) {
       this.collapsed = state
     },
+    handleStartChange (isStarting) {
+      this.isStarting = isStarting
+    }
+    ,
     handleCloseTag (res, type, route) {
       if (type === 'all') {
         this.turnToPage(this.$config.homeName)
@@ -217,6 +234,7 @@ export default {
         name: this.$config.homeName
       })
     }
+
   }
 }
 </script>

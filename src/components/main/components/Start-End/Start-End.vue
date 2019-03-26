@@ -1,25 +1,28 @@
 <template>
-  <div class="btn-openQRImg">
-    <Tooltip :content="isStart?'开始上课':'下课'"
-             style="width:auto;">
-      <Button type="text"
-              @click="handleStartEnd">
-        <svg v-if="isStart"
-             class="iconfont-svg"
-             aria-hidden="true"
-             style="font-size: 30px;">
-          <use xlink:href="#icon-bofang1"></use>
-        </svg>
-        <svg v-else
-             class="iconfont-svg"
-             aria-hidden="true"
-             style="font-size: 30px;">
-          <use xlink:href="#icon-zanting"></use>
-        </svg>
-      </Button>
-    </Tooltip>
-  </div>
+  <div>
 
+    <div class="btn-openQRImg">
+      <Tooltip :content="isStarting?'下课':'开始上课'"
+               style="width:auto;">
+        <Button type="text"
+                @click="handleStartEnd">
+          <svg v-if="isStarting"
+               class="iconfont-svg"
+               aria-hidden="true"
+               style="font-size: 30px;">
+            <use xlink:href="#icon-zanting"></use>
+          </svg>
+          <svg v-else
+               class="iconfont-svg"
+               aria-hidden="true"
+               style="font-size: 30px;">
+            <use xlink:href="#icon-bofang1"></use>
+          </svg>
+        </Button>
+      </Tooltip>
+    </div>
+
+  </div>
 </template>
 <script>
 import CommonIcon from '_c/common-icon'
@@ -32,14 +35,20 @@ export default {
   data () {
     return {
       iconSize: 25,
-      isStart: true,
+      isStarting: false,
       brief: ''
     }
   },
   methods: {
     handleStartEnd () {
       let self = this
-      if (self.isStart) {
+      if (self.isStarting) {
+        self.$store.dispatch("makeEnd").then(msg => {
+          self.isStarting = !self.isStarting
+          self.$Message.success(msg)
+          self.$emit("on-start-change", self.isStarting)
+        }).catch(err => self.$Message.error(err))
+      } else {
         self.$Modal.confirm({
           title: '请简单介绍本节内容，以便学生复习',
           render: (h) => {
@@ -59,16 +68,16 @@ export default {
             })
           },
           onOk: () => {
-            self.$store.dispatch("makeStart", self.brief).then(msg => self.$Message.success(msg)).catch(err => self.$Message.error(err))
-            self.isStart = !self.isStart
+            self.$store.dispatch("makeStart", { brief: self.brief }).then(msg => {
+              self.isStarting = !self.isStarting
+              self.$Message.success(msg)
+              self.$emit("on-start-change", self.isStarting)
+            }).catch(err => self.$Message.error(err))
           },
           onCancel: () => {
             // 
           }
         })
-      } else {
-        self.$store.dispatch("makeEnd").then(msg => self.$Message.success(msg)).catch(err => self.$Message.error(err))
-        self.isStart = !self.isStart
       }
 
     }
@@ -82,12 +91,5 @@ export default {
   .ivu-btn.ivu-btn-text {
     padding: 5px 1px 6px;
   }
-}
-.iconfont-svg {
-  width: 1em;
-  height: 1em;
-  vertical-align: -0.15em;
-  fill: currentColor;
-  overflow: hidden;
 }
 </style>
