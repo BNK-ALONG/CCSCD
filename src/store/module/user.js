@@ -222,11 +222,13 @@ export default {
     makeStart({
       commit
     }, {
-      brief
+      brief,
+      title
     }) {
       return new Promise((resolve, reject) => {
         startClass({
-          brief: brief
+          brief: brief,
+          title: title
         }).then(res => {
           if (res.status === 200) {
             resolve("开始上课")

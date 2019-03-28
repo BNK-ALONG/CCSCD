@@ -107,13 +107,15 @@ export const exportFile = ({
 
 // 上课
 export const startClass = ({
-  brief
+  brief,
+  title
 }) => {
   return axios.request({
     url: '/class_center/start_lesson',
     method: 'post',
     data: {
-      brief
+      brief,
+      title
     }
   })
 }
@@ -144,6 +146,58 @@ export const getDuration = () => {
 export const topWord = () => {
   return axios.request({
     url: '/class_center/high_frequency_word',
+    method: 'post'
+  })
+}
+// 课堂章节
+export const getChapters = () => {
+  return axios.request({
+    url: '/class_center/get_lesson',
+    method: 'post'
+  })
+}
+
+// 编写答案
+export const answers = ({
+  title,
+  answer
+}) => {
+  return axios.request({
+    url: '/class_center/put_answer',
+    method: 'post',
+    data: {
+      title,
+      answer
+    }
+  })
+}
+
+// 删除答案
+export const DelAnswers = ({
+  answer_id
+}) => {
+  return axios.request({
+    url: '/class_center/delete_answer',
+    method: 'post',
+    data: {
+      title,
+      answer_id
+    }
+  })
+}
+
+// 历史答疑
+export const pastAnswers = () => {
+  return axios.request({
+    url: '/class_center/answer_info',
+    method: 'post'
+  })
+}
+
+// 进度提示
+export const progressPrompt = () => {
+  return axios.request({
+    url: '/class_center/prompt_message',
     method: 'post'
   })
 }

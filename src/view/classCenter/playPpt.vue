@@ -1,53 +1,55 @@
 <template>
-  <div class="play-container">
-    <Card class="table-card"
-          title="课件列表"
-          icon="ios-cloud">
-      <div slot="extra">
-        <img src="@/assets/images/class2.png"
-             style="width:120px;">
-      </div>
-      <div>
-        <!-- table表格的容器（为了使表格居中） -->
-        <div class="table-btn-container">
-          <Table ref="fileList"
-                 stripe
-                 width='auto'
-                 :columns="columns"
-                 :data="classFileList">
-            <template slot-scope="{row,index}"
-                      slot="delete">
-              <Poptip confirm
-                      title="您确认导出此文件吗？"
-                      @on-ok="handleDelFile(row.file_name_uuid,index)">
-                <Button type="error">导出</Button>
-              </Poptip>
-            </template>
-            <template slot-scope="{row}"
-                      slot="show">
-              <!-- 这里的slot-scope="{row}"只有获取行的数据，不具有修改本行的数据源的能力 -->
-              <Button type="success"
-                      @click="handleShowFile(row.extension,row.file_name_uuid)"
-                      target="_blank">展示</Button>
-              <!-- <Button type="success"
-                      @click="handleShowFile(row.file_name_uuid)">展示</Button> -->
-            </template>
-          </Table>
-        </div>
-      </div>
-    </Card>
-  </div>
+  <Collapse accordion>
+    <Panel name="1">
+      本节课件
+      <Table ref="fileList"
+             slot="content"
+             stripe
+             border
+             width='auto'
+             :columns="columns"
+             :data="classFileList">
+
+        <template slot-scope="{row,index}"
+                  slot="share">
+          <!-- 这里的slot-scope="{row}"只有获取行的数据，不具有修改本行的数据源的能力 -->
+          <i-switch v-model="row.ShareStatus"
+                    :true-value="trueVal"
+                    :false-value="falseVal"
+                    @on-change="statusChange(index,row.ShareStatus,'分享')">
+            <Icon type="md-checkmark"
+                  slot="open"></Icon>
+            <Icon type="md-close"
+                  slot="close"></Icon>
+          </i-switch>
+        </template>
+        <template slot-scope="{row}"
+                  slot="show">
+          <Button type="success"
+                  @click="handleShowFile(row.extension,row.file_name_uuid)"
+                  target="_blank">展示</Button>
+
+        </template>
+      </Table>
+    </Panel>
+
+  </Collapse>
+
 </template>
 <script>
 import { showFileList, showOneFile, exportFile } from '@/api/classCenter'
-// import viewer from('@/assets/plugins/pdf/web/viewer.html')
+import { ShareOrImport } from '@/api/file'
+
 export default {
-  name: 'playPpt',
+  name: 'PlayPpt',
   data () {
     return {
+      trueVal: 1,
+      falseVal: 0,
       pdfURL: 'https%3A%2F%2Fwww.psycollege.com.cn%2Fclass_center%2Ftest_file%3Ffile_name_uuid%3D',
       pdfUrl: 'https://www.psycollege.com.cn/class_center/show_file?file_name_uuid=',
       pptUrl: 'https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Fwww.psycollege.com.cn%2Fclass_center%2Ftest_file%3Ffile_name_uuid%3D',
+      publicPath: process.env.BASE_URL,
       columns: [
         {
           type: 'index',
@@ -56,7 +58,6 @@ export default {
           title: '索引',
           //key对对应一下的字段名
           align: 'center',
-          className: 'tableFontSize'
         },
         {
           title: '上课文件',
@@ -69,15 +70,12 @@ export default {
           ellipsis: true,
           // tooltip超出一定字数的单元格用气泡提示出来
           tooltip: true,
-          className: 'tableFontSize'
-
         },
         {
           title: '格式',
           key: 'extension',
           align: 'center',
           width: 100,
-          className: 'tableFontSize',
           filters: [
             {
               label: 'pdf',
@@ -93,11 +91,12 @@ export default {
           }
         },
         {
-          title: '导出',
-          key: 'file_name_uuid',
-          slot: 'delete',
-          width: 100,
-          className: 'tableFontSize',
+          title: '分享',
+          key: 'ShareStatus',
+          slot: 'share',
+          align: 'center',
+          sortable: true,
+          maxWidth: 90,
         },
         {
           title: '展示',
@@ -105,69 +104,76 @@ export default {
           slot: 'show',
           align: 'center',
           maxWidth: 100,
-          className: 'tableFontSize',
         }
       ],
-      classFileList: [],
-      publicPath: process.env.BASE_URL
-
     }
   },
-  // vue 实例挂载之后触发的钩子函数，仅在页面第一次打开的时候触发
-  mounted () {
-    this.getFileList()
-  },
-
-  // 请求后台获取文件列表，只要进入此页面（第一次进入此页面不算）就会触发
-  activated () {
-    this.getFileList()
+  props: {
+    classFileList: {
+      type: Array,
+      default: () => []
+    }
   },
   methods: {
-    // 获取导入文件的列表
-    getFileList () {
-      showFileList().then(res => {
-        const message = res.message
-        const status = res.status
-        if (status === 200) {
-          this.classFileList = res.file_info
-          for (let index in this.classFileList) {
-            let extension = this.classFileList[index].file_name_uuid.split('.').pop()
-            this.classFileList[index]['extension'] = extension
-          }
+    // 分享和取消分享成功或失败、导入和取消导入成功或失败的提示信息
+    share_import_change ({ ResponseStatus, ResponseMessage, statusType, status, file_name }) {
+      if (ResponseStatus === 200) {
+        if (status === 0) {
+          this.$Notice.success({
+            title: '取消' + statusType,
+            desc: "文件——“" + file_name + "”" + '——已取消' + statusType + '!',
+            duration: 6
+          })
         } else {
-          this.$Modal.warning({
-            title: '无课件！',
-            content: '上课课件为空，请到数据中心进行文件导入。',
-            onOk: () => {
-              this.$router.push({
-                name: 'file_list'
-              })
-            }
+          this.$Notice.success({
+            title: '文件' + statusType,
+            desc: "文件——“" + file_name + "”" + '——' + statusType + '成功！',
+            duration: 6
           })
         }
+      } else {
+        if (status === 0) {
+          this.$Notice.error({
+            title: '取消' + statusType + '失败！',
+            desc: ResponseMessage
+            // desc: "文件——“" + file_name + "”" + '——取消' + statusType + '失败！' + '<br>失败原因：' + ResponseMessage
+          })
+        } else {
+          this.$Notice.error({
+            title: '文件' + statusType + '失败！',
+            desc: ResponseMessage
+            // desc: "文件——“" + file_name + "”" + '——' + statusType + '失败！' + '<br>失败原因：' + ResponseMessage
+          })
+        }
+      }
+    },
+    //导入和分享按钮的响应
+    statusChange (index, status, statusType) {
+      console.log(index)
+      let file_name_uuid = this.classFileList[index].file_name_uuid
+      let file_name = this.classFileList[index].file_name
+      console.log(file_name + statusType + '：' + status)
+      ShareOrImport({
+        statusType: statusType,
+        file_name_uuid: file_name_uuid,
+        status: status
+      }).then(res => {
+        this.share_import_change(
+          {
+            ResponseStatus: res.status,
+            ResponseMessage: res.message,
+            status: status,
+            statusType: statusType,
+            file_name: file_name
+          })
       }).catch(error => {
         this.$Modal.error({
-          title: '文件列表获取失败！请联系管理员',
+          title: '异常',
           content: error
         })
       })
     },
-    // 导出上课的文件
-    handleDelFile (file_name_uuid, index) {
-      exportFile({ file_name_uuid }).then(res => {
-        if (res.status === 200) {
-          this.$Message.success(res.message)
-          this.fileData.splice(index, 1)
-        } else {
-          this.$Message.error(res.message)
-        }
-      }).catch(err => {
-        this.$Modal.error({
-          title: '删除文件异常!',
-          content: err
-        })
-      })
-    },
+
     // 点击展示按钮，分别调用不同的接口展示pdf和ppt
     handleShowFile (extension, file_name_uuid) {
       console.log(extension)
@@ -187,24 +193,7 @@ export default {
 }
 </script>
 <style lang="less">
-.tableFontSize {
-  font-size: 16px;
-}
-.table-btn-container {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  -webkit-justify-content: center;
-  -moz-justify-content: center;
-  -ms-justify-content: center;
-  -o-justify-content: center;
-  justify-content: center;
-  align-items: center;
-  img {
-    width: 300px;
-  }
-}
-.play-container {
-  height: 100%;
-  width: 100%;
+.ivu-collapse > .ivu-collapse-item > .ivu-collapse-header {
+  color: inherit;
 }
 </style>

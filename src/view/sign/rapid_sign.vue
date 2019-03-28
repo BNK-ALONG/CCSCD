@@ -6,14 +6,11 @@ import { rapidSign } from '@/api/sign'
 import { mapMutations } from 'vuex'
 export default {
   methods: {
-    ...mapMutations([
-      "setTimerDown"
-    ])
+
   },
   mounted () {
     rapidSign().then(res => {
       if (res.status === 200) {
-        this.setTimerDown(res.interval)
         // 开始的时间，单位毫秒
         sessionStorage.setItem('startTime', Date.now())
         // 时间间隔，单位毫秒
@@ -35,7 +32,7 @@ export default {
             setTimeout(() => {
               this.$Modal.remove();
               this.$router.push({
-                name: 'issue_sign'
+                name: 'record_sign'
               })
             }, 2000);
           }

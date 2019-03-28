@@ -105,3 +105,11 @@ export const classNumber = () => {
     method: 'post'
   })
 }
+
+// 取消签到
+export const cancelSign = () => {
+  return axios.request({
+    url: '/sign/cancel_locate',
+    method: 'post'
+  })
+}

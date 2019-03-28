@@ -25,7 +25,7 @@
             y="100"
             text-anchor="middle"
             :font-size="fontSize + 5"
-            :fill="color">
+            :fill="countDownColor">
         {{ countDown }}
       </text>
       <text v-if="isEnd"
@@ -78,18 +78,23 @@ export default {
   },
   data () {
     return {
-      timeLeft: this.setTimer,
-      dashLen: (100 - this.border / 2) * Math.PI * 2
+      timeLeft: 0,
+      dashLen: (100 - this.border / 2) * Math.PI * 2,
+      // colorEnd: 'rgb(45,183,245)',
+      // opacityEnd: 0.4,
+      // isEnd: true,
     }
   },
   computed: {
-
     isEnd () {
       return this.timeLeft <= 0 ? false : true
 
     },
+    countDownColor () {
+      return this.timeLeft <= 0 ? '#19be6b' : 'rgb(45,183,245)'
+    },
     colorEnd () {
-      return this.timeLeft <= 0 ? '#5cb85c' : '#eee'
+      return this.timeLeft <= 0 ? '#19be6b' : '#eee'
     },
     opacityEnd () {
       return this.timeLeft <= 0 ? 1 : 0.4
@@ -97,9 +102,9 @@ export default {
     countDown () {
       let time = this.timeLeft
       if (time <= 0) {
-        this.colorEnd = '#5cb85c'
-        this.opacityEnd = 1
-        this.isEnd = false
+        // this.colorEnd = '#19be6b'
+        // this.opacityEnd = 1
+        // this.isEnd = false
         return '00:00:00'
       } else {
         let result = []
@@ -120,6 +125,7 @@ export default {
       let diff = Math.round((curDate - this.lastDate) / 1000) * 1000
       this.timeLeft -= diff
       if (this.timeLeft <= 0) {
+        this.timeLeft = 0
         clearInterval(this.interval)
       }
       if (diff >= 1000) {

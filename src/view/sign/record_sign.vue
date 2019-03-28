@@ -15,11 +15,25 @@
           <i-col span="8"
                  push='4'>
 
-            <keep-alive>
-              <time-down style="margin:0px auto;"
-                         :setTimer='setTimer'
-                         color="rgb(45, 183, 245)"></time-down>
-            </keep-alive>
+            <time-down style="margin:0px auto;"
+                       :setTimer='setTimer'
+                       ref="timeDown"
+                       color="rgb(45, 183, 245)"></time-down>
+            <br><br>
+
+            <div>
+              <Button type="success"
+                      shape="circle"
+                      size="large"
+                      @click="handleResign">重新发布</Button>
+              <Button type="success"
+                      shape="circle"
+                      size="large"
+                      style="margin-left:1em;"
+                      :loading="btnLoading"
+                      @click="handleCancelSign">取消签到</Button>
+            </div>
+
           </i-col>
           <i-col span="8"
                  push='2'>
@@ -72,7 +86,7 @@
 <script>
 import DragList from '_c/drag-list'
 import timeDown from '_c/timeDown'
-import { allSignRecord, newSignRecord, updateSignRecord, nowSignRecord } from '@/api/sign'
+import { allSignRecord, newSignRecord, updateSignRecord, nowSignRecord, cancelSign } from '@/api/sign'
 import { ChartPie } from '_c/charts'
 import { downloadBlob } from '@/api/file'
 import { mapGetters } from 'vuex'
@@ -93,16 +107,24 @@ export default {
         right: ['drop-box', 'right-drop-box']
       },
       handleList: [],
-      signRemark: '补签'
+      signRemark: '补签',
+      btnLoading: false,
+      setTimer: 0
     }
   },
   created () {
     this.getNowSignRecord()
     this.setTimer = sessionStorage.getItem('interval') ? parseInt(sessionStorage.getItem('interval')) : 0
+
+
   },
   activated () {
+    this.getTimeLeft()
     this.getNowSignRecord()
 
+  },
+  mounted () {
+    this.getTimeLeft()
   },
   computed: {
     unSignLength () {
@@ -142,7 +164,22 @@ export default {
 
   },
   methods: {
+    getTimeLeft () {
+      let interval = parseInt(sessionStorage.getItem('interval'))
+      let startTime = parseInt(sessionStorage.getItem('startTime'))
+      if (interval) {
+        let endTime = interval + startTime
+        let nowTime = Date.now()
+        let residueTime = endTime - nowTime
+        if (residueTime > 0) {
+          this.$refs.timeDown.timeLeft = Math.round(residueTime / 1000) * 1000
+        } else {
+          return
+        }
+      }
+    },
 
+    // 获取当前签到记录
     getNowSignRecord () {
       nowSignRecord().then(res => {
         if (res.status === 200) {
@@ -294,6 +331,35 @@ export default {
     // 事件：修改签到状态
     handleChangeSign (student, index) {
       this.signRemarkModal(student, 'Alert', index)
+    },
+    // 重新发布签到
+    handleResign () {
+      this.$router.push({
+        name: 'issue_sign'
+      })
+    },
+    // 取消签到
+    handleCancelSign () {
+      this.$Modal.confirm({
+        title: '确定取消',
+        content: '取消本次签到，学生不可再进行签到，确定取消吗？',
+        onOk: () => {
+          this.btnLoading = true
+          cancelSign().then(res => {
+            setTimeout(() => {
+              this.btnLoading = false
+              if (res.status === 200) {
+                this.$refs.timeDown.timeLeft = 0
+                this.$Message.success(res.message)
+              } else {
+                this.$Message.error(res.message)
+              }
+            }, 2000)
+          })
+        }
+
+      })
+
     }
   },
 

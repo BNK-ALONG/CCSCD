@@ -36,7 +36,8 @@ export default {
     return {
       iconSize: 25,
       isStarting: false,
-      brief: ''
+      brief: '',
+      title: ''
     }
   },
   methods: {
@@ -52,23 +53,45 @@ export default {
         self.$Modal.confirm({
           title: '请简单介绍本节内容，以便学生复习',
           render: (h) => {
-            return h('Input', {
-              props: {
-                value: self.brief,
-                autofocus: true,
-                placeholder: '本节简介，不超过100字。',
-                clearable: true,
-                maxlength: 100
-              },
-              on: {
-                input: (val) => {
-                  self.brief = val;
+            return h('div', [
+              h('Input', {
+                props: {
+                  value: self.title,
+                  autofocus: true,
+                  placeholder: '本节标题',
+                  clearable: true,
+                  maxlength: 100
+                },
+                style: {
+                  marginTop: '10px'
+                },
+
+                on: {
+                  input: (val) => {
+                    self.title = val;
+                  }
                 }
-              }
-            })
+              }),
+              h('Input', {
+                props: {
+                  value: self.brief,
+                  placeholder: '本节简介，不超过100字。',
+                  clearable: true,
+                  maxlength: 100
+                },
+                style: {
+                  marginTop: '10px'
+                },
+                on: {
+                  input: (val) => {
+                    self.brief = val;
+                  }
+                }
+              })
+            ])
           },
           onOk: () => {
-            self.$store.dispatch("makeStart", { brief: self.brief }).then(msg => {
+            self.$store.dispatch("makeStart", { brief: self.brief, title: self.title }).then(msg => {
               self.isStarting = !self.isStarting
               self.$Message.success(msg)
               self.$emit("on-start-change", self.isStarting)

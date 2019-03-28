@@ -73,13 +73,13 @@ export default [{
     },
     component: Main,
     children: [{
-        path: 'playPpt',
-        name: 'playPpt',
+        path: 'chapters',
+        name: 'chapters',
         meta: {
-          icon: 'md-play',
-          title: '课件播放'
+          icon: 'ios-book',
+          title: '课程章节'
         },
-        component: () => import('@/view/classCenter/playPpt.vue')
+        component: () => import('@/view/classCenter/chapters.vue')
       },
       {
         path: 'wordCloud',
@@ -99,7 +99,8 @@ export default [{
           title: '公告'
         },
         component: () => import('@/view/classCenter/notice.vue')
-      }
+      },
+
     ]
   },
   {
@@ -119,15 +120,7 @@ export default [{
         },
         component: () => import('@/view/sign/issue_sign.vue')
       },
-      // {
-      //   path: 'test_sign',
-      //   name: 'test_sign',
-      //   meta: {
-      //     icon: 'md-funnel',
-      //     title: '地图测试'
-      //   },
-      //   component: () => import('@/view/sign/test_sign.vue')
-      // },
+
       {
         path: 'rapid_sign',
         name: 'rapid_sign',

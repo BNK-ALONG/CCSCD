@@ -8,8 +8,7 @@
            v-model="collapsed"
            class="left-sider"
            :style="{overflow: 'hidden'}">
-      <side-menu accordion
-                 ref="sideMenu"
+      <side-menu ref="sideMenu"
                  :active-name="$route.name"
                  :collapsed="collapsed"
                  @on-select="turnToPage"
@@ -41,10 +40,7 @@
           <return-courseList></return-courseList>
           <fullscreen v-model="isFullscreen"
                       style="margin-right: 20px;" />
-          <div style="font-size:40px;    position: absolute;
-    left: 40%;
-    clear: both;"
-               :class="{'animated':true,'bounceInRight':isStarting,'bounceOutRight':!isStarting}">
+          <div :class="{'starting-con':true,'animated':true,'bounceInRight':isStarting,'bounceOutRight':!isStarting}">
             <svg class="iconfont-svg"
                  aria-hidden="true"
                  style="font-size: 2.5em;">
@@ -269,5 +265,12 @@ export default {
   font-size: 24px;
   width: 40px;
   text-align: center;
+}
+.starting-con {
+  font-size: 40px;
+  position: absolute;
+  left: 40%;
+  clear: both;
+  top: -5px;
 }
 </style>
