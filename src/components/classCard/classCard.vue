@@ -113,8 +113,6 @@ export default {
       modal_loading: false,
       btn_text: '忍心删除',
       colorArr: ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3'],
-
-      // colorArr: ['4D2C37', 'F4B56B', '9E8C89', 'EADDCE', '3F88EB', '4O4F68', 'D1D9DE', '3AAB87'],
       countDown: 3
     }
 

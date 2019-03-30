@@ -5,16 +5,24 @@
         <Menu width="auto"
               active-name="draftNotice"
               @on-select="handleSelect">
+          <!-- 发布公告栏目名 -->
           <MenuItem name="draftNotice">
           <span class="category-title">发布公告</span>
           <Badge style="margin-left: 10px"
                  :count="draftNoticeCount"></Badge>
           </MenuItem>
+          <!-- 历史公告栏目名 -->
           <MenuItem name="pastNotice">
           <span class="category-title">历史公告</span>
           <Badge style="margin-left: 10px"
                  class-name="gray-dadge"
                  :count="pastNoticeCount"></Badge>
+          </MenuItem>
+          <!-- 答疑栏目名 -->
+          <MenuItem name="answer">
+          <span class="category-title">答疑</span>
+          <Badge style="margin-left: 10px"
+                 :count="answerCount"></Badge>
           </MenuItem>
         </Menu>
       </div>
@@ -25,24 +33,26 @@
               active-name="直接发布"
               :class="titleClass"
               @on-select="handleView">
-          <Tooltip content="点击写公告"
+          <!-- 添加草稿的按钮 -->
+          <Tooltip :content="currentNoticeType==='draftNotice'?'点击写公告':'点击写答疑'"
                    style="width:100%;">
             <MenuItem name="直接发布"
-                      v-show="currentNoticeType==='draftNotice'"
+                      v-show="currentNoticeType!=='pastNotice'"
                       style="text-align: center;">
             <Icon type="md-add"
                   :size='24' />
             </MenuItem>
           </Tooltip>
-          <MenuGroup :title="currentNoticeType==='draftNotice'?'草稿箱':'历史公告'">
+          <!-- 题目 -->
+          <MenuGroup :title="menuGroupTitle">
 
             <MenuItem v-for="item in noticeList"
                       :name="item.notice_uid"
                       :key="`notice_${item.notice_uid}`">
             <div>
               <p class="msg-title">{{ item.title }}</p>
-              <Badge :status="currentNoticeType==='draftNotice'? 'error':'default'"
-                     :text="currentNoticeType==='draftNotice'? '保存于：'+item.time:'发布于：'+item.time" />
+              <Badge :status="currentNoticeType==='pastNotice'? 'default':'error'"
+                     :text="currentNoticeType==='answer'?badgeText+item.label: badgeText+item.time" />
               <div style="float:right;">
                 <tooltip content="删除">
                   <Button :style="{ display: item.delLoading ? 'inline-block !important' : '' ,padding: '5px'}"
@@ -70,7 +80,7 @@
 
         </Menu>
       </div>
-
+      <!-- 公告展示 -->
       <div class="message-page-con message-view-con"
            v-if="!newNotice">
         <Spin fix
@@ -78,22 +88,26 @@
               size="large"></Spin>
         <div class="message-view-header">
           <h2 class="message-view-title">{{ oneContent.title }}</h2>
-          <time class="message-view-time">{{ oneContent.time }}</time>
+          <time v-if="currentNoticeType!=='answer'"
+                class="message-view-time">{{ oneContent.time }}</time>
+          <time v-else
+                class="message-view-time">关键词：{{ oneContent.time }}</time>
         </div>
         <div>{{oneContent.content}}</div>
       </div>
+      <!-- 编辑框 -->
       <div class="message-page-con message-view-con edit-notice"
            v-if="newNotice">
         <Tooltip>
           <input v-model="titleVal"
-                 placeholder="这里是公告标题"
+                 :placeholder="currentNoticeType==='draftNotice'?'这里是公告标题':'这里是问题'"
                  class="edit-input" />
           <div slot="content">字数：{{ titleVal.length }}/40</div>
         </Tooltip>
         <Tooltip>
           <Input v-model="contentVal"
                  type="textarea"
-                 placeholder="这里是公告内容"
+                 :placeholder="currentNoticeType==='draftNotice'?'这里是公告内容':'这里是答案'"
                  element-id="content-textarea" />
           <div slot="content">字数：{{ contentVal.length }}/200</div>
         </Tooltip>
@@ -113,16 +127,15 @@
 </template>
 
 <script>
-import TestSign from '../sign/test_sign.vue'
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 import { sendNewNotice, delNoticeById, saveDraftNotice, sendDraftNotice } from '@/api/classCenter'
 const listDic = {
   draftNotice: 'draftNoticeList',
-  pastNotice: 'pastNoticeList'
+  pastNotice: 'pastNoticeList',
+  answer: 'answerList'
 }
 export default {
   name: 'notice',
-  components: { TestSign },
   data () {
     return {
       contentLoading: false,
@@ -130,7 +143,21 @@ export default {
       currentNoticeType: 'draftNotice',
       noticeContent: {},
       titleVal: '',
-      contentVal: ''
+      contentVal: '',
+      answerList: [
+        {
+          notice_uid: 1,
+          title: '王八蛋刘正',
+          content: '垃圾刘正垃圾刘正垃圾刘正垃圾刘正垃圾刘正垃圾刘正',
+          time: '刘政'
+        },
+        {
+          notice_uid: 2,
+          title: '王八蛋刘正',
+          content: '垃圾刘正垃圾刘正垃圾刘正垃圾刘正垃圾刘正垃圾刘正',
+          time: '刘政'
+        }
+      ]
     }
   },
   computed: {
@@ -143,7 +170,7 @@ export default {
       },
       titleClass () {
         return {
-          'not-unread-list': this.currentNoticeType !== 'draftNotice'
+          'not-unread-list': this.currentNoticeType === 'pastNotice'
         }
       }
     }),
@@ -154,7 +181,25 @@ export default {
     ...mapGetters([
       'draftNoticeCount',
       'pastNoticeCount'
-    ])
+    ]),
+    menuGroupTitle () {
+      if (this.currentNoticeType === 'draftNotice') {
+        return '草稿箱'
+      } else if (this.currentNoticeType === 'pastNotice') {
+        return '历史公告'
+      } else {
+        return '历史答疑'
+      }
+    },
+    badgeText () {
+      if (this.currentNoticeType === 'draftNotice') {
+        return '保存于：'
+      } else if (this.currentNoticeType === 'pastNotice') {
+        return '发布于：'
+      } else {
+        return '关键词：'
+      }
+    }
   },
   methods: {
     ...mapMutations([

@@ -201,3 +201,32 @@ export const progressPrompt = () => {
     method: 'post'
   })
 }
+
+
+// 创建一节课
+export const addChapter = ({
+  title,
+  brief
+}) => {
+  return axios.request({
+    url: '/class_center/add_chapter',
+    method: 'post',
+    data: {
+      title,
+      brief
+    }
+  })
+}
+
+// 删除一节课
+export const deleteChapter = ({
+  lesson_id
+}) => {
+  return axios.request({
+    url: '/class_center/delete_chapter',
+    method: 'post',
+    data: {
+      lesson_id
+    }
+  })
+}
