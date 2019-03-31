@@ -90,17 +90,6 @@ export default [{
         },
         component: () => import('@/view/classCenter/wordCloud.vue')
       },
-      {
-        path: 'notice',
-        name: 'notice',
-        meta: {
-          // access: ['super_admin'],
-          icon: '_gonggao',
-          title: '公告'
-        },
-        component: () => import('@/view/classCenter/notice.vue')
-      },
-
     ]
   },
   {
@@ -152,6 +141,16 @@ export default [{
     },
     component: Main,
     children: [{
+        path: 'notice',
+        name: 'notice',
+        meta: {
+          // access: ['super_admin'],
+          icon: '_gonggao',
+          title: '答疑与公告'
+        },
+        component: () => import('@/view/documents/notice.vue')
+      },
+      {
         path: 'file_list',
         name: 'file_list',
         meta: {

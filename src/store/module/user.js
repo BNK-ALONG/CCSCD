@@ -29,6 +29,7 @@ export default {
     token: getToken(),
     draftNoticeList: [],
     pastNoticeList: [],
+    answerList: [],
     messageContentStore: {}
   },
   mutations: {
@@ -53,6 +54,10 @@ export default {
     setPastNoticeList(state, list) {
       state.pastNoticeList = list
     },
+    // 设置历史答疑的列表
+    setAnswerList(state, list) {
+      state.answerList = list
+    },
     updateMessageContentStore(state, {
       msg_id,
       content
@@ -72,7 +77,8 @@ export default {
   },
   getters: {
     draftNoticeCount: state => state.draftNoticeList.length,
-    pastNoticeCount: state => state.pastNoticeList.length
+    pastNoticeCount: state => state.pastNoticeList.length,
+    answerCount: state => state.answerList.length
   },
   actions: {
     // 登录
@@ -126,12 +132,16 @@ export default {
         getClassInfo().then(res => {
           if (res) {
             let courseList = res.get_courses
-            var cards = []
+            let cards = []
             for (var index in courseList) {
-              var classId = courseList[index].course_id
-              var className = courseList[index].course_name
-              var classIntro = courseList[index].brief
-              var classTime = new Array()
+              let classId = courseList[index].course_id
+              let className = courseList[index].course_name
+              let classIntro = courseList[index].brief
+              let title = courseList[index].title
+              console.log('type:', typeof (Object.keys(title).length))
+              console.log(Object.keys(title).length)
+              console.log(Boolean(Object.keys(title).length))
+              let classTime = new Array()
               if (courseList[index].start_time === '') {
                 classTime = ['00', '壹月']
               } else {
@@ -143,7 +153,8 @@ export default {
                 classIntro: classIntro,
                 classTime: courseList[index].start_time,
                 classYear: classTime[0],
-                classMonth: classTime[1]
+                classMonth: classTime[1],
+                title: title
               })
             }
             resolve(cards)
@@ -179,18 +190,22 @@ export default {
       })
     },
 
-    // 获取所有的公告
+    // 获取所有的公告和历史答疑
     getAllNotice({
       commit
     }) {
       return new Promise((resolve, reject) => {
         getAllNotice().then(res => {
           commit('setdraftNoticeList', res.draft_notices.map(_ => {
-            _.delLoading = false
+            _.loading = false
             _.sendLoading = false
             return _
           }))
           commit('setPastNoticeList', res.past_notices.map(_ => {
+            _.loading = false
+            return _
+          }))
+          commit('setAnswerList', res.past_answers.map(_ => {
             _.loading = false
             return _
           }))

@@ -243,6 +243,7 @@ export default {
     handleAddClass () {
       this.modal1 = true
     },
+    // 添加一门课
     handleAddClassSubmit (name) {
       this.$refs[name].validate((valid) => {
         if (valid) {

@@ -52,11 +52,11 @@
             <div>
               <p class="msg-title">{{ item.title }}</p>
               <Badge :status="currentNoticeType==='pastNotice'? 'default':'error'"
-                     :text="currentNoticeType==='answer'?badgeText+item.label: badgeText+item.time" />
+                     :text="badgeText+item.time" />
               <div style="float:right;">
                 <tooltip content="删除">
-                  <Button :style="{ display: item.delLoading ? 'inline-block !important' : '' ,padding: '5px'}"
-                          :loading="item.delLoading"
+                  <Button :style="{ display: item.loading ? 'inline-block !important' : '' ,padding: '5px'}"
+                          :loading="item.loading"
                           size="large"
                           custom-icon="iconfont icon-shanchu btn-icon-gray"
                           type="text"
@@ -91,7 +91,7 @@
           <time v-if="currentNoticeType!=='answer'"
                 class="message-view-time">{{ oneContent.time }}</time>
           <time v-else
-                class="message-view-time">关键词：{{ oneContent.time }}</time>
+                class="message-view-time">{{ oneContent.time?'关键词：'+ oneContent.time:'' }}</time>
         </div>
         <div>{{oneContent.content}}</div>
       </div>
@@ -113,11 +113,11 @@
         </Tooltip>
         <div class="btn-submit">
           <Button type="success"
-                  @click="handleSaveToDraft"
-                  style=" width: 30%;font-size:18px;letter-spacing:4px;">保存到草稿箱</Button>
+                  @click="currentNoticeType==='draftNotice'?handleSaveToDraft():handleReset()"
+                  style=" width: 30%;font-size:18px;letter-spacing:4px;">{{currentNoticeType==='draftNotice'?'保存到草稿箱':'清空'}}</Button>
           <Button type="primary"
-                  @click="handleSendToPast"
-                  style=" width: 30%;font-size:18px;letter-spacing:4px;">直接发布</Button>
+                  @click="currentNoticeType==='draftNotice'?handleSendToPast():handleSaveAnswer()"
+                  style=" width: 30%;font-size:18px;letter-spacing:4px;">{{currentNoticeType==='draftNotice'?'直接发布':'保存'}}</Button>
         </div>
 
       </div>
@@ -128,7 +128,7 @@
 
 <script>
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
-import { sendNewNotice, delNoticeById, saveDraftNotice, sendDraftNotice } from '@/api/classCenter'
+import { sendNewNotice, delNoticeById, saveDraftNotice, sendDraftNotice, saveAnswers, delAnswers } from '@/api/classCenter'
 const listDic = {
   draftNotice: 'draftNoticeList',
   pastNotice: 'pastNoticeList',
@@ -143,21 +143,7 @@ export default {
       currentNoticeType: 'draftNotice',
       noticeContent: {},
       titleVal: '',
-      contentVal: '',
-      answerList: [
-        {
-          notice_uid: 1,
-          title: '王八蛋刘正',
-          content: '垃圾刘正垃圾刘正垃圾刘正垃圾刘正垃圾刘正垃圾刘正',
-          time: '刘政'
-        },
-        {
-          notice_uid: 2,
-          title: '王八蛋刘正',
-          content: '垃圾刘正垃圾刘正垃圾刘正垃圾刘正垃圾刘正垃圾刘正',
-          time: '刘政'
-        }
-      ]
+      contentVal: ''
     }
   },
   computed: {
@@ -165,6 +151,7 @@ export default {
     ...mapState({
       draftNoticeList: state => state.user.draftNoticeList,
       pastNoticeList: state => state.user.pastNoticeList,
+      answerList: state => state.user.answerList,
       noticeList () {
         return this[listDic[this.currentNoticeType]]
       },
@@ -180,7 +167,8 @@ export default {
     // 分别获取各类公告的数量
     ...mapGetters([
       'draftNoticeCount',
-      'pastNoticeCount'
+      'pastNoticeCount',
+      'answerCount'
     ]),
     menuGroupTitle () {
       if (this.currentNoticeType === 'draftNotice') {
@@ -232,37 +220,59 @@ export default {
     },
     // 通过公告的id删除公告
     delNotice (item) {
-      item.delLoading = true
+      item.loading = true
       const notice_uid = item.notice_uid
       const index = this.noticeList.findIndex(item => item.notice_uid === notice_uid)
       this.$Modal.confirm({
         title: '删除确认',
-        content: '删除公告不可恢复，确定删除吗？',
+        content: '删除之后不可恢复，确定删除吗？',
         onOk: () => {
-          const notice_uid = item.notice_uid
-          console.log(notice_uid)
           // 设置时间间隔，1.5秒之后，再删除，让loading动画效果显示1.5秒
-          setTimeout(() => {
-            delNoticeById({ notice_uid }).then(res => {
-              if (res.status === 200) {
-                this.noticeList.splice(index, 1)
-                this.noticeContent = {}
-                this.$Message.success(res.message)
-              } else {
-                this.$Message.error(res.message)
-                item.delLoading = false
-              }
-            }).catch(err => {
-              this.$Modal.error({
-                title: '删除公告失败，请联系管理员。',
-                content: err
+          if (this.currentNoticeType !== 'answer') {
+            // 删除公告
+            setTimeout(() => {
+              delNoticeById({ notice_uid }).then(res => {
+                if (res.status === 200) {
+                  this.noticeList.splice(index, 1)
+                  this.noticeContent = {}
+                  this.$Message.success(res.message)
+                } else {
+                  this.$Message.error(res.message)
+                  item.loading = false
+                }
+              }).catch(err => {
+                this.$Modal.error({
+                  title: '删除失败，请联系管理员。',
+                  content: err
+                })
+                item.loading = false
               })
-              item.delLoading = false
-            })
-          }, 1500)
+            }, 1500)
+          } else {
+            //删除历史答疑
+            setTimeout(() => {
+              delAnswers({ answer_id: notice_uid }).then(res => {
+                if (res.status === 200) {
+                  this.noticeList.splice(index, 1)
+                  this.noticeContent = {}
+                  this.$Message.success(res.message)
+                } else {
+                  this.$Message.error(res.message)
+                  item.loading = false
+                }
+              }).catch(err => {
+                this.$Modal.error({
+                  title: '删除失败，请联系管理员。',
+                  content: err
+                })
+                item.loading = false
+              })
+            }, 1500)
+          }
+
         },
         onCancel: () => {
-          item.delLoading = false
+          item.loading = false
         }
       })
 
@@ -305,65 +315,120 @@ export default {
     handleSaveToDraft () {
       let title = this.titleVal
       let content = this.contentVal
-      saveDraftNotice({
-        title: title,
-        content: content
-      }).then(res => {
-        if (res.status === 200) {
-          this.draftNoticeList.unshift({
-            title: title,
-            content: content,
-            time: res.add_time,
-            notice_uid: res.notice_uid
+      if (title && content) {
+        saveDraftNotice({
+          title: title,
+          content: content
+        }).then(res => {
+          if (res.status === 200) {
+            this.draftNoticeList.unshift({
+              title: title,
+              content: content,
+              time: res.add_time,
+              notice_uid: res.notice_uid
+            })
+            this.handleReset()
+            this.$Message.success({
+              content: res.message,
+              duration: 3
+            })
+          } else {
+            this.$Message.error({
+              content: res.message,
+              duration: 3
+            })
+          }
+        }).catch(err => {
+          this.$Modal.error({
+            title: '保存失败，请联系管理员。',
+            content: err
           })
-          this.$Message.success({
-            content: res.message,
-            duration: 3
-          })
-        } else {
-          this.$Message.error({
-            content: res.message,
-            duration: 3
-          })
-        }
-      }).catch(err => {
-        this.$Modal.error({
-          title: '保存失败，请联系管理员。',
-          content: err
         })
-      })
+      } else {
+        this.$Modal.warning({
+          title: '错误警告',
+          content: '请填写标题和内容。'
+        })
+      }
+
     },
     // 直接发布
     handleSendToPast () {
       let title = this.titleVal
       let content = this.contentVal
-      sendNewNotice({
-        title: title,
-        content: content
-      }).then(res => {
-        if (res.status === 200) {
-          this.pastNoticeList.unshift({
-            title: title,
-            content: content,
-            time: res.add_time,
-            notice_uid: res.notice_uid
+      if (title && content) {
+        sendNewNotice({
+          title: title,
+          content: content
+        }).then(res => {
+          if (res.status === 200) {
+            this.pastNoticeList.unshift({
+              title: title,
+              content: content,
+              time: res.add_time,
+              notice_uid: res.notice_uid
+            })
+            this.handleReset()
+
+            this.$Message.success({
+              content: res.message,
+              duration: 3
+            })
+          } else {
+            this.$Message.error({
+              content: res.message,
+              duration: 3
+            })
+          }
+        }).catch(err => {
+          this.$Modal.error({
+            title: '直接发布失败，请联系管理员。',
+            content: err
           })
-          this.$Message.success({
-            content: res.message,
-            duration: 3
-          })
-        } else {
-          this.$Message.error({
-            content: res.message,
-            duration: 3
-          })
-        }
-      }).catch(err => {
-        this.$Modal.error({
-          title: '直接发布失败，请联系管理员。',
-          content: err
         })
-      })
+      } else {
+        this.$Modal.warning({
+          title: '错误警告',
+          content: '请填写标题和内容。'
+        })
+      }
+
+    },
+    // 答疑编辑框清空
+    handleReset () {
+      this.titleVal = ''
+      this.contentVal = ''
+    },
+    // 答疑编辑框提交数据
+    handleSaveAnswer () {
+      let title = this.titleVal
+      let answer = this.contentVal
+      if (title && answer) {
+        saveAnswers({
+          title: title,
+          answer: answer
+        }).then(res => {
+          if (res.status === 200) {
+            this.answerList.unshift({
+              title: title,
+              content: answer,
+              time: res.label,
+              notice_uid: res.answer_id
+            })
+            this.handleReset()
+
+            this.$Message.success('添加成功！')
+          } else {
+            this.$Message.error(res.message)
+          }
+        }).catch(err => console.log(err))
+      } else {
+        this.$Modal.warning({
+          title: '错误警告',
+          content: '请填写标题和内容。'
+        })
+      }
+
     }
   },
   mounted () {

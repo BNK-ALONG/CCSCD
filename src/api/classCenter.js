@@ -23,7 +23,7 @@ export const sendNewNotice = ({
   })
 }
 
-// 获取历史公告和草稿箱公告的数据
+// 获取历史公告、草稿箱公告和历史答疑的数据
 export const getAllNotice = () => {
   return axios.request({
     url: '/documents/notice_info',
@@ -158,7 +158,7 @@ export const getChapters = () => {
 }
 
 // 编写答案
-export const answers = ({
+export const saveAnswers = ({
   title,
   answer
 }) => {
@@ -173,26 +173,18 @@ export const answers = ({
 }
 
 // 删除答案
-export const DelAnswers = ({
+export const delAnswers = ({
   answer_id
 }) => {
   return axios.request({
     url: '/class_center/delete_answer',
     method: 'post',
     data: {
-      title,
       answer_id
     }
   })
 }
 
-// 历史答疑
-export const pastAnswers = () => {
-  return axios.request({
-    url: '/class_center/answer_info',
-    method: 'post'
-  })
-}
 
 // 进度提示
 export const progressPrompt = () => {

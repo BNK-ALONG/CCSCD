@@ -14,6 +14,8 @@
       <div class="card__category">{{card.classId}}</div>
       <h2 class="card__title">{{card.className}}</h2>
       <p>课程编号：{{card.classId}}，开学时间：{{card.classTime}}</p>
+      <p v-if="Object.keys(card.title).length">已上至：第{{card.title.num}}节课——<i>{{card.title.title}}</i></p>
+      <p v-else>上课状态：未开课</p>
       <div class="card__description">
         <Tooltip title="课程简介"
                  max-width="200"
@@ -104,6 +106,10 @@ export default {
       classMonth: {
         type: String,
         required: true
+      },
+      title: {
+        type: Object,
+        default: () => { }
       }
     }
   },
