@@ -20,7 +20,8 @@
       <Step v-for="(notChapter,index) in notChapterList"
             :key="`notChapter${index}`"
             :status="index===0?'process':'wait'">
-        <p slot="title">第{{hasChapterList.length+index+1}}讲——{{notChapter.title}}</p>
+
+        <p slot="title">第{{hasChapterList.length+index+1}}讲——{{notChapter.title}} </p>
         <Card slot="content">
           <p slot="extra">未上课</p>
           <p>本节内容：
@@ -60,91 +61,6 @@ export default {
   },
   data () {
     return {
-      // notChapterList: [
-      //   {
-      //     title: '认识javascript',
-      //     brief: ['管理学', '数据结构', '入门'],
-      //     date: '2019-03-28',
-      //     start_time: '09:00',
-      //     end_time: '09:45',
-      //     files: [
-      //       {
-      //         file_name: '文件名',
-      //         file_name_uuid: 'c20d14ee.pdf',
-      //         ShareStatus: 0,
-      //         extension: 'pdf'
-      //       },
-      //       {
-      //         file_name: '文件名',
-      //         file_name_uuid: 'c20d14ee.pdf',
-      //         ShareStatus: 0,
-      //         extension: 'pdf'
-      //       }
-      //     ]
-      //   },
-      //   {
-      //     title: '基础类型',
-      //     brief: ['管理学', '数据结构', '入门'],
-      //     date: '2019-03-28',
-      //     start_time: '09:00',
-      //     end_time: '09:45',
-      //     files: [
-      //       {
-      //         file_name: '文件名',
-      //         file_name_uuid: 'c20d14ee.pdf',
-      //         ShareStatus: 0,
-      //         extension: 'pdf'
-      //       },
-      //       {
-      //         file_name: '文件名',
-      //         file_name_uuid: 'c20d14ee.pdf',
-      //         ShareStatus: 0,
-      //         extension: 'pdf'
-      //       }
-      //     ]
-      //   },
-      //   {
-      //     title: '认识javascript',
-      //     brief: ['管理学', '数据结构', '入门'],
-      //     date: '2019-03-28',
-      //     start_time: '09:00',
-      //     end_time: '09:45',
-      //     files: [
-      //       {
-      //         file_name: '文件名',
-      //         file_name_uuid: 'c20d14ee.pdf',
-      //         ShareStatus: 0,
-      //         extension: 'pdf'
-      //       },
-      //       {
-      //         file_name: '文件名',
-      //         file_name_uuid: 'c20d14ee.pdf',
-      //         ShareStatus: 0,
-      //         extension: 'pdf'
-      //       }
-      //     ]
-      //   },
-      // ],
-      // hasChapterList: [
-      //   {
-      //     title: 'javascript进阶',
-      //     brief: ['管理学', '数据结构', '入门'],
-      //     files: [
-      //       {
-      //         file_name: 'javascript进阶',
-      //         file_name_uuid: 'c20d14ee.pdf',
-      //         ShareStatus: 0,
-      //         extension: 'pdf'
-      //       },
-      //       {
-      //         file_name: 'javascript进阶',
-      //         file_name_uuid: 'c20d14ee.pdf',
-      //         ShareStatus: 0,
-      //         extension: 'pdf'
-      //       }
-      //     ]
-      //   },
-      // ],
       notChapterList: [],
       hasChapterList: [],
       tagColor: ['geekblue', 'green', 'orange', 'red']
@@ -182,7 +98,6 @@ export default {
               },
               "on-change-files": (val) => {
                 files = val
-
               },
               "get-lessonId": (val) => {
                 lesson_id = val
@@ -191,7 +106,7 @@ export default {
           })
         },
         onOk: () => {
-          this.hasChapterList.push({
+          this.notChapterList.push({
             title: title,
             brief: brief,
             files: files

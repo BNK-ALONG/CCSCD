@@ -106,17 +106,11 @@ export const exportFile = ({
 }
 
 // 上课
-export const startClass = ({
-  brief,
-  title
-}) => {
+export const startClass = () => {
   return axios.request({
     url: '/class_center/start_lesson',
-    method: 'post',
-    data: {
-      brief,
-      title
-    }
+    method: 'post'
+
   })
 }
 
@@ -220,5 +214,14 @@ export const deleteChapter = ({
     data: {
       lesson_id
     }
+  })
+}
+
+//进度提示
+
+export const noteMessage = () => {
+  return axios.request({
+    url: '/class_center/prompt_message',
+    method: 'post'
   })
 }

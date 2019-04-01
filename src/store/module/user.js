@@ -10,7 +10,8 @@ import {
   getAllNotice,
   randomStu,
   startClass,
-  endClass
+  endClass,
+  noteMessage
 } from '@/api/classCenter'
 import {
   getClassInfo,
@@ -236,15 +237,9 @@ export default {
     // 上课
     makeStart({
       commit
-    }, {
-      brief,
-      title
     }) {
       return new Promise((resolve, reject) => {
-        startClass({
-          brief: brief,
-          title: title
-        }).then(res => {
+        startClass().then(res => {
           if (res.status === 200) {
             resolve("开始上课")
           } else {
@@ -267,6 +262,20 @@ export default {
         }).catch(err => {
           reject(err)
         })
+      })
+    },
+    // 进度提示
+    noteMessage({
+      commit
+    }) {
+      return new Promise((resolve, reject) => {
+        noteMessage().then(res => {
+          if (res.status === 200) {
+            resolve(res.attention)
+          } else {
+            reject(res.message)
+          }
+        }).catch(err => reject(err))
       })
     }
   }
