@@ -26,33 +26,44 @@
           title="云文件列表"
           icon="ios-cloud">
       <div>
-        <!-- 四个按钮的容器(表格上边) -->
-        <div class="btn-container"
-             style="padding: 10px 0;">
-          <!-- 四个按钮的总长度要与表格对齐 -->
-          <div class="btn-wrap">
-            <!-- 全选、取消全选按钮 -->
-            <div class="two-btn-wrap select-btn">
+        <div class="btn-container">
+          <Row class-name="row-wrap">
+            <i-col span="8">
               <Button type="primary"
                       :size="btnSize"
                       icon="ios-checkmark-circle"
-                      @click="handleSelectAll(true)"
-                      class-name="selectAll">全 选</Button>
+                      @click="handleSelectAll(true)">全 选</Button>
               <Button icon="md-close"
                       :size="btnSize"
+                      class="btn-cancel"
                       @click="handleSelectAll(false)">取消全选</Button>
-            </div>
+            </i-col>
+            <!-- 搜索框 -->
+            <i-col span="8">
+              <Input @on-change="handleClear"
+                     search
+                     enter-button
+                     @on-search="handleSearch"
+                     placeholder="搜索文件"
+                     class="file-search-input"
+                     v-model="searchValue" />
+
+            </i-col>
             <!-- 下载删除按钮 -->
-            <div class="two-btn-wrap download-delete-btn">
-              <Button icon="md-trash"
-                      :size="btnSize"
-                      @click="handleDownloadDelete('删除')">删除</Button>
+            <i-col span="8"
+                   class-name="btn-right">
               <Button icon="ios-download-outline"
                       type="primary"
                       :size="btnSize"
+                      class="download"
                       @click="handleDownloadDelete('下载')">下载</Button>
-            </div>
-          </div>
+              <Button icon="md-trash"
+                      :size="btnSize"
+                      class="delete"
+                      @click="handleDownloadDelete('删除')">删除</Button>
+
+            </i-col>
+          </Row>
         </div>
         <!-- table表格的容器（为了使表格居中） -->
         <div class="table-btn-container">
@@ -61,7 +72,7 @@
                  border
                  width='auto'
                  :columns="columns"
-                 :data="fileData">
+                 :data="insideTableData">
             <template slot-scope="{row,index}"
                       slot="import">
               <!-- i-switch开关如果双向绑定的是原数据 开关的动画会卡顿 -->
@@ -112,6 +123,7 @@ export default {
       btnSize: 'large',
       trueVal: 1,
       falseVal: 0,
+      searchValue: '',
       playPPTtype: ['pptx', 'ppsx', 'ppt', 'pps', 'potx', 'ppsm', 'pdf'],
       columns: [
         {
@@ -214,7 +226,8 @@ export default {
 
         }
       ],
-      fileData: []
+      fileData: [],
+      insideTableData: [],
     }
   },
   mounted () {
@@ -235,6 +248,7 @@ export default {
             let extension = this.fileData[index].file_name_uuid.split('.').pop()
             this.fileData[index]['extension'] = extension
           }
+          this.insideTableData = this.fileData
         } else {
           this.$Modal.error({
             title: '文件列表获取失败！',
@@ -247,9 +261,7 @@ export default {
           content: error
         })
       })
-    }
-
-    ,
+    },
     handleSelectAll (status) {
       this.$refs.fileList.selectAll(status);
     },
@@ -354,8 +366,7 @@ export default {
         }
 
       }
-    }
-    ,
+    },
     // 批量下载和批量删除
     handleDownloadDelete (type) {
       let selection = this.$refs.fileList.getSelection()
@@ -414,11 +425,17 @@ export default {
           title: '请选择要' + type + '的文件！'
         })
       }
-    }
+    },
+    handleClear (e) {
+      if (e.target.value === '') this.insideTableData = this.fileData
+    },
+    handleSearch () {
+      this.insideTableData = this.fileData.filter(item => item.file_name.indexOf(this.searchValue) > -1)
+    },
   },
 }
 </script>
-<style>
+<style lang="less">
 .table-card {
   margin: 30px 5% 100px 5%;
   width: 90%;
@@ -458,5 +475,28 @@ export default {
   -o-justify-content: center;
   justify-content: center;
   align-items: center;
+}
+.file-search-input {
+  width: 100%;
+  height: 100%;
+}
+.file-search-btn {
+  margin-left: 3px;
+}
+.row-wrap {
+  width: 956px;
+  padding-bottom: 10px;
+  .btn-cancel {
+    margin-left: 20px;
+  }
+  .btn-right {
+    .delete {
+      float: right;
+      margin-right: 20px;
+    }
+    .download {
+      float: right;
+    }
+  }
 }
 </style>
