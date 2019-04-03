@@ -150,6 +150,13 @@ export const getChapters = () => {
     method: 'post'
   })
 }
+// 历史答疑
+export const pastAnswer = () => {
+  return axios.request({
+    url: '/class_center/answer_info',
+    method: 'post'
+  })
+}
 
 // 编写答案
 export const saveAnswers = ({
@@ -163,6 +170,14 @@ export const saveAnswers = ({
       title,
       answer
     }
+  })
+}
+// 下载答疑模板
+export const downloadAnswer = () => {
+  return axios.request({
+    url: '/class_center/answer_model',
+    method: 'post',
+    responseType: 'blob'
   })
 }
 
@@ -191,15 +206,13 @@ export const progressPrompt = () => {
 
 // 创建一节课
 export const addChapter = ({
-  title,
-  brief
+  data
 }) => {
   return axios.request({
     url: '/class_center/add_chapter',
     method: 'post',
     data: {
-      title,
-      brief
+      data
     }
   })
 }

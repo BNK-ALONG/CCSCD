@@ -8,6 +8,7 @@ import {
 } from '@/libs/util'
 import {
   getAllNotice,
+  pastAnswer,
   randomStu,
   startClass,
   endClass,
@@ -206,6 +207,17 @@ export default {
             _.loading = false
             return _
           }))
+          resolve()
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    },
+    getPastAnswer({
+      commit
+    }) {
+      return new Promise((resolve, reject) => {
+        pastAnswer().then(res => {
           commit('setAnswerList', res.past_answers.map(_ => {
             _.loading = false
             return _

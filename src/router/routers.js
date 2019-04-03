@@ -88,7 +88,16 @@ export default [{
           icon: '_tepin-words-chart',
           title: '词云'
         },
-        component: () => import('@/view/classCenter/wordCloud.vue')
+        component: () => import('@/view/classCenter/answerData.vue')
+      },
+      {
+        path: 'answer',
+        name: 'answer',
+        meta: {
+          icon: '_tepin-words-chart',
+          title: '答疑'
+        },
+        component: () => import('@/view/classCenter/answer.vue')
       },
     ]
   },
@@ -146,7 +155,7 @@ export default [{
         meta: {
           // access: ['super_admin'],
           icon: '_gonggao',
-          title: '答疑与公告'
+          title: '公告'
         },
         component: () => import('@/view/documents/notice.vue')
       },

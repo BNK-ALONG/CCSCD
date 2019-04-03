@@ -18,12 +18,6 @@
                  class-name="gray-dadge"
                  :count="pastNoticeCount"></Badge>
           </MenuItem>
-          <!-- 答疑栏目名 -->
-          <MenuItem name="answer">
-          <span class="category-title">答疑</span>
-          <Badge style="margin-left: 10px"
-                 :count="answerCount"></Badge>
-          </MenuItem>
         </Menu>
       </div>
       <!-- 题目栏 -->
@@ -34,7 +28,7 @@
               :class="titleClass"
               @on-select="handleView">
           <!-- 添加草稿的按钮 -->
-          <Tooltip :content="currentNoticeType==='draftNotice'?'点击写公告':'点击写答疑'"
+          <Tooltip content="点击写公告"
                    style="width:100%;">
             <MenuItem name="直接发布"
                       v-show="currentNoticeType!=='pastNotice'"
@@ -88,10 +82,8 @@
               size="large"></Spin>
         <div class="message-view-header">
           <h2 class="message-view-title">{{ oneContent.title }}</h2>
-          <time v-if="currentNoticeType!=='answer'"
-                class="message-view-time">{{ oneContent.time }}</time>
-          <time v-else
-                class="message-view-time">{{ oneContent.time?'关键词：'+ oneContent.time:'' }}</time>
+          <time class="message-view-time">{{ oneContent.time }}</time>
+
         </div>
         <div>{{oneContent.content}}</div>
       </div>
@@ -107,17 +99,17 @@
         <Tooltip>
           <Input v-model="contentVal"
                  type="textarea"
-                 :placeholder="currentNoticeType==='draftNotice'?'这里是公告内容':'这里是答案'"
+                 placeholder="这里是公告内容"
                  element-id="content-textarea" />
           <div slot="content">字数：{{ contentVal.length }}/200</div>
         </Tooltip>
         <div class="btn-submit">
           <Button type="success"
-                  @click="currentNoticeType==='draftNotice'?handleSaveToDraft():handleReset()"
-                  style=" width: 30%;font-size:18px;letter-spacing:4px;">{{currentNoticeType==='draftNotice'?'保存到草稿箱':'清空'}}</Button>
+                  @click="handleSaveToDraft"
+                  style=" width: 30%;font-size:18px;letter-spacing:4px;">保存到草稿箱</Button>
           <Button type="primary"
-                  @click="currentNoticeType==='draftNotice'?handleSendToPast():handleSaveAnswer()"
-                  style=" width: 30%;font-size:18px;letter-spacing:4px;">{{currentNoticeType==='draftNotice'?'直接发布':'保存'}}</Button>
+                  @click="handleSendToPast"
+                  style=" width: 30%;font-size:18px;letter-spacing:4px;">直接发布</Button>
         </div>
 
       </div>
@@ -131,8 +123,7 @@ import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 import { sendNewNotice, delNoticeById, saveDraftNotice, sendDraftNotice, saveAnswers, delAnswers } from '@/api/classCenter'
 const listDic = {
   draftNotice: 'draftNoticeList',
-  pastNotice: 'pastNoticeList',
-  answer: 'answerList'
+  pastNotice: 'pastNoticeList'
 }
 export default {
   name: 'notice',
@@ -151,7 +142,6 @@ export default {
     ...mapState({
       draftNoticeList: state => state.user.draftNoticeList,
       pastNoticeList: state => state.user.pastNoticeList,
-      answerList: state => state.user.answerList,
       noticeList () {
         return this[listDic[this.currentNoticeType]]
       },
@@ -167,25 +157,20 @@ export default {
     // 分别获取各类公告的数量
     ...mapGetters([
       'draftNoticeCount',
-      'pastNoticeCount',
-      'answerCount'
+      'pastNoticeCount'
     ]),
     menuGroupTitle () {
       if (this.currentNoticeType === 'draftNotice') {
         return '草稿箱'
-      } else if (this.currentNoticeType === 'pastNotice') {
-        return '历史公告'
       } else {
-        return '历史答疑'
+        return '历史公告'
       }
     },
     badgeText () {
       if (this.currentNoticeType === 'draftNotice') {
         return '保存于：'
-      } else if (this.currentNoticeType === 'pastNotice') {
-        return '发布于：'
       } else {
-        return '关键词：'
+        return '发布于：'
       }
     }
   },
@@ -202,8 +187,6 @@ export default {
     // 选择菜单栏中的公告类型
     handleSelect (name) {
       this.currentNoticeType = name
-      console.log(name)
-      console.log(this.noticeList)
     },
     // 选择哪一题目展示其内容，selection的值有两种类型，一种是notice_uid和‘直接发布’
     handleView (selection) {
@@ -212,11 +195,15 @@ export default {
       } else {
         this.contentLoading = true
         const item = this.noticeList.find(item => item.notice_uid === selection)
-        this.noticeContent = item
+        setTimeout(() => {
+          this.stopLoading('contentLoading')
+          this.noticeContent = item
+
+        }, 1500)
         this.newNotice = false
       }
 
-      this.stopLoading('contentLoading')
+
     },
     // 通过公告的id删除公告
     delNotice (item) {
@@ -228,47 +215,25 @@ export default {
         content: '删除之后不可恢复，确定删除吗？',
         onOk: () => {
           // 设置时间间隔，1.5秒之后，再删除，让loading动画效果显示1.5秒
-          if (this.currentNoticeType !== 'answer') {
-            // 删除公告
-            setTimeout(() => {
-              delNoticeById({ notice_uid }).then(res => {
-                if (res.status === 200) {
-                  this.noticeList.splice(index, 1)
-                  this.noticeContent = {}
-                  this.$Message.success(res.message)
-                } else {
-                  this.$Message.error(res.message)
-                  item.loading = false
-                }
-              }).catch(err => {
-                this.$Modal.error({
-                  title: '删除失败，请联系管理员。',
-                  content: err
-                })
+          // 删除公告
+          setTimeout(() => {
+            delNoticeById({ notice_uid }).then(res => {
+              if (res.status === 200) {
+                this.noticeList.splice(index, 1)
+                this.noticeContent = {}
+                this.$Message.success(res.message)
+              } else {
+                this.$Message.error(res.message)
                 item.loading = false
+              }
+            }).catch(err => {
+              this.$Modal.error({
+                title: '删除失败，请联系管理员。',
+                content: err
               })
-            }, 1500)
-          } else {
-            //删除历史答疑
-            setTimeout(() => {
-              delAnswers({ answer_id: notice_uid }).then(res => {
-                if (res.status === 200) {
-                  this.noticeList.splice(index, 1)
-                  this.noticeContent = {}
-                  this.$Message.success(res.message)
-                } else {
-                  this.$Message.error(res.message)
-                  item.loading = false
-                }
-              }).catch(err => {
-                this.$Modal.error({
-                  title: '删除失败，请联系管理员。',
-                  content: err
-                })
-                item.loading = false
-              })
-            }, 1500)
-          }
+              item.loading = false
+            })
+          }, 1500)
 
         },
         onCancel: () => {
@@ -394,42 +359,12 @@ export default {
       }
 
     },
-    // 答疑编辑框清空
+    // 编辑框清空
     handleReset () {
       this.titleVal = ''
       this.contentVal = ''
-    },
-    // 答疑编辑框提交数据
-    handleSaveAnswer () {
-      let title = this.titleVal
-      let answer = this.contentVal
-      if (title && answer) {
-        saveAnswers({
-          title: title,
-          answer: answer
-        }).then(res => {
-          if (res.status === 200) {
-            this.answerList.unshift({
-              title: title,
-              content: answer,
-              time: res.label,
-              notice_uid: res.answer_id
-            })
-            this.handleReset()
-
-            this.$Message.success('添加成功！')
-          } else {
-            this.$Message.error(res.message)
-          }
-        }).catch(err => console.log(err))
-      } else {
-        this.$Modal.warning({
-          title: '错误警告',
-          content: '请填写标题和内容。'
-        })
-      }
-
     }
+
   },
   mounted () {
     // 请求获取消息列表
