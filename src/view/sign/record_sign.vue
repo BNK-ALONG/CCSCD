@@ -349,6 +349,8 @@ export default {
             setTimeout(() => {
               this.btnLoading = false
               if (res.status === 200) {
+                sessionStorage.removeItem("interval")
+                sessionStorage.removeItem("startTime")
                 this.$refs.timeDown.timeLeft = 0
                 this.$Message.success(res.message)
               } else {

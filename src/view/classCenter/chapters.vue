@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="chapter-wrap">
     <Steps direction="vertical">
       <Step v-for="(chapter,index) in hasChapterList"
             :key="`notChapter_${index}`"
@@ -7,12 +7,12 @@
         <p slot="title">第{{index+1}}讲——{{chapter.title}}</p>
         <Card slot="content">
           <div slot="extra">
-            <p>已上课</p>
+            <span>已上课</span>
             <Tooltip content="删除本节"
                      style="width:auto;">
               <Button type="text"
                       @click="handleDelChapter('已上课',chapter.lesson_id,chapter.index)">
-                <CommonIcon :size="24"
+                <CommonIcon :size="22"
                             color="#999"
                             type="_lajitong1 delete-btn" />
               </Button>
@@ -34,12 +34,12 @@
         <p slot="title">第{{hasChapterList.length+index+1}}讲——{{chapter.title}} </p>
         <Card slot="content">
           <div slot="extra">
-            <p>未上课</p>
+            <span>未上课</span>
             <Tooltip content="删除本节"
                      style="width:auto;">
               <Button type="text"
                       @click="handleDelChapter('未上课',chapter.lesson_id,chapter.index)">
-                <CommonIcon :size="24"
+                <CommonIcon :size="22"
                             type="_lajitong1" />
               </Button>
             </Tooltip>
@@ -137,12 +137,9 @@ export default {
             this.$Message.error('添加失败，服务器出现故障。')
           }
           else {
-            let data = {
-              title: title,
-              brief: brief
-            }
             addChapter({
-              data: data
+              title: title,
+              brief: brief.toString()
             }).then(res => {
               if (res.status === 200) {
                 this.notChapterList.push({
@@ -204,5 +201,8 @@ export default {
 }
 .delete-btn:hover::before {
   color: #2d8cf0 !important;
+}
+.chapter-wrap p {
+  margin: 4px 3px 5px 3px;
 }
 </style>

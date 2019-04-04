@@ -206,13 +206,15 @@ export const progressPrompt = () => {
 
 // 创建一节课
 export const addChapter = ({
-  data
+  title,
+  brief
 }) => {
   return axios.request({
     url: '/class_center/add_chapter',
     method: 'post',
     data: {
-      data
+      title,
+      brief
     }
   })
 }

@@ -53,13 +53,9 @@ export default {
     },
     // 提交标题和简介
     handleSubmitAddChapter () {
-
-      let data = {
-        title: this.title,
-        brief: this.brief
-      }
       addChapter({
-        data: data
+        title: this.title,
+        brief: this.brief.toString()
       }).then(res => {
         if (res.status === 200) {
           this.$emit("get-lessonId", res.lesson_id)
