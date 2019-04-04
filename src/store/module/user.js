@@ -11,8 +11,8 @@ import {
   pastAnswer,
   randomStu,
   startClass,
-  endClass,
-  noteMessage
+  endClass
+
 } from '@/api/classCenter'
 import {
   getClassInfo,
@@ -276,19 +276,5 @@ export default {
         })
       })
     },
-    // 进度提示
-    noteMessage({
-      commit
-    }) {
-      return new Promise((resolve, reject) => {
-        noteMessage().then(res => {
-          if (res.status === 200) {
-            resolve(res.attention)
-          } else {
-            reject(res.message)
-          }
-        }).catch(err => reject(err))
-      })
-    }
   }
 }

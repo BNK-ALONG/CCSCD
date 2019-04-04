@@ -1,7 +1,7 @@
 import axios from '@/libs/api.request'
 
 // 获取词云的单词数据
-export const wordCloud = () => {
+export const getWordsCloud = () => {
   return axios.request({
     url: '/class_center/word_cloud',
     method: 'post'

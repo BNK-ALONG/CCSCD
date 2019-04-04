@@ -6,11 +6,6 @@
               @click="handleTeturn">
         <CommonIcon :size="iconSize"
                     type="_i-fh" />
-        <!-- <svg class="iconfont-svg"
-             aria-hidden="true"
-             style="font-size: 30px;">
-          <use xlink:href="#icon-fanhui1"></use>
-        </svg> -->
       </Button>
     </Tooltip>
   </div>

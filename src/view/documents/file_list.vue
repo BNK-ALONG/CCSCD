@@ -437,8 +437,7 @@ export default {
 </script>
 <style lang="less">
 .table-card {
-  margin: 30px 5% 100px 5%;
-  width: 90%;
+
   padding-bottom: 30px;
 }
 .tableFontSize {

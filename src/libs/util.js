@@ -603,10 +603,6 @@ export const getSignOption = (allSignList) => {
 export const getWordsOption = (topWordList) => {
   return {
     legend: {},
-    title: {
-      text: '本课程的提问热榜',
-      x: 'center'
-    },
     textStyle: {
       fontSize: 16
     },

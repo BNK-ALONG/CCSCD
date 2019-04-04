@@ -55,13 +55,6 @@ export default {
           self.$Message.success(msg)
           self.$emit("on-start-change", self.isStarting)
         }).catch(err => self.$Message.error(err))
-        self.$store.dispatch("noteMessage").then(msg => {
-          self.$Message.warning({
-            content: msg,
-            duration: 0,
-            closable: true
-          })
-        })
       }
 
     }

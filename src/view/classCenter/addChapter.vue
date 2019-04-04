@@ -51,15 +51,20 @@ export default {
     handleTitle () {
       this.$emit("on-title-change", this.title)
     },
+    // 提交标题和简介
     handleSubmitAddChapter () {
-      addChapter({
+
+      let data = {
         title: this.title,
         brief: this.brief
+      }
+      addChapter({
+        data: data
       }).then(res => {
         if (res.status === 200) {
           this.$emit("get-lessonId", res.lesson_id)
         } else {
-          this.$emit("get-lessonId", false)
+          this.$emit("get-lessonId", 'false')
         }
       }).catch(err => console.log(err))
     },

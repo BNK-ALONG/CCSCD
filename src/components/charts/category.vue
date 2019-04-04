@@ -24,6 +24,7 @@ require('echarts/lib/component/dataZoom');
 require('echarts/lib/component/dataset');
 // 网格
 require('echarts/lib/component/grid');
+require('echarts-wordcloud');
 import tdTheme from './theme.json'
 import { on, off } from '@/libs/tools'
 echarts.registerTheme('tdTheme', tdTheme)
