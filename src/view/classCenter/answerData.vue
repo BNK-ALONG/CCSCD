@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div style="height:100%;width:100%;"
+       ref="contentHeight">
     <Row :gutter="20">
       <i-col span="12">
         <word-cloud :wordData="data"></word-cloud>

@@ -3,7 +3,7 @@
   <Card title="本课程的提问热榜"
         style="margin-top:20px;">
     <chart-cate :option="option"
-                style="height: 200px;"></chart-cate>
+                :style="{height: `${height}px`}"></chart-cate>
   </Card>
 
 </template>
@@ -19,7 +19,12 @@ export default {
     option: {
       type: Object,
       default: () => { }
+    },
+    height: {
+      type: Number,
+      default: 250
     }
-  }
+  },
+
 }
 </script>

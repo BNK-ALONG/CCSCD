@@ -73,6 +73,7 @@
 <script>
 import { courseLogin } from '@/api/user'
 import { mapActions } from 'vuex'
+import { setIsStartingLocalstorage } from '@/libs/util'
 export default {
   name: "classCard",
 
@@ -162,6 +163,7 @@ export default {
     sendClassId (classId) {
       this.getClassName({ course_id: classId }).then(message => {
         this.getQRbs64()
+        setIsStartingLocalstorage(false)
         this.$router.push({
           name: '_home'
         })

@@ -84,7 +84,7 @@ import ReturnCourseList from './components/ReturnCourseList'
 import StartEnd from './components/Start-End'
 import RandomStu from './components/RandomStu'
 import { mapMutations, mapActions, mapGetters } from 'vuex'
-import { getNewTagList, getNextRoute, routeEqual } from '@/libs/util'
+import { getNewTagList, getNextRoute, routeEqual, getIsStartingLocalstorage } from '@/libs/util'
 import './main.less'
 require('animate.css/animate.min.css');
 
@@ -106,7 +106,7 @@ export default {
     return {
       collapsed: false,
       isFullscreen: false,
-      isStarting: false
+      isStarting: getIsStartingLocalstorage()
     }
   },
   computed: {

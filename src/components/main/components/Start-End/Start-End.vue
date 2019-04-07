@@ -26,7 +26,10 @@
 </template>
 <script>
 import CommonIcon from '_c/common-icon'
-
+import {
+  setIsStartingLocalstorage,
+  getIsStartingLocalstorage
+} from '@/libs/util'
 export default {
   name: 'StartEnd',
   components: {
@@ -35,7 +38,7 @@ export default {
   data () {
     return {
       iconSize: 25,
-      isStarting: false,
+      isStarting: getIsStartingLocalstorage(),
       brief: '',
       title: ''
     }
@@ -46,19 +49,20 @@ export default {
       if (self.isStarting) {
         self.$store.dispatch("makeEnd").then(msg => {
           self.isStarting = !self.isStarting
+          setIsStartingLocalstorage(self.isStarting)
           self.$Message.success(msg)
           self.$emit("on-start-change", self.isStarting)
         }).catch(err => self.$Message.error(err))
       } else {
         self.$store.dispatch("makeStart").then(msg => {
           self.isStarting = !self.isStarting
+          setIsStartingLocalstorage(self.isStarting)
           self.$Message.success(msg)
           self.$emit("on-start-change", self.isStarting)
         }).catch(err => self.$Message.error(err))
       }
-
     }
-  },
+  }
 }
 </script>
 

@@ -6,9 +6,6 @@
             type="md-arrow-dropdown"></Icon>
       <DropdownMenu slot="list">
         <DropdownItem disabled>你好，{{userName}}</DropdownItem>
-        <DropdownItem>个人资料</DropdownItem>
-        <DropdownItem>消息</DropdownItem>
-        <DropdownItem>反馈邮箱</DropdownItem>
         <DropdownItem divided
                       name='logout'>退出登录</DropdownItem>
       </DropdownMenu>

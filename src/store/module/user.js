@@ -116,6 +116,7 @@ export default {
           if (res.status === 200) {
             commit('setToken', '')
             commit('setAccess', [])
+            localStorage.removeItem("isStarting")
             resolve(res.message)
           } else {
             reject(res.message)
@@ -255,7 +256,7 @@ export default {
           if (res.status === 200) {
             resolve("开始上课")
           } else {
-            reject(new Error('上课开启失败！'))
+            reject(res.message)
           }
         }).catch(err => {
           reject(err)
@@ -269,7 +270,8 @@ export default {
           if (res.status === 200) {
             resolve('结束本节课')
           } else {
-            reject(new Error('本节课结束失败'))
+            // reject(new Error('本节课结束失败'))
+            reject(res.message)
           }
         }).catch(err => {
           reject(err)

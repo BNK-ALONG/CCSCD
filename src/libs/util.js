@@ -183,6 +183,21 @@ export const getClassNumberFromSessionstorage = () => {
 }
 
 /**
+ * @param {Boolean} 存储是否开课
+ */
+export const setIsStartingLocalstorage = (isStarting) => {
+  localStorage.setItem('isStarting', Number(isStarting))
+}
+
+/**
+ * @returns {String} 从LocalStorage获取是否开课，'0'，'1'
+ */
+export const getIsStartingLocalstorage = () => {
+  const isStarting = localStorage.isStarting
+  return isStarting ? parseInt(isStarting) : 0
+}
+
+/**
  * @param {Array} routers 路由列表数组
  * @description 用于找到路由列表中name为home的对象
  */
