@@ -2,22 +2,18 @@
   <div>
     <Row :gutter="20">
       <i-col span="12">
-        <word-cloud :data="data"></word-cloud>
+        <word-cloud :wordData="data"></word-cloud>
       </i-col>
       <i-col span="12">
         <Card title="进度提醒">
           <Row style="height:250px;"
                type="flex"
                justify="center">
-            <i-col span="8"
-                   :push="2">
+            <i-col span="8">
               <i-circle :stroke-color="strokeColor"
                         :percent="100"
                         :size="180">
                 <div v-if="strokeColor==='#5cb85c'">
-                  <Icon type="ios-checkmark"
-                        size="90"
-                        style="color:#5cb85c"></Icon>
                   <span class="circle-num">{{attention.num}}</span>
                 </div>
                 <div v-else>
@@ -27,10 +23,14 @@
                   <p class="prompt-p">进度过快！</p>
                 </div>
               </i-circle>
-              <p class="prompt-p">
-                关键词：{{attention.key_word}}
-              </p>
-              <p class="prompt-p">辅助词：{{attention.assist_word}}</p>
+            </i-col>
+            <i-col span="8">
+              <div style="margin: 45% 0px;">
+                <p class="prompt-p">
+                  关键词：{{attention.key_word}}
+                </p>
+                <p class="prompt-p">辅助词：{{attention.assist_word}}</p>
+              </div>
             </i-col>
           </Row>
         </Card>
@@ -94,7 +94,15 @@ export default {
     }).catch(err => self.$Message.error(err))
     getWordsCloud().then(res => {
       if (res.status === 200) {
-        this.data = res.search_details
+        self.data = res.search_details
+        self.data[0].textStyle = {
+          normal: {
+            color: 'red'
+          },
+          emphasis: {
+            color: 'black'
+          }
+        }
       } else {
         self.$Message.error(res.message)
       }

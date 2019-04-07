@@ -22,9 +22,11 @@
           <p>上课时间：{{chapter.start_time}}——{{chapter.end_time}}</p>
           <p>本节内容：
             <Tag v-for="(tag,index) in chapter.brief"
+                 style="font-size:18px;"
                  :key="index">{{tag}}</Tag>
           </p>
-          <play-ppt :classFileList="chapter.files"></play-ppt>
+          <play-ppt :classFileList="chapter.files"
+                    :hasChapter="true"></play-ppt>
         </Card>
       </Step>
 
@@ -47,9 +49,11 @@
           <p>本节内容：
             <Tag v-for="(hasTag,index) in chapter.brief"
                  :color="index<4?tagColor[index]:tagColor[index%3-1]"
+                 style="font-size:18px;"
                  :key="index">{{hasTag?hasTag:'空'}}</Tag>
           </p>
-          <play-ppt :classFileList="chapter.files"></play-ppt>
+          <play-ppt :classFileList="chapter.files"
+                    :hasChapter="false"></play-ppt>
         </Card>
       </Step>
 
@@ -133,6 +137,7 @@ export default {
               files: files,
               lesson_id: lesson_id
             })
+            this.$Message.success('添加成功！')
           } else if (lesson_id === 'false') {
             this.$Message.error('添加失败，服务器出现故障。')
           }
@@ -203,6 +208,7 @@ export default {
   color: #2d8cf0 !important;
 }
 .chapter-wrap p {
+  font-size: 16px;
   margin: 4px 3px 5px 3px;
 }
 </style>

@@ -2,7 +2,7 @@
 
   <Card title="提问词云">
     <div class="chart"
-         ref="pageView"></div>
+         ref="wordDom"></div>
   </Card>
 </template>
 
@@ -10,10 +10,10 @@
 import echarts from "echarts";
 require('echarts-wordcloud');
 require("echarts/theme/roma"); // echarts theme
-let _ = require("underscore");
+import { on, off } from '@/libs/tools'
 export default {
   props: {
-    data: {
+    wordData: {
       type: Array,
       default: () => [{
         name: '反馈很快',
@@ -89,24 +89,19 @@ export default {
   data () {
     return {
       chart: null,
+      wordDom: null,
       autoResize: true
     };
   },
-  mounted () {
-    this.initChart();
-    if (this.autoResize) {
-      this.__resizeHanlder = _.debounce(() => {
-        if (this.chart) {
-          this.chart.resize();
-        }
-      }, 100);
-      window.addEventListener("resize", this.__resizeHanlder);
-    }
-  },
 
   methods: {
-    setOptions ({ expectedData, actualData } = {}) {
-      this.chart.setOption({
+    resize () {
+      this.wordDom.resize()
+    },
+    initEcharts () {
+      const self = this
+      self.wordDom = echarts.init(self.$refs.wordDom, 'roma')
+      self.wordDom.setOption({
         tooltip: {},
         series: [{
           type: 'wordCloud',
@@ -127,16 +122,29 @@ export default {
               shadowColor: '#333'
             }
           },
-          data: this.data
+          data: self.wordData
         }],
         animationDuration: 2800,
         animationEasing: "cubicInOut"
-      });
-    },
-    initChart () {
-      this.chart = echarts.init(this.$refs.pageView, "roma");
-      this.setOptions(this.chartData);
+      })
+      on(window, 'resize', self.resize)
     }
+  },
+  mounted () {
+    this.$nextTick(() => {
+      this.initEcharts()
+    })
+  },
+  watch: {
+    wordData () {
+      this.$nextTick(() => {
+        this.initEcharts()
+      })
+    }
+  },
+  beforeDestroy () {
+    const self = this
+    off(window, 'resize', self.resize)
   }
 };
 </script>

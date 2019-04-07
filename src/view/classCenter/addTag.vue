@@ -6,6 +6,7 @@
          v-for="(tag,index) in dynamicTags"
          closable
          type="border"
+         style="font-size:18px;"
          :color="index<4?tagColor[index]:tagColor[index%3-1]"
          @on-close="handleClose(tag)">
       {{tag}}

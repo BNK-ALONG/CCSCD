@@ -1,7 +1,9 @@
 <template>
   <Collapse accordion>
     <Panel name="1">
-      本节课件
+      本节课件 <Badge style="margin-left: 10px"
+             :class-name="fileBadge"
+             :count="classFileList.length"></Badge>
       <Table ref="fileList"
              slot="content"
              stripe
@@ -48,7 +50,7 @@ export default {
       falseVal: 0,
       pdfURL: 'https%3A%2F%2Fwww.psycollege.com.cn%2Fclass_center%2Ftest_file%3Ffile_name_uuid%3D',
       pdfUrl: 'https://www.psycollege.com.cn/class_center/show_file?file_name_uuid=',
-      pptUrl: 'https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Fwww.psycollege.com.cn%2Fclass_center%2Ftest_file%3Ffile_name_uuid%3D',
+      pptUrl: 'https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Fwww.psycollege.com.cn%2Fclass_center%2Fshow_file%3Ffile_name_uuid%3D',
       publicPath: process.env.BASE_URL,
       columns: [
         {
@@ -112,6 +114,12 @@ export default {
     classFileList: {
       type: Array,
       default: () => []
+    },
+    hasChapter: Boolean,
+  },
+  computed: {
+    fileBadge () {
+      return this.hasChapter ? 'gray-dadge' : 'black-dadge'
     }
   },
   methods: {
@@ -195,5 +203,11 @@ export default {
 <style lang="less">
 .ivu-collapse > .ivu-collapse-item > .ivu-collapse-header {
   color: inherit;
+}
+.gray-dadge {
+  background: gainsboro;
+}
+.black-dadge {
+  background: #515a6e;
 }
 </style>

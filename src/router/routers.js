@@ -85,8 +85,8 @@ export default [{
         path: 'wordCloud',
         name: 'wordCloud',
         meta: {
-          icon: '_tepin-words-chart',
-          title: '词云'
+          icon: '_fenxi',
+          title: '进度分析'
         },
         component: () => import('@/view/classCenter/answerData.vue')
       },
@@ -94,7 +94,7 @@ export default [{
         path: 'answer',
         name: 'answer',
         meta: {
-          icon: '_tepin-words-chart',
+          icon: 'md-help',
           title: '答疑'
         },
         component: () => import('@/view/classCenter/answer.vue')

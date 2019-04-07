@@ -55,7 +55,9 @@ export default {
     }
   },
   mounted () {
-    this.initEcharts()
+    this.$nextTick(() => {
+      this.initEcharts()
+    })
   },
   watch: {
     option () {
