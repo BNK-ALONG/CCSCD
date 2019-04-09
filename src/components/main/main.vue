@@ -35,7 +35,7 @@
           <user :user-avator="userAvator" />
           <q-RImg></q-RImg>
           <random-stu></random-stu>
-          <start-end @on-start-change="handleStartChange"></start-end>
+          <start-end></start-end>
           <!-- 全屏的按钮 -->
           <return-courseList></return-courseList>
           <fullscreen v-model="isFullscreen"
@@ -63,8 +63,7 @@
               <router-view />
             </keep-alive>
             <ABackTop :height="100"
-                      :bottom="80"
-                      :right="50"
+                      :bottom="8"
                       container=".content-wrapper"></ABackTop>
           </Content>
         </Layout>
@@ -105,13 +104,13 @@ export default {
   data () {
     return {
       collapsed: false,
-      isFullscreen: false,
-      isStarting: getIsStartingLocalstorage()
+      isFullscreen: false
     }
   },
   computed: {
     ...mapGetters([
-      'errorCount'
+      'errorCount',
+      'isStarting'
     ]),
     tagNavList () {
       return this.$store.state.app.tagNavList
@@ -180,10 +179,6 @@ export default {
     handleCollapsedChange (state) {
       this.collapsed = state
     },
-    handleStartChange (isStarting) {
-      this.isStarting = isStarting
-    }
-    ,
     handleCloseTag (res, type, route) {
       if (type === 'all') {
         this.turnToPage(this.$config.homeName)

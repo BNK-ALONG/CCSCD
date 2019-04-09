@@ -1,5 +1,5 @@
 import Main from '@/components/main'
-import parentView from '@/components/parent-view'
+// import parentView from '@/components/parent-view'
 
 /**
  * iview-admin中meta除了原生参数外可配置的参数:
@@ -77,16 +77,16 @@ export default [{
         name: 'chapters',
         meta: {
           icon: 'ios-book',
-          title: '课程章节'
+          title: '章节目录'
         },
-        component: () => import('@/view/classCenter/chapters.vue')
+        component: () => import('@/view/classCenter/classCatalog.vue')
       },
       {
         path: 'wordCloud',
         name: 'wordCloud',
         meta: {
           icon: '_fenxi',
-          title: '进度分析'
+          title: '课堂反馈'
         },
         component: () => import('@/view/classCenter/answerData.vue')
       },
@@ -95,10 +95,10 @@ export default [{
         name: 'answer',
         meta: {
           icon: 'md-help',
-          title: '答疑'
+          title: '答疑库'
         },
         component: () => import('@/view/classCenter/answer.vue')
-      },
+      }
     ]
   },
   {
@@ -155,7 +155,7 @@ export default [{
         meta: {
           // access: ['super_admin'],
           icon: '_gonggao',
-          title: '公告'
+          title: '公告发布'
         },
         component: () => import('@/view/documents/notice.vue')
       },

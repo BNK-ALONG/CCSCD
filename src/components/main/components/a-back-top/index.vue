@@ -1,11 +1,17 @@
 <template>
-    <div :class="classes" :style="styles" @click="back">
-        <slot>
-            <div :class="innerClasses">
-                <i class="ivu-icon ivu-icon-ios-arrow-up"></i>
-            </div>
-        </slot>
-    </div>
+  <div :class="classes"
+       :style="styles"
+       @click="back">
+    <Tooltip content="返回顶部"
+             placement="left">
+      <slot>
+        <div :class="innerClasses">
+          <i class="ivu-icon ivu-icon-ios-arrow-up"></i>
+        </div>
+      </slot>
+    </Tooltip>
+
+  </div>
 </template>
 <script>
 import { scrollTop } from '@/libs/util'
@@ -21,11 +27,11 @@ export default {
     },
     bottom: {
       type: Number,
-      default: 30
+      default: 10
     },
     right: {
       type: Number,
-      default: 30
+      default: 5
     },
     duration: {
       type: Number,
@@ -64,8 +70,8 @@ export default {
     },
     styles () {
       return {
-        bottom: `${this.bottom}px`,
-        right: `${this.right}px`
+        bottom: `${this.bottom}%`,
+        right: `${this.right}%`
       }
     },
     innerClasses () {

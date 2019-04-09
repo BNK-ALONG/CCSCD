@@ -55,7 +55,8 @@ export default {
       columns: [
         {
           type: 'index',
-          width: 70,
+          minWidth: 60,
+          maxWidth: 70,
           //title表头名
           title: '索引',
           //key对对应一下的字段名
@@ -66,8 +67,8 @@ export default {
           key: 'file_name',
           sortable: true,
           align: 'center',
-          width: 460,
-          // maxWidth: 500,
+          minWidth: 460,
+          maxWidth: 500,
           // ellipsis超出部分显示为省略号
           ellipsis: true,
           // tooltip超出一定字数的单元格用气泡提示出来
@@ -77,7 +78,8 @@ export default {
           title: '格式',
           key: 'extension',
           align: 'center',
-          width: 100,
+          minWidth: 110,
+          maxWidth: 120,
           filters: [
             {
               label: 'pdf',
@@ -98,13 +100,15 @@ export default {
           slot: 'share',
           align: 'center',
           sortable: true,
-          maxWidth: 90,
+          minWidth: 90,
+          maxWidth: 100,
         },
         {
           title: '展示',
           key: 'file_name_uuid',
           slot: 'show',
           align: 'center',
+          minWidth: 90,
           maxWidth: 100,
         }
       ],

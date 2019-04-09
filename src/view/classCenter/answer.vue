@@ -240,7 +240,7 @@ export default {
     },
     // 下载答疑模板
     handleDownloadAnswer () {
-      downloadAnswer().then(res => downloadBlob(res, '答疑模板.xlsx')).catch(err => console.log(err))
+      downloadAnswer().then(res => downloadBlob(res, '答疑模板.xls')).catch(err => console.log(err))
     },
     // 上传成功后
     handleUploadSuccess () {

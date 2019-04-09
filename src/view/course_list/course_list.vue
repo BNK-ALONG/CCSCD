@@ -63,7 +63,7 @@
                       @del-class="deleteCard"></class-card>
         </div>
       </Content>
-
+      <!-- 添加一门课按钮 -->
       <div class="btn_add">
         <Poptip trigger="hover"
                 :title="title"
@@ -83,6 +83,7 @@
       </div>
     </Layout>
 
+    <!-- 添加课程对话框 -->
     <Modal v-model="modal1"
            footer-hide>
       <span slot="header"

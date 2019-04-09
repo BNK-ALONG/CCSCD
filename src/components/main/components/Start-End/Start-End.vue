@@ -30,6 +30,7 @@ import {
   setIsStartingLocalstorage,
   getIsStartingLocalstorage
 } from '@/libs/util'
+import { mapGetters } from 'vuex'
 export default {
   name: 'StartEnd',
   components: {
@@ -38,28 +39,28 @@ export default {
   data () {
     return {
       iconSize: 25,
-      isStarting: getIsStartingLocalstorage(),
       brief: '',
       title: ''
     }
   },
+  computed: {
+    ...mapGetters([
+      "isStarting"
+    ])
+  },
   methods: {
     handleStartEnd () {
-      let self = this
-      if (self.isStarting) {
-        self.$store.dispatch("makeEnd").then(msg => {
-          self.isStarting = !self.isStarting
-          setIsStartingLocalstorage(self.isStarting)
-          self.$Message.success(msg)
-          self.$emit("on-start-change", self.isStarting)
-        }).catch(err => self.$Message.error(err))
+      if (this.isStarting) {
+        this.$store.dispatch("makeEnd").then(msg => {
+          this.$Message.success(msg)
+        }).catch(err => this.$Message.error(err))
       } else {
-        self.$store.dispatch("makeStart").then(msg => {
-          self.isStarting = !self.isStarting
-          setIsStartingLocalstorage(self.isStarting)
-          self.$Message.success(msg)
-          self.$emit("on-start-change", self.isStarting)
-        }).catch(err => self.$Message.error(err))
+        this.$store.dispatch("makeStart").then(msg => {
+          this.$router.push({
+            path: '/classCenter/chapters#NOT_CHAPTER_0'
+          })
+          this.$Message.success(msg)
+        }).catch(err => this.$Message.error(err))
       }
     }
   }

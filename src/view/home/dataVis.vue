@@ -67,7 +67,7 @@ export default {
     // 获取全部签到情况的表格
     handleAllSignRecord () {
       allSignRecord().then(res => {
-        downloadBlob(res, '历史全部签到情况表.xlsx')
+        downloadBlob(res, '历史全部签到情况表.xls')
       }).catch(err => {
         this.$Modal.error({
           title: '获取全部的签到情况表失败！请联系管理员。',

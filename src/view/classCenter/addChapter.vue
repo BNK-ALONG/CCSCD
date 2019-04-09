@@ -65,7 +65,13 @@ export default {
       }).catch(err => console.log(err))
     },
     handleUploadSuccess (response, file, fileList) {
-      this.files = response.files
+
+      if (response.status === 200) {
+        this.files = response.files
+        this.$Message.success(response.message)
+      } else {
+        this.$Message.error(response.message)
+      }
     },
 
     //获取标签的值

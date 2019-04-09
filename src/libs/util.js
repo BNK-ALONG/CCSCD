@@ -190,7 +190,7 @@ export const setIsStartingLocalstorage = (isStarting) => {
 }
 
 /**
- * @returns {String} 从LocalStorage获取是否开课，'0'，'1'
+ * @returns {Number} 从LocalStorage获取是否开课，'0'，'1'
  */
 export const getIsStartingLocalstorage = () => {
   const isStarting = localStorage.isStarting

@@ -19,7 +19,9 @@ import {
   courseLogin
 } from '@/api/user'
 import {
-  forClassTime
+  forClassTime,
+  setIsStartingLocalstorage,
+  getIsStartingLocalstorage
 } from '@/libs/util'
 
 export default {
@@ -32,7 +34,8 @@ export default {
     draftNoticeList: [],
     pastNoticeList: [],
     answerList: [],
-    messageContentStore: {}
+    messageContentStore: {},
+    classStart: getIsStartingLocalstorage()
   },
   mutations: {
     setAvator(state, avatorPath) {
@@ -60,6 +63,11 @@ export default {
     setAnswerList(state, list) {
       state.answerList = list
     },
+    // 设置上下课的状态
+    setIsStarting(state, boolean) {
+      state.classStart = boolean
+      setIsStartingLocalstorage(boolean)
+    },
     updateMessageContentStore(state, {
       msg_id,
       content
@@ -80,7 +88,8 @@ export default {
   getters: {
     draftNoticeCount: state => state.draftNoticeList.length,
     pastNoticeCount: state => state.pastNoticeList.length,
-    answerCount: state => state.answerList.length
+    answerCount: state => state.answerList.length,
+    isStarting: state => state.classStart
   },
   actions: {
     // 登录
@@ -193,7 +202,7 @@ export default {
       })
     },
 
-    // 获取所有的公告和历史答疑
+    // 获取所有的公告
     getAllNotice({
       commit
     }) {
@@ -214,6 +223,7 @@ export default {
         })
       })
     },
+    // 获取历史答疑
     getPastAnswer({
       commit
     }) {
@@ -254,6 +264,7 @@ export default {
       return new Promise((resolve, reject) => {
         startClass().then(res => {
           if (res.status === 200) {
+            commit("setIsStarting", true)
             resolve("开始上课")
           } else {
             reject(res.message)
@@ -264,13 +275,15 @@ export default {
       })
     },
     // 下课
-    makeEnd() {
+    makeEnd({
+      commit
+    }) {
       return new Promise((resolve, reject) => {
         endClass().then(res => {
           if (res.status === 200) {
+            commit("setIsStarting", false)
             resolve('结束本节课')
           } else {
-            // reject(new Error('本节课结束失败'))
             reject(res.message)
           }
         }).catch(err => {

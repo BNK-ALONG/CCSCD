@@ -210,7 +210,7 @@ export default {
     // 备注消息的对话框内容
     signRemarkModal (student, alterType, ...args) {
       let self = this
-      let status = '已签到'
+      let status = '补签'
       let index = args[0]
       let index2 = args[1]
       self.$Modal.confirm({
@@ -256,13 +256,8 @@ export default {
                 width: '70%'
               },
             }, '备注信息'),
-            h('Select', {
-              style: {
-                width: '53%'
-              },
+            h('RadioGroup', {
               props: {
-                remote: true,
-                filterable: true,
                 value: status
               },
               on: {
@@ -271,21 +266,19 @@ export default {
                 }
               }
             }, [
-                h('Option', {
+                h('Radio', {
                   props: {
-                    value: '已签到',
+                    trueValue: '已签到',
                     label: '补签'
                   },
                 }),
-                h('Option', {
+                h('Radio', {
                   props: {
-                    value: '迟到',
                     label: '迟到'
                   },
                 }),
-                h('Option', {
+                h('Radio', {
                   props: {
-                    value: '请假',
                     label: '请假'
                   },
                 })
@@ -293,12 +286,7 @@ export default {
           ])
         },
         onOk: () => {
-          student.status = status
-          // if (student.status === '迟到') {
-          //   self.late += 1
-          // } else if (student.status === '请假') {
-          //   self.leave += 1
-          // }
+          status === '补签' ? student.status = '已签到' : student.status = status
           if (alterType === 'Alert') {
             self.list1.splice(index, 1)
             self.list2.push(student)
@@ -334,6 +322,18 @@ export default {
     },
     // 重新发布签到
     handleResign () {
+      let interval = sessionStorage.getItem('interval')
+      if (interval) {
+        cancelSign().then(res => {
+          if (res.status === 200) {
+            sessionStorage.removeItem("interval")
+            sessionStorage.removeItem("startTime")
+            this.$refs.timeDown.timeLeft = 0
+          } else {
+            this.$Message.error(res.message)
+          }
+        }).catch(err => this.$Message.error(err))
+      }
       this.$router.push({
         name: 'issue_sign'
       })
@@ -357,7 +357,7 @@ export default {
                 this.$Message.error(res.message)
               }
             }, 2000)
-          })
+          }).catch(err => this.$Message.error(err))
         }
 
       })

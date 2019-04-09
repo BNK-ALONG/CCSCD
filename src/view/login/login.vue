@@ -58,11 +58,11 @@
 
         </div>
         <div class="container-login100-form-btn"
-             style="width: 150px;margin-left: 120px;margin-top: 20px;height: 40p">
+             style="margin-top: 20px;">
           <div class="wrap-login100-form-btn">
             <div class="login100-form-bgbtn"></div>
             <button class="login100-form-btn"
-                    style="font-size:18px"
+                    style="letter-spacing:20px;"
                     @click="handleRegisterBtn">注 册</button>
           </div>
         </div>
